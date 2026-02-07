@@ -1,0 +1,29 @@
+name: Bug report
+description: Report a bug or regression
+title: "[Bug]: "
+labels: ["bug"]
+body:
+
+type: textarea
+id: what
+attributes:
+label: What happened?
+description: What did you expect to happen?
+validations:
+required: true
+
+type: textarea
+id: repro
+attributes:
+label: Reproduction steps
+description: Include commands, input, and expected output.
+validations:
+required: true
+
+type: textarea
+id: env
+attributes:
+label: Environment
+description: OS, Python version, package version, and anything else relevant.
+validations:
+required: true

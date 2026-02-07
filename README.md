@@ -1,3 +1,4 @@
+
 <div align="center">
 
 # SDET Bootcamp (sdetkit)
@@ -16,38 +17,61 @@ Production-style SDET utilities + exercises (CLI tools, quality gates, and testa
 
 ## What you get
 
-- CLI tools
+- **CLI tools**
   - `sdetkit kv` / `kvcli`: parse `key=value` input and output JSON
-  - `sdetkit apiget` / `apigetcli`: fetch JSON with pagination/retries/timeouts
-- A small Python library you can import in exercises:
-  - `sdetkit.apiclient`, `sdetkit.netclient`, `sdetkit.atomicio`, `sdetkit.textutil`
+  - `sdetkit apiget` / `apigetcli`: fetch JSON with pagination, retries, and timeouts
+- **Library modules**
+  - `sdetkit.atomicio`: atomic write helpers
+  - `sdetkit.textutil`: small text utilities
+  - `sdetkit.apiclient` / `sdetkit.netclient`: HTTP client utilities (sync + async)
 
-## Quick start
-
-One-time setup:
+## Quickstart
 
 ```bash
-cd ~/sdet_bootcamp
+cd sdet_bootcamp
+
 python3 -m venv .venv
 ./.venv/bin/python -m pip install -r requirements-test.txt -r requirements-docs.txt -e .
-Daily commands (no need to "activate" venv):
 
-./.venv/bin/python -m pytest
+# Run the same checks as CI
 bash scripts/check.sh all
+
+# Run tests only
+./.venv/bin/python -m pytest
+CLI usage
 ./.venv/bin/sdetkit --help
 ./.venv/bin/python -m sdetkit --help
+
 ./.venv/bin/kvcli --help
 ./.venv/bin/apigetcli --help
-Optional: run CLIs without prefix:
+If you want kvcli/apigetcli available without prefixing .venv/bin/, use one of:
 
-cd ~/sdet_bootcamp
+# One-shot shell
+bash scripts/shell.sh
+apigetcli --help
+kvcli --help
+# Current shell only
 source scripts/env.sh
 apigetcli --help
 kvcli --help
-Docs
-Build locally:
+Project structure
+.
+├─ src/sdetkit/              # Package source (importable modules + CLI entrypoints)
+├─ tests/                    # Unit tests + mutation killers
+├─ scripts/
+│  ├─ check.sh               # Quality gate runner (lint/types/tests/coverage/docs)
+│  ├─ env.sh                 # Add .venv/bin to PATH (current shell)
+│  └─ shell.sh               # Start a subshell with .venv/bin on PATH
+├─ docs/                     # MkDocs content (published on Pages)
+├─ mkdocs.yml                # Docs build config
+├─ pyproject.toml            # Build + tooling config
+├─ requirements-test.txt     # Dev/test tools (pytest, ruff, mypy, mutmut, ...)
+└─ requirements-docs.txt     # Docs tools (mkdocs, theme)
+Roadmap
+See: ROADMAP.md
 
-./.venv/bin/python -m pip install -r requirements-docs.txt
-bash scripts/check.sh docs
+Contributing
+See: CONTRIBUTING.md
+
 License
 MIT. See LICENSE.

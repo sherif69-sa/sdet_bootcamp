@@ -1,0 +1,25 @@
+name: Feature request
+description: Suggest an idea or improvement
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+
+type: textarea
+id: what
+attributes:
+label: What do you want to add or improve?
+validations:
+required: true
+
+type: textarea
+id: why
+attributes:
+label: Why is it useful?
+validations:
+required: true
+
+type: textarea
+id: scope
+attributes:
+label: Scope notes (optional)
+description: Edge cases, expected behavior, or constraints.
