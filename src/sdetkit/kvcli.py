@@ -11,7 +11,7 @@ def _die(msg: str) -> "None":
     raise SystemExit(2)
 
 
-def main(argv=None) -> int:
+def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="kvcli", add_help=True)
     p.add_argument("--text", default=None)
     p.add_argument("--path", default=None)
