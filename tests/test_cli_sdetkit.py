@@ -67,6 +67,7 @@ def test_sdetkit_apiget_expect_dict_mismatch_is_error(monkeypatch, capsys):
     err = capsys.readouterr().err
     assert "expected json object" in err
 
+
 def test_python_m_sdetkit_help():
     import subprocess
     import sys
@@ -99,6 +100,7 @@ def test_kvcli_help():
     )
     assert p.returncode == 0
     assert "usage:" in p.stdout
+
 
 def test_apigetcli_help():
     import subprocess

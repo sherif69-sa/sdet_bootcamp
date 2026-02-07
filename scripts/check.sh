@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [ -d ".venv/bin" ]; then
+  PATH="$(pwd)/.venv/bin:$PATH"
+  export PATH
+fi
+
+
 mode=${1:-all}
 
 py=${PYTHON:-python}
