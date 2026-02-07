@@ -2,7 +2,7 @@
 
 # SDET Bootcamp (sdetkit)
 
-Production-style SDET utilities + exercises: CLI tools, quality gates, and testable modules.
+Production-style SDET utilities + exercises (CLI tools, quality gates, and testable modules).
 
 [![Quality](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/quality.yml)
 [![Pages](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/pages.yml/badge.svg?branch=main)](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/pages.yml)
@@ -14,33 +14,40 @@ Production-style SDET utilities + exercises: CLI tools, quality gates, and testa
 
 </div>
 
-## Features
+## What you get
 
-- CLI tools:
+- CLI tools
   - `sdetkit kv` / `kvcli`: parse `key=value` input and output JSON
   - `sdetkit apiget` / `apigetcli`: fetch JSON with pagination/retries/timeouts
-- Quality gates (same ones CI runs): formatting, lint, types, tests, coverage, docs
-- Small modules meant for exercises and kata-style tasks
+- A small Python library you can import in exercises:
+  - `sdetkit.apiclient`, `sdetkit.netclient`, `sdetkit.atomicio`, `sdetkit.textutil`
 
-## Install (dev)
+## Quick start
+
+One-time setup:
 
 ```bash
+cd ~/sdet_bootcamp
 python3 -m venv .venv
 ./.venv/bin/python -m pip install -r requirements-test.txt -r requirements-docs.txt -e .
-Quickstart
-./.venv/bin/python -m sdetkit --help
-./.venv/bin/python -m sdetkit kv --help
-./.venv/bin/python -m sdetkit apiget --help
-Run console scripts directly:
+Daily commands (no need to "activate" venv):
 
+./.venv/bin/python -m pytest
+bash scripts/check.sh all
+./.venv/bin/sdetkit --help
+./.venv/bin/python -m sdetkit --help
 ./.venv/bin/kvcli --help
 ./.venv/bin/apigetcli --help
-If you want kvcli and apigetcli available without typing ./.venv/bin/:
+Optional: run CLIs without prefix:
 
-bash scripts/shell.sh
-Development
-bash scripts/check.sh all
-Documentation
-mkdocs serve
+cd ~/sdet_bootcamp
+source scripts/env.sh
+apigetcli --help
+kvcli --help
+Docs
+Build locally:
+
+./.venv/bin/python -m pip install -r requirements-docs.txt
+bash scripts/check.sh docs
 License
 MIT. See LICENSE.

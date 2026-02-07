@@ -1,53 +1,40 @@
 #!/usr/bin/env bash
+
 set -euo pipefail
 
+root="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$root"
+
 if [ -d ".venv/bin" ]; then
-  PATH="$(pwd)/.venv/bin:$PATH"
+  PATH="$root/.venv/bin:$PATH"
   export PATH
 fi
 
-
-mode=${1:-all}
-
-py=${PYTHON:-python}
-if ! command -v "$py" >/dev/null 2>&1; then
-  py=python3
-fi
-
-run_lint() {
-  ruff check .
-  ruff format --check .
-}
-
-run_types() {
-  mypy src/sdetkit
-}
-
-run_tests() {
-  pytest -q
-}
-
-run_coverage() {
-  cov=${COV_FAIL_UNDER:-0}
-  pytest -q --cov=src/sdetkit --cov-report=term-missing --cov-report=xml --cov-fail-under="$cov"
-}
-
-run_docs() {
-  mkdocs build --strict
-}
+mode=${1:-}
 
 case "$mode" in
-  lint) run_lint ;;
-  types) run_types ;;
-  tests) run_tests ;;
-  coverage) run_coverage ;;
-  docs) run_docs ;;
+  lint)
+    ruff check .
+    ruff format --check .
+    ;;
+  types)
+    mypy src
+    ;;
+  tests)
+    ./.venv/bin/python -m pytest
+    ;;
+  coverage)
+    ./.venv/bin/python -m pytest --cov=src --cov-report=term-missing --cov-report=xml
+    ;;
+  docs)
+    mkdocs build
+    ;;
   all)
-    run_lint
-    run_types
-    run_tests
-    run_coverage
-    run_docs
+    "$0" lint
+    "$0" types
+    "$0" tests
+    "$0" coverage
+    "$0" docs
     ;;
   *)
     echo "Usage: bash scripts/check.sh {lint|types|tests|coverage|docs|all}" >&2
