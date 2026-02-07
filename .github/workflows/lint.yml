@@ -20,7 +20,6 @@ jobs:
           python -m pip install -r requirements-test.txt
           python -m pip install -e .
 
-      - name: Ruff
+      - name: Lint
         run: |
-          ruff check .
-          ruff format --check .
+          bash scripts/check.sh lint

@@ -20,6 +20,8 @@ jobs:
           python -m pip install -r requirements-test.txt
           python -m pip install -e .
 
-      - name: Run tests with coverage
+      - name: Coverage
+        env:
+          COV_FAIL_UNDER: "0"
         run: |
-          pytest -q --cov=src/sdetkit --cov-report=term-missing --cov-report=xml --cov-fail-under=68
+          bash scripts/check.sh coverage

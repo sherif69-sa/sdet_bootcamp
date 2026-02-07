@@ -20,6 +20,6 @@ jobs:
           python -m pip install -r requirements-test.txt
           python -m pip install -e .
 
-      - name: Mypy
+      - name: Types
         run: |
-          mypy src/sdetkit
+          bash scripts/check.sh types
