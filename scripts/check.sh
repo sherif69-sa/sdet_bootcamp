@@ -4,6 +4,9 @@ set -euo pipefail
 
 mode=${1:-all}
 py=${PYTHON:-python}
+if ! command -v "$py" >/dev/null 2>&1; then
+  py=python3
+fi
 
 case "$mode" in
   lint)
