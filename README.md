@@ -2,7 +2,7 @@
 
 # SDET Bootcamp (sdetkit)
 
-Production-style SDET utilities + exercises (CLI tools, quality gates, and testable modules).
+Production-style SDET utilities + exercises: CLI tools, quality gates, and testable modules.
 
 [![Quality](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/quality.yml)
 [![Pages](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/pages.yml/badge.svg?branch=main)](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/pages.yml)
@@ -14,55 +14,33 @@ Production-style SDET utilities + exercises (CLI tools, quality gates, and testa
 
 </div>
 
-## What you get
+## Features
 
-- **CLI tools**
+- CLI tools:
   - `sdetkit kv` / `kvcli`: parse `key=value` input and output JSON
   - `sdetkit apiget` / `apigetcli`: fetch JSON with pagination/retries/timeouts
-- **Importable modules**
-  - `sdetkit.atomicio`: atomic write helper
-  - `sdetkit.apiclient`: JSON fetch helpers (sync + async)
-  - `sdetkit.textutil`: parsing helpers
+- Quality gates (same ones CI runs): formatting, lint, types, tests, coverage, docs
+- Small modules meant for exercises and kata-style tasks
 
-## Quickstart
-
-> Tip: you don't need to activate the venv. Use `.venv/bin/...`.
-
-### One-time setup
+## Install (dev)
 
 ```bash
-cd ~/sdet_bootcamp
 python3 -m venv .venv
 ./.venv/bin/python -m pip install -r requirements-test.txt -r requirements-docs.txt -e .
-````
-
-### Daily commands
-
-```bash
-./.venv/bin/python -m pytest
-bash scripts/check.sh all
-```
-
-## CLI usage
-
-```bash
-./.venv/bin/sdetkit --help
+Quickstart
 ./.venv/bin/python -m sdetkit --help
+./.venv/bin/python -m sdetkit kv --help
+./.venv/bin/python -m sdetkit apiget --help
+Run console scripts directly:
 
 ./.venv/bin/kvcli --help
 ./.venv/bin/apigetcli --help
-```
+If you want kvcli and apigetcli available without typing ./.venv/bin/:
 
-## Optional: shell with venv tools on PATH (no activate)
-
-```bash
-cd ~/sdet_bootcamp
 bash scripts/shell.sh
-# Now you can run:
-#   apigetcli --help
-#   kvcli --help
-```
-
-## License
-
-MIT. See `LICENSE`.
+Development
+bash scripts/check.sh all
+Documentation
+mkdocs serve
+License
+MIT. See LICENSE.
