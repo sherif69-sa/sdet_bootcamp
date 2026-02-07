@@ -52,6 +52,7 @@ def fetch_json_dict(
     path: str,
     retries: int = 1,
     *,
+    timeout: float | httpx.Timeout | None = None,
     headers: dict[str, str] | None = None,
     trace_header: str | None = None,
     request_id: str | None = None,
@@ -71,9 +72,9 @@ def fetch_json_dict(
     for attempt in range(retries):
         try:
             if hdrs is None:
-                r = client.get(path)
+                r = client.get(path, timeout=timeout)
             else:
-                r = client.get(path, headers=hdrs)
+                r = client.get(path, headers=hdrs, timeout=timeout)
             last_err = None  # pragma: no mutate
         except httpx.TimeoutException as e:
             raise TimeoutError("request timed out") from e
@@ -122,6 +123,7 @@ async def fetch_json_dict_async(
     path: str,
     retries: int = 1,
     *,
+    timeout: float | httpx.Timeout | None = None,
     headers: dict[str, str] | None = None,
     trace_header: str | None = None,
     request_id: str | None = None,
@@ -141,9 +143,9 @@ async def fetch_json_dict_async(
     for attempt in range(retries):
         try:
             if hdrs is None:
-                r = await client.get(path)
+                r = await client.get(path, timeout=timeout)
             else:
-                r = await client.get(path, headers=hdrs)
+                r = await client.get(path, headers=hdrs, timeout=timeout)
             last_err = None  # pragma: no mutate
         except httpx.TimeoutException as e:
             raise TimeoutError("request timed out") from e
@@ -192,6 +194,7 @@ def fetch_json_list(
     path: str,
     retries: int = 1,
     *,
+    timeout: float | httpx.Timeout | None = None,
     headers: dict[str, str] | None = None,
     trace_header: str | None = None,
     request_id: str | None = None,
@@ -211,9 +214,9 @@ def fetch_json_list(
     for attempt in range(retries):
         try:
             if hdrs is None:
-                r = client.get(path)
+                r = client.get(path, timeout=timeout)
             else:
-                r = client.get(path, headers=hdrs)
+                r = client.get(path, headers=hdrs, timeout=timeout)
             last_err = None  # pragma: no mutate
         except httpx.TimeoutException as e:
             raise TimeoutError("request timed out") from e
@@ -262,6 +265,7 @@ async def fetch_json_list_async(
     path: str,
     retries: int = 1,
     *,
+    timeout: float | httpx.Timeout | None = None,
     headers: dict[str, str] | None = None,
     trace_header: str | None = None,
     request_id: str | None = None,
@@ -281,9 +285,9 @@ async def fetch_json_list_async(
     for attempt in range(retries):
         try:
             if hdrs is None:
-                r = await client.get(path)
+                r = await client.get(path, timeout=timeout)
             else:
-                r = await client.get(path, headers=hdrs)
+                r = await client.get(path, headers=hdrs, timeout=timeout)
             last_err = None  # pragma: no mutate
         except httpx.TimeoutException as e:
             raise TimeoutError("request timed out") from e
