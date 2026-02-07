@@ -7,7 +7,7 @@ if [ -f .venv/bin/activate ]; then
   . .venv/bin/activate
 fi
 
-mode=${1:-}
+mode=${1:-quick}
 
 case "$mode" in
   quick)

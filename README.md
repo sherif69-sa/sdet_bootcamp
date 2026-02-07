@@ -72,3 +72,13 @@ See CONTRIBUTING.md.
 ## License
 
 MIT. See LICENSE.
+
+## Development
+
+- Install deps:
+  - `pip install -r requirements-test.txt -r requirements-docs.txt`
+- Run:
+  - `bash ci.sh`
+  - `bash quality.sh`
+- Enable git hooks:
+  - `pip install pre-commit && pre-commit install`

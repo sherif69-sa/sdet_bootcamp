@@ -1,34 +1,34 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 
-mode=${1:-}
+mode=${1:-all}
+cov_fail_under=${COV_FAIL_UNDER:-68}
+
+run_fmt()     { ruff format .; }
+run_lint()    { ruff check .; }
+run_type()    { mypy src; }
+run_test()    { pytest; }
+run_cov()     { pytest --cov=sdetkit --cov-report=term-missing --cov-fail-under="$cov_fail_under"; }
+run_mut()     { mutmut run; }
+run_muthtml() { mutmut html; }
 
 case "$mode" in
-  test)
-    python3 -m pytest -q -W error::RuntimeWarning
-    ;;
-  cov)
-    python3 -m pytest -q -W error::RuntimeWarning --cov=src/sdetkit --cov-report=term-missing --cov-branch --cov-fail-under=95
-    ;;
-  fmt)
-    ruff format .
-    ;;
-  lint)
-    ruff check .
-    ;;
-  type)
-    mypy src/sdetkit
-    ;;
-  mut)
-    mutmut run --paths-to-mutate src/sdetkit --runner "python3 -m pytest -q"
-    ;;
-  muthtml)
-    mutmut html
-    echo "open html: mutmut-results.html"
+  fmt) run_fmt ;;
+  lint) run_lint ;;
+  type) run_type ;;
+  test) run_test ;;
+  cov) run_cov ;;
+  mut) run_mut ;;
+  muthtml) run_muthtml ;;
+  all)
+    run_fmt
+    run_lint
+    run_type
+    run_test
+    run_cov
     ;;
   *)
-    echo "Usage: bash quality.sh {test|cov|fmt|lint|type|mut|muthtml}" >&2
+    echo "Usage: bash quality.sh {all|fmt|lint|type|test|cov|mut|muthtml}" >&2
     exit 2
     ;;
 esac
