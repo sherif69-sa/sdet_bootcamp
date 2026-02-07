@@ -1,8 +1,13 @@
-name: docs
+name: pages
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - "requirements-docs.txt"
+      - ".github/workflows/pages.yml"
   workflow_dispatch:
 
 permissions:
@@ -11,7 +16,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: true
 
 jobs:
@@ -25,15 +30,18 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - name: Install docs deps
+      - name: Install
         run: |
           python -m pip install -r requirements-docs.txt
 
-      - name: Build site
+      - name: Build
         run: |
           mkdocs build --strict
 
-      - name: Upload Pages artifact
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
@@ -45,6 +53,5 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v4
