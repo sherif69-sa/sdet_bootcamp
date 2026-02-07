@@ -1,0 +1,10 @@
+site_name: sdetkit
+site_url: https://sherif69-sa.github.io/sdet_bootcamp/
+repo_url: https://github.com/sherif69-sa/sdet_bootcamp
+repo_name: sherif69-sa/sdet_bootcamp
+
+nav:
+  - Home: index.md
+  - CLI: cli.md
+  - API: api.md
+  - Design: design.md
