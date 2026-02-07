@@ -21,26 +21,36 @@ jobs:
       RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - name: Validate workflow_dispatch tag exists
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git ls-remote --exit-code --tags "https://github.com/${GITHUB_REPOSITORY}.git" "refs/tags/${RELEASE_TAG}" >/dev/null \
+            || {
+              echo "::error::workflow_dispatch tag '${RELEASE_TAG}' was not found in ${GITHUB_REPOSITORY}. Push the tag before running this workflow."
+              exit 1
+            }
+
+      - name: Checkout release ref
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          fetch-tags: true
+          ref: ${{ env.RELEASE_TAG }}
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Build dist
         run: |
-          python -m pip install build
+          python -m pip install --upgrade pip build
           python -m build
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.RELEASE_TAG }}
-          target_commitish: ${{ github.sha }}
           generate_release_notes: true
           files: |
             dist/*
