@@ -40,3 +40,11 @@ bash scripts/check.sh docs
 - [ ] Tests added/updated for the change
 - [ ] Docs updated if the CLI/API changed
 - [ ] PR description includes what/why + how to verify
+
+## Pre-commit (recommended)
+
+```bash
+python -m pip install pre-commit
+pre-commit install
+pre-commit run -a
+```
