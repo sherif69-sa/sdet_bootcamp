@@ -169,7 +169,7 @@ class CassetteRecordTransport(httpx.BaseTransport):
 
     def close(self) -> None:
         try:
-            if self._path is not None:
+            if self._path is not None and self._cassette.interactions:
                 self._cassette.save(self._path)
         finally:
             self._inner.close()
@@ -247,7 +247,7 @@ class AsyncCassetteRecordTransport(httpx.AsyncBaseTransport):
 
     async def aclose(self) -> None:
         try:
-            if self._path is not None:
+            if self._path is not None and self._cassette.interactions:
                 self._cassette.save(self._path)
         finally:
             await self._inner.aclose()
