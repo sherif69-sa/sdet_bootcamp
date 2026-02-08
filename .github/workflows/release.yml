@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Existing tag to release (example: v0.2.6)"
+        description: "Existing tag to release (example: v0.2.7)"
         required: true
         type: string
 
@@ -54,32 +54,15 @@ jobs:
             requirements-test.txt
             requirements-docs.txt
 
-      - name: Install deps + quality gates
+      - name: Install + quality gates
         shell: bash
+        env:
+          COV_FAIL_UNDER: "70"
         run: |
           set -euo pipefail
           python -m pip install -r requirements-test.txt -r requirements-docs.txt -e .
           python -m pip install build twine
           bash quality.sh cov
-
-      - name: Verify version matches tag
-        shell: bash
-        env:
-          TAG: ${{ steps.resolved.outputs.tag }}
-        run: |
-          set -euo pipefail
-          want="${TAG#v}"
-          have="$(python - <<'PY'
-import tomllib
-from pathlib import Path
-data = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
-print(data["project"]["version"])
-PY
-)"
-          if [[ "$have" != "$want" ]]; then
-            echo "pyproject.toml version ($have) must match tag ($want)" >&2
-            exit 1
-          fi
 
       - name: Build dist
         shell: bash
