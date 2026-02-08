@@ -109,3 +109,41 @@ def test_apiget_replay_missing_cassette_is_error(tmp_path, capsys):
     captured = capsys.readouterr()
     assert rc == 1
     assert "cassette not found" in captured.err
+
+
+def test_apiget_replay_requires_exhausted_cassette(tmp_path, capsys):
+    import httpx
+
+    from sdetkit import cli
+    from sdetkit.cassette import Cassette
+
+    url = "https://example.test/x"
+    cassette_path = tmp_path / "apiget.cassette"
+
+    req = httpx.Request("GET", url)
+    body = b'{"ok": true}'
+    resp = httpx.Response(200, content=body, request=req)
+
+    c = Cassette([])
+    c.append(req, resp, body)
+    c.append(req, resp, body)
+    c.save(cassette_path)
+
+    rc = cli.main(
+        [
+            "apiget",
+            url,
+            "--expect",
+            "dict",
+            "--cassette",
+            str(cassette_path),
+            "--cassette-mode",
+            "replay",
+        ]
+    )
+
+    out = capsys.readouterr()
+    assert rc == 1
+    assert out.out.strip() == ""
+    assert "cassette not exhausted" in out.err
+    assert "Traceback" not in out.err
