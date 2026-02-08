@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Tag to release (e.g. v0.2.5). Leave empty if you triggered this workflow by pushing a tag."
-        required: false
+        description: "Existing tag to release (example: v0.2.6)"
+        required: true
         type: string
 
 permissions:
@@ -22,29 +22,28 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Resolve tag
-        id: tag
+        id: resolved
         shell: bash
-        env:
-          INPUT_TAG: ${{ inputs.tag }}
         run: |
           set -euo pipefail
           if [[ "${GITHUB_REF_TYPE:-}" == "tag" ]]; then
             echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
-            exit 0
+          else
+            echo "tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
           fi
 
-          if [[ -z "${INPUT_TAG:-}" ]]; then
-            echo "ERROR: No tag found. Run this workflow from a tag push OR provide inputs.tag." >&2
-            exit 2
-          fi
-
-          echo "tag=${INPUT_TAG}" >> "$GITHUB_OUTPUT"
-
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: refs/tags/${{ steps.tag.outputs.tag }}
+      - name: Checkout tag (workflow_dispatch)
+        if: ${{ github.ref_type != 'tag' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --tags --force origin
+          git checkout "refs/tags/${{ steps.resolved.outputs.tag }}"
 
       - uses: actions/setup-python@v5
         with:
@@ -55,25 +54,46 @@ jobs:
             requirements-test.txt
             requirements-docs.txt
 
-      - name: Test
-        env:
-          COV_FAIL_UNDER: "70"
+      - name: Install deps + quality gates
+        shell: bash
         run: |
-          python -m pip install -U pip
-          python -m pip install -r requirements-test.txt -r requirements-docs.txt
-          python -m pip install -e .
+          set -euo pipefail
+          python -m pip install -r requirements-test.txt -r requirements-docs.txt -e .
+          python -m pip install build twine
           bash quality.sh cov
 
-      - name: Build dist
+      - name: Verify version matches tag
+        shell: bash
+        env:
+          TAG: ${{ steps.resolved.outputs.tag }}
         run: |
-          python -m pip install -U pip
-          python -m pip install build
-          python -m build
+          set -euo pipefail
+          want="${TAG#v}"
+          have="$(python - <<'PY'
+import tomllib
+from pathlib import Path
+data = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
+print(data["project"]["version"])
+PY
+)"
+          if [[ "$have" != "$want" ]]; then
+            echo "pyproject.toml version ($have) must match tag ($want)" >&2
+            exit 1
+          fi
 
-      - name: GitHub Release
+      - name: Build dist
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m build
+          python -m twine check dist/*
+
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.tag.outputs.tag }}
+          tag_name: ${{ steps.resolved.outputs.tag }}
+          name: ${{ steps.resolved.outputs.tag }}
           generate_release_notes: true
+          fail_on_unmatched_files: true
           files: |
             dist/*
