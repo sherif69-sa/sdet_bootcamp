@@ -35,6 +35,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     p.add_argument("--data", default=None)
     p.add_argument("--json", dest="json_data", default=None)
     p.add_argument("--out", default=None)
+    p.add_argument("--print-status", action="store_true")
     p.add_argument("--query", action="append", default=None)
 
     ns = p.parse_args(argv)
@@ -193,19 +194,42 @@ def main(argv: Sequence[str] | None = None) -> int:
                     if ns.expect == "any" and not isinstance(data, (dict, list)):
                         raise ValueError("expected dict or list")
                 else:
-                    if ns.expect == "dict":
-                        data = c.get_json_dict(ns.url, request_id=ns.request_id, timeout=ns.timeout)
-                    elif ns.expect == "list":
-                        data = c.get_json_list(ns.url, request_id=ns.request_id, timeout=ns.timeout)
+                    if getattr(ns, "print_status", False):
+                        resp = raw.request(
+                            _req_method,
+                            ns.url,
+                            headers=_req_headers or None,
+                            content=_req_content,
+                            json=_req_json,
+                            timeout=ns.timeout,
+                        )
+                        sys.stderr.write(f"http status: {resp.status_code}\n")
+                        resp.raise_for_status()
+                        data = resp.json()
+                        if ns.expect == "dict" and not isinstance(data, dict):
+                            raise ValueError("expected dict")
+                        if ns.expect == "list" and not isinstance(data, list):
+                            raise ValueError("expected list")
+                        if ns.expect == "any" and not isinstance(data, (dict, list)):
+                            raise ValueError("expected dict or list")
                     else:
-                        try:
+                        if ns.expect == "dict":
                             data = c.get_json_dict(
                                 ns.url, request_id=ns.request_id, timeout=ns.timeout
                             )
-                        except ValueError:
+                        elif ns.expect == "list":
                             data = c.get_json_list(
                                 ns.url, request_id=ns.request_id, timeout=ns.timeout
                             )
+                        else:
+                            try:
+                                data = c.get_json_dict(
+                                    ns.url, request_id=ns.request_id, timeout=ns.timeout
+                                )
+                            except ValueError:
+                                data = c.get_json_list(
+                                    ns.url, request_id=ns.request_id, timeout=ns.timeout
+                                )
         out_s = json.dumps(data, sort_keys=True, indent=2 if ns.pretty else None) + "\n"
         out_path = getattr(ns, "out", None)
         if out_path:
