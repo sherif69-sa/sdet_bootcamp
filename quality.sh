@@ -4,13 +4,20 @@ set -euo pipefail
 mode=${1:-all}
 cov_fail_under=${COV_FAIL_UNDER:-70}
 
-run_fmt()     { ruff format .; }
-run_lint()    { ruff check .; }
-run_type()    { mypy src; }
-run_test()    { pytest; }
-run_cov()     { pytest --cov=sdetkit --cov-report=term-missing --cov-fail-under="$cov_fail_under"; }
-run_mut()     { mutmut run; }
-run_muthtml() { mutmut html; }
+need_cmd() {
+  command -v "$1" >/dev/null 2>&1 && return 0
+  echo "missing tool: $1" >&2
+  echo "hint: activate a venv and run: python -m pip install -r requirements-test.txt -r requirements-docs.txt -e ." >&2
+  exit 127
+}
+
+run_fmt()     { need_cmd ruff; ruff format .; }
+run_lint()    { need_cmd ruff; ruff check .; }
+run_type()    { need_cmd mypy; mypy src; }
+run_test()    { need_cmd pytest; pytest; }
+run_cov()     { need_cmd pytest; pytest --cov=sdetkit --cov-report=term-missing --cov-fail-under="$cov_fail_under"; }
+run_mut()     { need_cmd mutmut; mutmut run; }
+run_muthtml() { need_cmd mutmut; mutmut html; }
 
 case "$mode" in
   fmt) run_fmt ;;
