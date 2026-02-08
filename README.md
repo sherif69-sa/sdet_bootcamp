@@ -99,3 +99,12 @@ Example:
 - update pyproject.toml version
 - git tag -a vX.Y.Z -m "vX.Y.Z"
 - git push origin vX.Y.Z
+
+## Development (local)
+
+- Setup (creates .venv and installs deps):
+  - bash scripts/bootstrap.sh
+- Run quality gates:
+  - bash quality.sh cov
+- Or use Make targets:
+  - make cov
