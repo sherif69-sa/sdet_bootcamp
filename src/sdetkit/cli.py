@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 from collections.abc import Sequence
 
 from . import apiget, kvcli
@@ -17,6 +18,8 @@ def _add_apiget_args(p: argparse.ArgumentParser) -> None:
     p.add_argument("--trace-header", default=None)
     p.add_argument("--request-id", default=None)
     p.add_argument("--pretty", action="store_true")
+    p.add_argument("--cassette", default=None)
+    p.add_argument("--cassette-mode", choices=["auto", "record", "replay"], default=None)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -77,7 +80,25 @@ def main(argv: Sequence[str] | None = None) -> int:
         if ns.pretty:
             rest.append("--pretty")
 
-        return apiget.main(rest)
+        cassette = getattr(ns, "cassette", None)
+        cassette_mode = getattr(ns, "cassette_mode", None)
+        if not cassette:
+            return apiget.main(rest)
+        old_cassette = os.environ.get("SDETKIT_CASSETTE")
+        old_mode = os.environ.get("SDETKIT_CASSETTE_MODE")
+        try:
+            os.environ["SDETKIT_CASSETTE"] = str(cassette)
+            os.environ["SDETKIT_CASSETTE_MODE"] = cassette_mode or "auto"
+            return apiget.main(rest)
+        finally:
+            if old_cassette is None:
+                os.environ.pop("SDETKIT_CASSETTE", None)
+            else:
+                os.environ["SDETKIT_CASSETTE"] = old_cassette
+            if old_mode is None:
+                os.environ.pop("SDETKIT_CASSETTE_MODE", None)
+            else:
+                os.environ["SDETKIT_CASSETTE_MODE"] = old_mode
 
     raise SystemExit(2)
 
