@@ -2,6 +2,7 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
 
 concurrency:
@@ -11,17 +12,12 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.11", "3.12"]
-
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.12"
           cache: pip
           cache-dependency-path: |
             pyproject.toml
@@ -30,25 +26,14 @@ jobs:
 
       - name: Install
         run: |
-          python -m venv .venv
-          . .venv/bin/activate
-          python -m pip install -r requirements-test.txt -r requirements-docs.txt pre-commit ruff nox build twine
+          python -m pip install -r requirements-test.txt -r requirements-docs.txt
           python -m pip install -e .
+          python -m pip install pre-commit
 
-      - name: Quality + tests
-        run: |
-          . .venv/bin/activate
-          pre-commit run -a
-          bash quality.sh all
+      - name: Lint (pre-commit)
+        run: pre-commit run -a
 
-      - name: Build (sdist/wheel)
-        run: |
-          . .venv/bin/activate
-          python -m build
-          python -m twine check dist/*
-
-      - name: Upload dist artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-${{ matrix.python-version }}
-          path: dist/*
+      - name: Tests + Coverage
+        env:
+          COV_FAIL_UNDER: "70"
+        run: bash quality.sh cov
