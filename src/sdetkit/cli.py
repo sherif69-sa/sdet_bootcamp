@@ -51,6 +51,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     ag = sub.add_parser("apiget")
     _add_apiget_args(ag)
 
+    doc = sub.add_parser("doctor")
+    doc.add_argument("args", nargs=argparse.REMAINDER)
+
+    cg = sub.add_parser("cassette-get")
+    cg.add_argument("args", nargs=argparse.REMAINDER)
+
     ns = p.parse_args(argv)
 
     if ns.cmd == "kv":
