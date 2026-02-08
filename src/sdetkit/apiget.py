@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from collections.abc import Sequence
 
@@ -45,7 +46,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
 
     try:
-        with httpx.Client() as raw:
+        cassette_path = os.getenv("SDETKIT_CASSETTE")
+        cassette_mode = os.getenv("SDETKIT_CASSETTE_MODE", "auto")
+        transport = None
+        if cassette_path:
+            from .cassette import open_transport
+
+            upstream_transport = httpx.HTTPTransport() if cassette_mode == "record" else None
+            transport = open_transport(cassette_path, cassette_mode, upstream=upstream_transport)
+        with httpx.Client() if transport is None else httpx.Client(transport=transport) as raw:
             c = SdetHttpClient(raw, retry=pol, trace_header=ns.trace_header)
 
             data: object

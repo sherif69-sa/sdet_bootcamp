@@ -52,6 +52,7 @@ class Cassette:
 
     def save(self, path: str | Path) -> None:
         p = Path(path)
+        p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(
             json.dumps(self.to_json(), ensure_ascii=True, sort_keys=True, indent=2) + "\n",
             encoding="utf-8",
@@ -149,9 +150,16 @@ class CassetteReplayTransport(httpx.BaseTransport):
 
 
 class CassetteRecordTransport(httpx.BaseTransport):
-    def __init__(self, cassette: Cassette, inner: httpx.BaseTransport) -> None:
+    def __init__(
+        self,
+        cassette: Cassette,
+        inner: httpx.BaseTransport,
+        *,
+        path: str | Path | None = None,
+    ) -> None:
         self._cassette = cassette
         self._inner = inner
+        self._path = Path(path) if path is not None else None
 
     def handle_request(self, request: httpx.Request) -> httpx.Response:
         resp = self._inner.handle_request(request)
@@ -160,7 +168,11 @@ class CassetteRecordTransport(httpx.BaseTransport):
         return resp
 
     def close(self) -> None:
-        self._inner.close()
+        try:
+            if self._path is not None:
+                self._cassette.save(self._path)
+        finally:
+            self._inner.close()
 
 
 class AsyncCassetteReplayTransport(httpx.AsyncBaseTransport):
@@ -216,9 +228,16 @@ class AsyncCassetteReplayTransport(httpx.AsyncBaseTransport):
 
 
 class AsyncCassetteRecordTransport(httpx.AsyncBaseTransport):
-    def __init__(self, cassette: Cassette, inner: httpx.AsyncBaseTransport) -> None:
+    def __init__(
+        self,
+        cassette: Cassette,
+        inner: httpx.AsyncBaseTransport,
+        *,
+        path: str | Path | None = None,
+    ) -> None:
         self._cassette = cassette
         self._inner = inner
+        self._path = Path(path) if path is not None else None
 
     async def handle_async_request(self, request: httpx.Request) -> httpx.Response:
         resp = await self._inner.handle_async_request(request)
@@ -227,4 +246,31 @@ class AsyncCassetteRecordTransport(httpx.AsyncBaseTransport):
         return resp
 
     async def aclose(self) -> None:
-        await self._inner.aclose()
+        try:
+            if self._path is not None:
+                self._cassette.save(self._path)
+        finally:
+            await self._inner.aclose()
+
+
+def open_transport(
+    path: str | Path,
+    mode: str = "auto",
+    *,
+    upstream: httpx.BaseTransport | None = None,
+) -> httpx.BaseTransport:
+    p = Path(path)
+    m = mode.lower().strip()
+
+    if m == "auto":
+        m = "replay" if p.exists() else "record"
+    if m not in {"record", "replay"}:
+        raise ValueError("cassette mode must be one of: auto, record, replay")
+
+    if m == "replay":
+        cassette = Cassette.load(p)
+        return CassetteReplayTransport(cassette)
+
+    cassette = Cassette([])
+    inner = upstream if upstream is not None else httpx.HTTPTransport()
+    return CassetteRecordTransport(cassette, inner, path=p)
