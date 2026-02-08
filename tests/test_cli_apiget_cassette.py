@@ -60,3 +60,32 @@ def test_apiget_cassette_record_then_replay(tmp_path, capsys, monkeypatch):
     out2 = capsys.readouterr().out
     assert rc2 == 0
     assert "ok" in out2
+
+
+def test_apiget_record_failure_does_not_write_empty_cassette(tmp_path, capsys, monkeypatch):
+    cassette = tmp_path / "apiget.cassette"
+    url = "https://example.test/x"
+
+    def fail_handler(request: httpx.Request) -> httpx.Response:
+        raise httpx.ConnectError("nope", request=request)
+
+    monkeypatch.setattr(
+        apiget.httpx, "HTTPTransport", lambda *a, **k: httpx.MockTransport(fail_handler)
+    )
+
+    rc = cli.main(
+        [
+            "apiget",
+            url,
+            "--expect",
+            "dict",
+            "--cassette",
+            str(cassette),
+            "--cassette-mode",
+            "record",
+        ]
+    )
+    _ = capsys.readouterr()
+
+    assert rc != 0
+    assert not cassette.exists()
