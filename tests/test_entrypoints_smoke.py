@@ -1,40 +1,60 @@
 import importlib
-import inspect
+import runpy
 import sys
 
 import pytest
 
 
-def test_entrypoints_module_imports() -> None:
-    importlib.import_module("sdetkit._entrypoints")
-
-
-def test_main_module_help_does_not_crash() -> None:
+def _run_cli(argv: list[str]) -> None:
+    mod = importlib.import_module("sdetkit.cli")
+    main = mod.main
     old_argv = sys.argv[:]
     try:
-        sys.modules.pop("sdetkit.__main__", None)
-        sys.argv = ["sdetkit", "--help"]
-        with pytest.raises(SystemExit):
-            importlib.import_module("sdetkit.__main__")
+        sys.argv = ["sdetkit", *argv]
+        try:
+            main()
+        except SystemExit:
+            pass
     finally:
         sys.argv = old_argv
 
 
-def test_entrypoints_runner_smoke() -> None:
+def _run_entrypoint(fn_name: str, argv0: str, argv: list[str]) -> None:
     mod = importlib.import_module("sdetkit._entrypoints")
-    fn = getattr(mod, "main", None) or getattr(mod, "run", None) or getattr(mod, "cli", None)
-    if fn is None or not callable(fn):
-        pytest.skip("no callable entrypoint runner found")
-
-    sig = inspect.signature(fn)
-    if len(sig.parameters) == 0:
-        args: list[object] = []
-    elif len(sig.parameters) == 1:
-        args = [["--help"]]
-    else:
-        pytest.skip("entrypoint runner signature not supported")
-
+    fn = getattr(mod, fn_name)
+    old_argv = sys.argv[:]
     try:
-        fn(*args)
-    except SystemExit:
-        pass
+        sys.argv = [argv0, *argv]
+        with pytest.raises(SystemExit):
+            fn()
+    finally:
+        sys.argv = old_argv
+
+
+def test_kvcli_entrypoint_help_executes_wrapper() -> None:
+    _run_entrypoint("kvcli", "kvcli", ["--help"])
+
+
+def test_apigetcli_entrypoint_help_executes_wrapper() -> None:
+    _run_entrypoint("apigetcli", "apigetcli", ["--help"])
+
+
+def test_cli_help_smoke() -> None:
+    _run_cli(["--help"])
+
+
+def test_cli_unknown_command_smoke() -> None:
+    _run_cli(["__definitely_not_a_command__"])
+
+
+def test_cli_module_main_guard_smoke() -> None:
+    old_argv = sys.argv[:]
+    try:
+        sys.modules.pop("sdetkit.cli", None)
+        sys.argv = ["sdetkit", "--help"]
+        try:
+            runpy.run_module("sdetkit.cli", run_name="__main__")
+        except SystemExit:
+            pass
+    finally:
+        sys.argv = old_argv

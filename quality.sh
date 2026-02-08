@@ -2,7 +2,7 @@
 set -euo pipefail
 
 mode=${1:-all}
-cov_fail_under=${COV_FAIL_UNDER:-68}
+cov_fail_under=${COV_FAIL_UNDER:-70}
 
 run_fmt()     { ruff format .; }
 run_lint()    { ruff check .; }
