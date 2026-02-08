@@ -1,0 +1,36 @@
+name: Mutation Tests
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: mut-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mutmut:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: |
+            pyproject.toml
+            requirements-test.txt
+            requirements-docs.txt
+
+      - name: Install
+        run: |
+          python -m pip install -r requirements-test.txt -r requirements-docs.txt
+          python -m pip install -e .
+          python -m pip install mutmut
+
+      - name: Run mutmut (informational)
+        continue-on-error: true
+        run: |
+          mutmut run --paths-to-mutate src/sdetkit/textutil.py --runner "python -m pytest -q tests/test_textutil.py"
+          mutmut results || true

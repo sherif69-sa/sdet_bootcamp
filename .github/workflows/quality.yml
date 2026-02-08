@@ -1,0 +1,42 @@
+name: Quality
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: |
+            pyproject.toml
+            requirements-test.txt
+            requirements-docs.txt
+
+      - name: Install
+        run: |
+          python -m pip install -r requirements-test.txt -r requirements-docs.txt
+          python -m pip install -e .
+          python -m pip install pre-commit
+
+      - name: Lint
+        run: |
+          pre-commit run -a
+
+      - name: Tests
+        env:
+          COV_FAIL_UNDER: "70"
+        run: |
+          bash quality.sh cov
