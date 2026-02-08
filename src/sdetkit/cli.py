@@ -18,6 +18,12 @@ def _add_apiget_args(p: argparse.ArgumentParser) -> None:
     p.add_argument("--trace-header", default=None)
     p.add_argument("--request-id", default=None)
     p.add_argument("--pretty", action="store_true")
+    p.add_argument("--method", default="GET")
+    p.add_argument("--header", action="append", default=None)
+    p.add_argument("--data", default=None)
+    p.add_argument("--json", dest="json_data", default=None)
+    p.add_argument("--out", default=None)
+
     p.add_argument("--cassette", default=None)
     p.add_argument("--cassette-mode", choices=["auto", "record", "replay"], default=None)
 
@@ -85,6 +91,26 @@ def main(argv: Sequence[str] | None = None) -> int:
             rest.extend(["--request-id", str(ns.request_id)])
         if ns.pretty:
             rest.append("--pretty")
+
+        if str(getattr(ns, "method", "GET")).upper() != "GET":
+            rest.extend(["--method", str(ns.method)])
+
+        hdrs = getattr(ns, "header", None)
+        if hdrs:
+            for h in hdrs:
+                rest.extend(["--header", str(h)])
+
+        data = getattr(ns, "data", None)
+        if data is not None:
+            rest.extend(["--data", str(data)])
+
+        json_data = getattr(ns, "json_data", None)
+        if json_data is not None:
+            rest.extend(["--json", str(json_data)])
+
+        out = getattr(ns, "out", None)
+        if out is not None:
+            rest.extend(["--out", str(out)])
 
         cassette = getattr(ns, "cassette", None)
         cassette_mode = getattr(ns, "cassette_mode", None)
