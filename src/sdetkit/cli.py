@@ -69,58 +69,32 @@ def main(argv: Sequence[str] | None = None) -> int:
         return kvcli.main(ns.args)
 
     if ns.cmd == "apiget":
-        rest: list[str] = [
-            ns.url,
-            "--expect",
-            ns.expect,
-            "--max-pages",
-            str(ns.max_pages),
-            "--retries",
-            str(ns.retries),
-        ]
-
-        if ns.paginate:
-            rest.append("--paginate")
-        if ns.retry_429:
-            rest.append("--retry-429")
-        if ns.timeout is not None:
-            rest.extend(["--timeout", str(ns.timeout)])
-        if ns.trace_header is not None:
-            rest.extend(["--trace-header", str(ns.trace_header)])
-        if ns.request_id is not None:
-            rest.extend(["--request-id", str(ns.request_id)])
-        if ns.pretty:
-            rest.append("--pretty")
-
-        if str(getattr(ns, "method", "GET")).upper() != "GET":
-            rest.extend(["--method", str(ns.method)])
-
-        hdrs = getattr(ns, "header", None)
-        if hdrs:
-            for h in hdrs:
-                rest.extend(["--header", str(h)])
-
-        data = getattr(ns, "data", None)
-        if data is not None:
-            rest.extend(["--data", str(data)])
-
-        json_data = getattr(ns, "json_data", None)
-        if json_data is not None:
-            rest.extend(["--json", str(json_data)])
-
-        out = getattr(ns, "out", None)
-        if out is not None:
-            rest.extend(["--out", str(out)])
-
+        raw_args = list(argv)
+        rest = raw_args[1:]
         cassette = getattr(ns, "cassette", None)
-        cassette_mode = getattr(ns, "cassette_mode", None)
+        cassette_mode = getattr(ns, "cassette_mode", None) or "auto"
+        clean: list[str] = []
+        it = iter(rest)
+        for a in it:
+            if a.startswith("--cassette="):
+                continue
+            if a == "--cassette":
+                next(it, None)
+                continue
+            if a.startswith("--cassette-mode="):
+                continue
+            if a == "--cassette-mode":
+                next(it, None)
+                continue
+            clean.append(a)
+        rest = clean
         if not cassette:
             return apiget.main(rest)
         old_cassette = os.environ.get("SDETKIT_CASSETTE")
         old_mode = os.environ.get("SDETKIT_CASSETTE_MODE")
         try:
             os.environ["SDETKIT_CASSETTE"] = str(cassette)
-            os.environ["SDETKIT_CASSETTE_MODE"] = cassette_mode or "auto"
+            os.environ["SDETKIT_CASSETTE_MODE"] = str(cassette_mode)
             return apiget.main(rest)
         finally:
             if old_cassette is None:
@@ -131,7 +105,6 @@ def main(argv: Sequence[str] | None = None) -> int:
                 os.environ.pop("SDETKIT_CASSETTE_MODE", None)
             else:
                 os.environ["SDETKIT_CASSETTE_MODE"] = old_mode
-
     raise SystemExit(2)
 
 

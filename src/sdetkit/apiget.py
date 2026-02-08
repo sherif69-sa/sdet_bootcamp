@@ -37,6 +37,17 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     ns = p.parse_args(argv)
 
+    def _read_at_file(v: str) -> str:
+        if not v.startswith("@"):
+            return v
+        path = v[1:]
+        try:
+            return Path(path).read_text(encoding="utf-8")
+        except FileNotFoundError as err:
+            raise ValueError(f"file not found: {path}") from err
+        except OSError as err:
+            raise ValueError(f"could not read file: {path}") from err
+
     _req_method = str(getattr(ns, "method", "GET")).upper() or "GET"
     _req_headers: dict[str, str] = {}
     _hdrs = getattr(ns, "header", None)
@@ -51,6 +62,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     _req_json: object | None = None
     _data = getattr(ns, "data", None)
     _json_data = getattr(ns, "json_data", None)
+    try:
+        if _data is not None:
+            _data = _read_at_file(str(_data))
+        if _json_data is not None:
+            _json_data = _read_at_file(str(_json_data))
+    except ValueError as e:
+        sys.stderr.write(str(e).rstrip() + "\n")
+        return 1
     if _data is not None and _json_data is not None:
         _die("use only one of: --data, --json")
     if _data is not None:
