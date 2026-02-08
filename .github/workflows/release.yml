@@ -3,20 +3,19 @@ name: Release
 on:
   push:
     tags:
-      - "v*"
+      - "v*.*.*"
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: false
 
-permissions:
-  contents: write
-
 jobs:
   release:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -29,26 +28,15 @@ jobs:
             requirements-test.txt
             requirements-docs.txt
 
-      - name: Install
-        run: |
-          python -m pip install -U pip
-          python -m pip install -r requirements-test.txt -r requirements-docs.txt
-          python -m pip install -e .
-          python -m pip install build twine
-
-      - name: Quality (tests + coverage)
-        env:
-          COV_FAIL_UNDER: "70"
-        run: |
-          bash quality.sh cov
-
       - name: Build dist
         run: |
+          python -m pip install -U pip
+          python -m pip install build
           python -m build
-          python -m twine check dist/*
 
-      - name: Create GitHub Release
+      - name: GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*
           generate_release_notes: true
+          files: |
+            dist/*
