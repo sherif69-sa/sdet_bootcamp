@@ -5,6 +5,7 @@ import json
 import os
 import sys
 from collections.abc import Sequence
+from pathlib import Path
 
 import httpx
 
@@ -28,7 +29,39 @@ def main(argv: Sequence[str] | None = None) -> int:
     p.add_argument("--trace-header", default=None)
     p.add_argument("--request-id", default=None)
     p.add_argument("--pretty", action="store_true")
+    p.add_argument("--method", default="GET")
+    p.add_argument("--header", action="append", default=None)
+    p.add_argument("--data", default=None)
+    p.add_argument("--json", dest="json_data", default=None)
+    p.add_argument("--out", default=None)
+
     ns = p.parse_args(argv)
+
+    _req_method = str(getattr(ns, "method", "GET")).upper() or "GET"
+    _req_headers: dict[str, str] = {}
+    _hdrs = getattr(ns, "header", None)
+    if _hdrs:
+        for _h in _hdrs:
+            _h = str(_h)
+            if ":" not in _h:
+                _die("header must be KEY:VALUE")
+            _k, _v = _h.split(":", 1)
+            _req_headers[_k.strip()] = _v.lstrip()
+    _req_content: bytes | None = None
+    _req_json: object | None = None
+    _data = getattr(ns, "data", None)
+    _json_data = getattr(ns, "json_data", None)
+    if _data is not None and _json_data is not None:
+        _die("use only one of: --data, --json")
+    if _data is not None:
+        _req_content = str(_data).encode("utf-8")
+    if _json_data is not None:
+        try:
+            _req_json = json.loads(str(_json_data))
+        except ValueError:
+            _die("invalid JSON for --json")
+    if ns.paginate and (_req_method != "GET" or _req_content is not None or _req_json is not None):
+        _die("paginate only supports GET without a request body")
 
     if ns.retries < 1:
         _die("retries must be >= 1")
@@ -60,25 +93,74 @@ def main(argv: Sequence[str] | None = None) -> int:
             data: object
 
             if ns.paginate:
-                data = c.get_json_list_paginated(
-                    ns.url,
-                    max_pages=ns.max_pages,
-                    request_id=ns.request_id,
-                    timeout=ns.timeout,
-                )
-            else:
-                if ns.expect == "dict":
-                    data = c.get_json_dict(ns.url, request_id=ns.request_id, timeout=ns.timeout)
-                elif ns.expect == "list":
-                    data = c.get_json_list(ns.url, request_id=ns.request_id, timeout=ns.timeout)
+                if (
+                    _req_method == "GET"
+                    and _req_content is None
+                    and _req_json is None
+                    and not _req_headers
+                ):
+                    data = c.get_json_list_paginated(
+                        ns.url,
+                        max_pages=ns.max_pages,
+                        request_id=ns.request_id,
+                        timeout=ns.timeout,
+                    )
                 else:
-                    try:
+                    resp = raw.request(
+                        _req_method,
+                        ns.url,
+                        headers=_req_headers or None,
+                        content=_req_content,
+                        json=_req_json,
+                        timeout=ns.timeout,
+                    )
+                    resp.raise_for_status()
+                    data = resp.json()
+            else:
+                if (
+                    _req_method != "GET"
+                    or _req_content is not None
+                    or _req_json is not None
+                    or _req_headers
+                ):
+                    resp = raw.request(
+                        _req_method,
+                        ns.url,
+                        headers=_req_headers or None,
+                        content=_req_content,
+                        json=_req_json,
+                        timeout=ns.timeout,
+                    )
+                    resp.raise_for_status()
+                    data = resp.json()
+                    if ns.expect == "dict" and not isinstance(data, dict):
+                        raise ValueError("expected dict")
+                    if ns.expect == "list" and not isinstance(data, list):
+                        raise ValueError("expected list")
+                    if ns.expect == "any" and not isinstance(data, (dict, list)):
+                        raise ValueError("expected dict or list")
+                else:
+                    if ns.expect == "dict":
                         data = c.get_json_dict(ns.url, request_id=ns.request_id, timeout=ns.timeout)
-                    except ValueError:
+                    elif ns.expect == "list":
                         data = c.get_json_list(ns.url, request_id=ns.request_id, timeout=ns.timeout)
-
-        out = json.dumps(data, sort_keys=True, indent=2 if ns.pretty else None)
-        sys.stdout.write(out + "\n")
+                    else:
+                        try:
+                            data = c.get_json_dict(
+                                ns.url, request_id=ns.request_id, timeout=ns.timeout
+                            )
+                        except ValueError:
+                            data = c.get_json_list(
+                                ns.url, request_id=ns.request_id, timeout=ns.timeout
+                            )
+        out_s = json.dumps(data, sort_keys=True, indent=2 if ns.pretty else None) + "\n"
+        out_path = getattr(ns, "out", None)
+        if out_path:
+            pp = Path(str(out_path))
+            pp.parent.mkdir(parents=True, exist_ok=True)
+            pp.write_text(out_s, encoding="utf-8")
+        else:
+            sys.stdout.write(out_s)
         return 0
 
     except TimeoutError:
