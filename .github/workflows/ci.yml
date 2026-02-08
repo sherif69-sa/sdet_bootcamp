@@ -36,7 +36,7 @@ jobs:
         run: |
           pre-commit run -a
 
-      - name: Tests + coverage
+      - name: Tests (coverage gate)
         env:
           COV_FAIL_UNDER: "70"
         run: |
