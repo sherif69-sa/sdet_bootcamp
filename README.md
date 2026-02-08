@@ -88,3 +88,14 @@ MIT. See LICENSE.
 * Enable git hooks:
 
   * `pip install pre-commit && pre-commit install`
+
+## Release
+
+- Releases are triggered by pushing an annotated tag like vX.Y.Z.
+- The tag version must exactly match pyproject.toml [project].version (enforced in CI).
+- After releasing X.Y.Z, bump main to the next version before creating the next tag.
+
+Example:
+- update pyproject.toml version
+- git tag -a vX.Y.Z -m "vX.Y.Z"
+- git push origin vX.Y.Z
