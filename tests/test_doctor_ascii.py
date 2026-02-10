@@ -48,7 +48,9 @@ def test_doctor_ascii_ignores_pyc(tmp_path: Path, monkeypatch, capsys):
     (root / "tools").mkdir(parents=True)
 
     (root / "src" / "ok.py").write_text("x = 1\n", encoding="utf-8")
+
     (root / "src" / "__pycache__" / "ok.cpython-312.pyc").write_bytes(b"\x00\xff\x00\x80")
+    (root / "tools" / "generated.pyc").write_bytes(b"\xff\x00\x80\x01")
 
     monkeypatch.chdir(root)
     rc = doctor.main(["--ascii", "--json"])
