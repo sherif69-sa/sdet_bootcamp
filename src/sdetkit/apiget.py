@@ -544,32 +544,13 @@ def main(argv: Sequence[str] | None = None) -> int:
                                 timeout=ns.timeout,
                             )
                         else:
-                            try:
-                                data = c.get_json_dict(
-                                    ns.url,
-                                    headers=_req_headers or None,
-                                    request_id=ns.request_id,
-                                    timeout=ns.timeout,
-                                )
-                            except ValueError:
-                                if getattr(ns, "debug", False):
-                                    traceback.print_exc()
-                                if getattr(ns, "verbose", False) and not _printed_req["v"]:
-                                    _verbose_request(
-                                        getattr(ns, "method", "GET"),
-                                        getattr(ns, "url", ""),
-                                        _merged_headers(
-                                            raw,
-                                            locals().get("headers"),
-                                            getattr(ns, "debug", False),
-                                        ),
-                                    )
-                                data = c.get_json_list(
-                                    ns.url,
-                                    headers=_req_headers or None,
-                                    request_id=ns.request_id,
-                                    timeout=ns.timeout,
-                                )
+                            data = c.get_json_any(
+                                ns.url,
+                                headers=_req_headers or None,
+                                request_id=ns.request_id,
+                                timeout=ns.timeout,
+                            )
+
                     except HttpStatusError as e:
                         if getattr(ns, "debug", False):
                             traceback.print_exc()

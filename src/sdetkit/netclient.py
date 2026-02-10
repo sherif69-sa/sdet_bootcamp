@@ -463,6 +463,30 @@ class SdetHttpClient:
 
         raise RuntimeError("pagination limit exceeded")
 
+    def get_json_any(
+        self,
+        url: str,
+        *,
+        headers: dict[str, str] | None = None,
+        request_id: str | None = None,
+        timeout: float | httpx.Timeout | None = None,
+        retry: RetryPolicy | None = None,
+        hook: Hook | None = None,
+        breaker: CircuitBreaker | None = None,
+    ) -> dict | list:
+        r, data, rid = self._request_json(
+            url,
+            headers=headers,
+            request_id=request_id,
+            timeout=timeout,
+            retry=retry,
+            hook=hook,
+            breaker=breaker,
+        )
+        if not isinstance(data, (dict, list)):
+            raise ValueError("expected json object or array")
+        return data
+
     def _request_json(
         self,
         url: str,
