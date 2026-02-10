@@ -5,6 +5,7 @@ import json
 import platform
 import sys
 from importlib import metadata
+from pathlib import Path
 
 
 def _dist_version(name: str) -> str | None:
@@ -24,6 +25,9 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--json", action="store_true")
     p.add_argument("--dev", action="store_true")
     p.add_argument("--docs", action="store_true")
+    p.add_argument(
+        "--ascii", action="store_true", help="fail if non-ascii bytes are found in src/ or tools/"
+    )
     ns = p.parse_args(argv)
 
     info: dict = {
@@ -66,6 +70,27 @@ def main(argv: list[str] | None = None) -> int:
     info["tools"] = tools
     info["missing"] = missing
 
+    non_ascii: list[str] = []
+    if ns.ascii:
+        for root in (Path("src"), Path("tools")):
+            if not root.exists():
+                continue
+            for fp in root.rglob("*"):
+                if not fp.is_file():
+                    continue
+                try:
+                    b = fp.read_bytes()
+                except OSError:
+                    continue
+                if any(x >= 128 for x in b):
+                    non_ascii.append(str(fp))
+
+    non_ascii = sorted(non_ascii)
+    info["non_ascii"] = non_ascii
+    if ns.ascii and non_ascii:
+        for x in non_ascii:
+            sys.stderr.write("non-ascii: " + x + "\n")
+
     if ns.json:
         sys.stdout.write(json.dumps(info, sort_keys=True) + "\n")
     else:
@@ -79,4 +104,4 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"{k}: {tools[k]}")
         if missing:
             print("missing:", ", ".join(missing))
-    return 1 if missing else 0
+    return 1 if (missing or (ns.ascii and non_ascii)) else 0
