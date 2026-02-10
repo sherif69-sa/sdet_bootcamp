@@ -27,20 +27,20 @@ run_precommit() {
 
 case "$cmd" in
   patch)
-    python tools/patch_harness.py "$spec"
+    python3 tools/patch_harness.py "$spec"
     ;;
   fmt)
     run_precommit
     ;;
   test)
-    python -m pytest -q
+    python3 -m pytest -q
     ;;
   all)
     if [ -n "$spec" ]; then
-      python tools/patch_harness.py "$spec"
+      python3 tools/patch_harness.py "$spec"
     fi
     run_precommit
-    python -m pytest -q
+    python3 -m pytest -q
     git status --porcelain
     ;;
   amend)
@@ -48,7 +48,7 @@ case "$cmd" in
     git commit --amend --no-edit
     ;;
   push)
-    GIT_SSH_COMMAND='ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes' git push --force-with-lease
+    git push --force-with-lease
     ;;
   *)
     echo "Usage: bash tools/devS69.sh {patch SPEC|fmt|test|all [SPEC]|amend|push}" >&2
