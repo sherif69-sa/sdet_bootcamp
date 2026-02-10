@@ -143,3 +143,56 @@ def test_ensure_import_inserts_once(tmp_path):
     assert rc == 0
     txt = (tmp_path / "t.py").read_text(encoding="utf-8")
     assert txt.count("import json") == 1
+
+
+def test_check_does_not_write_files(tmp_path):
+    ph = _load_patch_harness()
+
+    f = tmp_path / "a.txt"
+    f.write_text("MARK\n", encoding="utf-8")
+    before = f.read_bytes()
+
+    spec = {
+        "files": [
+            {
+                "path": "a.txt",
+                "ops": [
+                    {"op": "insert_after", "pattern": r"^MARK$", "text": "X\n"},
+                ],
+            }
+        ]
+    }
+    (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
+
+    rc = _run(ph, ["spec.json", "--check"], tmp_path)
+    assert rc == 1
+    assert f.read_bytes() == before
+
+
+def test_check_output_is_deterministic(tmp_path, capsys):
+    ph = _load_patch_harness()
+
+    (tmp_path / "a.txt").write_text("MARK\n", encoding="utf-8")
+    spec = {
+        "files": [
+            {
+                "path": "a.txt",
+                "ops": [
+                    {"op": "insert_after", "pattern": r"^MARK$", "text": "X\n"},
+                ],
+            }
+        ]
+    }
+    (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
+
+    capsys.readouterr()
+    rc1 = _run(ph, ["spec.json", "--check"], tmp_path)
+    out1 = capsys.readouterr().out
+
+    capsys.readouterr()
+    rc2 = _run(ph, ["spec.json", "--check"], tmp_path)
+    out2 = capsys.readouterr().out
+
+    assert rc1 == 1
+    assert rc2 == 1
+    assert out1 == out2
