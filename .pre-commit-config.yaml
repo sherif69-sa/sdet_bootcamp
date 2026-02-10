@@ -18,6 +18,6 @@ repos:
     hooks:
       - id: doctor-ascii
         name: doctor --ascii
-        entry: python -m sdetkit.doctor --ascii
-        language: system
+        entry: python -c 'import sys; sys.path.insert(0, "src"); from sdetkit import doctor; raise SystemExit(doctor.main(["--ascii"]))'
+        language: python
         pass_filenames: false
