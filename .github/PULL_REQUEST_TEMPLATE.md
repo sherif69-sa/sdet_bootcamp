@@ -1,7 +1,10 @@
-## What changed?
+## Summary
 -
 
-## Why?
+## Why
+-
+
+## How
 -
 
 ## Checklist
