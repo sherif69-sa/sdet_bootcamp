@@ -32,7 +32,7 @@ def main() -> int:
         last = cur
 
         print("\n== change detected ==")
-        rc = run(["python", "tools/patch_harness.py", str(spec)])
+        rc = run([sys.executable, "tools/patch_harness.py", str(spec)])
         if rc != 0:
             print("patch_harness failed")
             continue
@@ -42,7 +42,7 @@ def main() -> int:
             print("pre-commit failed")
             continue
 
-        rc = run(["python", "-m", "pytest", "-q"])
+        rc = run([sys.executable, "-m", "pytest", "-q"])
         if rc != 0:
             print("pytest failed")
             continue

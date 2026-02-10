@@ -93,6 +93,9 @@ def _op_insert_after(text: str, op: dict[str, Any]) -> str:
         elif text[pos] == "\n":
             pos += 1
 
+    if text.startswith(ins, pos):
+        return text
+
     return text[:pos] + ins + text[pos:]
 
 
@@ -103,7 +106,12 @@ def _op_insert_before(text: str, op: dict[str, Any]) -> str:
     m = _one_match(rx, text, "insert_before.pattern")
     indent = _indent_from_match(m)
     ins = _apply_indent(op["text"], indent)
-    return text[: m.start()] + ins + text[m.start() :]
+
+    start = m.start()
+    if text[max(0, start - len(ins)) : start] == ins:
+        return text
+
+    return text[:start] + ins + text[start:]
 
 
 def _op_replace_once(text: str, op: dict[str, Any]) -> str:
