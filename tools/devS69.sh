@@ -33,14 +33,14 @@ case "$cmd" in
     run_precommit
     ;;
   test)
-    python3 -m pytest -q
+    "$py" -m pytest -q
     ;;
   all)
     if [ -n "$spec" ]; then
       python3 tools/patch_harness.py "$spec"
     fi
     run_precommit
-    python3 -m pytest -q
+    "$py" -m pytest -q
     git status --porcelain
     ;;
   amend)
@@ -51,13 +51,13 @@ case "$cmd" in
     git push --force-with-lease
     ;;
   doctor)
-    PYTHONPATH=src python3 -m sdetkit.doctor --ascii
+    PYTHONPATH=src "$py" -m sdetkit.doctor --ascii
     ;;
   check)
-    PYTHONPATH=src python3 -m sdetkit.doctor --ascii
+    PYTHONPATH=src "$py" -m sdetkit.doctor --ascii
     pre-commit run ruff-format -a
     pre-commit run ruff -a
-    python -m pytest -q
+    "$py" -m pytest -q
     ;;
   *)
     echo "Usage: bash tools/devS69.sh {patch SPEC|fmt|test|all [SPEC]|amend|push}" >&2
