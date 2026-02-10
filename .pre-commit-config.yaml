@@ -13,3 +13,11 @@ repos:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
       - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: doctor-ascii
+        name: doctor --ascii
+        entry: python -c 'import sys; sys.path.insert(0, "src"); from sdetkit import doctor; raise SystemExit(doctor.main(["--ascii"]))'
+        language: python
+        pass_filenames: false
