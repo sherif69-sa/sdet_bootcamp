@@ -198,6 +198,23 @@ def test_patch_error_path_still_writes_report_when_requested(tmp_path: Path):
     assert data["files_touched"] == []
 
 
+def test_patch_main_and_report_failures_are_both_reported(tmp_path: Path, capsys):
+    spec = {"files": []}
+    (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
+
+    old = Path.cwd()
+    try:
+        os.chdir(tmp_path)
+        rc = patch.main(["spec.json", "--report-json", "missing/report.json"])
+    finally:
+        os.chdir(old)
+
+    err = capsys.readouterr().err
+    assert rc == 2
+    assert "error: spec." in err
+    assert "error: failed to write report:" in err
+
+
 def test_patch_missing_spec_version_defaults_to_v1(tmp_path: Path):
     (tmp_path / "a.txt").write_text("A\n", encoding="utf-8")
     spec = {
