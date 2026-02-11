@@ -1,6 +1,21 @@
+<div align="center">
+
 # Contributing
 
-Thanks for helping improve `sdetkit`.
+Thanks for helping improve **sdetkit**.
+
+[README](README.md) · [Quality Playbook](QUALITY_PLAYBOOK.md) · [Security Policy](SECURITY.md) · [Live Docs](https://sherif69-sa.github.io/DevS69-sdetkit/)
+
+</div>
+
+---
+
+## Contribution flow
+
+1. Fork and create a focused branch.
+2. Implement changes with tests and documentation as needed.
+3. Run local quality gates.
+4. Open a pull request with clear context and impact.
 
 ## 1) Local development setup
 
@@ -44,8 +59,7 @@ pytest -q
 
 ## 5) Pull request checklist
 
-Premium reference: `docs/premium-quality-gate.md`
-
+Reference: [docs/premium-quality-gate.md](docs/premium-quality-gate.md)
 
 - [ ] `pre-commit run -a` passes.
 - [ ] `bash quality.sh cov` passes.
@@ -58,3 +72,10 @@ Premium reference: `docs/premium-quality-gate.md`
 - Keep commits focused and easy to review.
 - Include tests for behavior changes.
 - Prefer typed public APIs and clear error messages.
+- Write commit messages that describe **what changed** and **why**.
+
+## 7) PR quality tips (recommended)
+
+- Add before/after snippets for docs UX changes.
+- Mention affected commands/workflows.
+- Keep PRs small enough for fast review turnaround.
