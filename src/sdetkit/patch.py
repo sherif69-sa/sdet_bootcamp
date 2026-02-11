@@ -887,7 +887,10 @@ def main(argv: list[str] | None = None) -> int:
                 lineterm="",
             )
             for line in diff:
-                sys.stdout.write(f"{line}\n")
+                if line.endswith("\n"):
+                    sys.stdout.write(line)
+                else:
+                    sys.stdout.write(f"{line}\n")
             printed = True
             report["files_touched"].append(f["path"])
             report["operations_applied"] += len(f["ops"])
@@ -900,13 +903,12 @@ def main(argv: list[str] | None = None) -> int:
 
         rc = 1 if ns.check and any_change else 0
         report["status_code"] = rc
+        if ns.report_json:
+            _write_report(ns.report_json, report)
     except (PatchSpecError, json.JSONDecodeError, OSError) as e:
         print(f"error: {e}", file=sys.stderr)
         rc = 2
         report["status_code"] = rc
-
-    if ns.report_json:
-        _write_report(ns.report_json, report)
 
     return rc
 
