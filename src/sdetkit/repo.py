@@ -33,6 +33,8 @@ SKIP_DIRS: frozenset[str] = frozenset(
         ".venv",
         "venv",
         "node_modules",
+        "dist",
+        "build",
     }
 )
 
@@ -183,7 +185,9 @@ def _iter_files(root: Path) -> list[Path]:
     files: list[Path] = []
     for dirpath, dirnames, filenames in os.walk(root):
         dirnames[:] = sorted(
-            d for d in dirnames if d not in SKIP_DIRS and not d.endswith(".egg-info")
+            d
+            for d in dirnames
+            if d not in SKIP_DIRS and not d.endswith(".egg-info") and not d.startswith(".venv")
         )
         for fname in sorted(filenames):
             if fname in SKIP_FILES:
