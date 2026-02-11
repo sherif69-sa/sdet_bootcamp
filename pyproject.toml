@@ -11,6 +11,12 @@ dependencies = [
   "httpx>=0.27,<1"
 ]
 
+
+[project.urls]
+Source = "https://github.com/sherif69-sa/sdet_bootcamp"
+Issues = "https://github.com/sherif69-sa/sdet_bootcamp/issues"
+Changelog = "https://github.com/sherif69-sa/sdet_bootcamp/blob/main/CHANGELOG.md"
+Docs = "https://github.com/sherif69-sa/sdet_bootcamp/tree/main/docs"
 [project.optional-dependencies]
 dev = [
   "build",
