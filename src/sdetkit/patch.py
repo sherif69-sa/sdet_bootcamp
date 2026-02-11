@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import ast
 import difflib
+import errno
 import json
 import os
 import re
@@ -56,13 +57,25 @@ def _load_json(path: str) -> Any:
 
 
 def _read_text_raw(path: Path) -> str:
-    with path.open("r", encoding="utf-8", newline="") as fh:
+    flags = os.O_RDONLY
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    try:
+        fd = os.open(path, flags)
+    except OSError as e:
+        if e.errno == errno.ELOOP:
+            raise PatchSpecError(f"symlink target rejected: {path}") from e
+        raise
+    with os.fdopen(fd, "r", encoding="utf-8", newline="") as fh:
         return fh.read()
 
 
 def _write_atomic(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    st = path.stat() if path.exists() else None
+    st = os.stat(path, follow_symlinks=False) if path.exists() else None
+    if st is not None and os.path.islink(path):
+        raise PatchSpecError(f"symlink target rejected: {path}")
+
     fd, tmp_name = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=str(path.parent))
     tmp = Path(tmp_name)
     try:
@@ -72,6 +85,8 @@ def _write_atomic(path: Path, text: str) -> None:
             os.fsync(fh.fileno())
         if st is not None:
             os.chmod(tmp, st.st_mode)
+        if path.exists() and os.path.islink(path):
+            raise PatchSpecError(f"symlink target rejected during write: {path}")
         os.replace(tmp, path)
         dir_fd = os.open(path.parent, os.O_RDONLY)
         try:
@@ -796,6 +811,15 @@ def main(argv: list[str] | None = None) -> int:
     }
 
     try:
+        if ns.max_files <= 0:
+            raise PatchSpecError("--max-files must be > 0")
+        if ns.max_bytes_per_file <= 0:
+            raise PatchSpecError("--max-bytes-per-file must be > 0")
+        if ns.max_total_bytes_changed <= 0:
+            raise PatchSpecError("--max-total-bytes-changed must be > 0")
+        if ns.max_op_count <= 0:
+            raise PatchSpecError("--max-op-count must be > 0")
+
         root = Path(ns.root).resolve(strict=True)
         if not root.is_dir():
             raise PatchSpecError("--root must resolve to a directory")

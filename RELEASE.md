@@ -19,3 +19,5 @@ This project follows semantic versioning and a reproducible release flow.
 4. Push the tag.
 5. Confirm GitHub Release workflow passed and artifacts are attached.
 6. Confirm publish job uploaded to PyPI.
+7. Verify Dependency Audit workflow is green for the release commit/tag.
+8. (Optional) Generate and archive SBOM (`.github/workflows/sbom.yml`).

@@ -84,3 +84,36 @@ def test_patch_invalid_spec_version_returns_2(tmp_path: Path):
     (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
     rc = patch.main([str(tmp_path / "spec.json")])
     assert rc == 2
+
+
+def test_patch_limit_flags_must_be_positive(tmp_path: Path):
+    (tmp_path / "a.txt").write_text("A\n", encoding="utf-8")
+    spec = {
+        "spec_version": 1,
+        "files": [{"path": "a.txt", "ops": [{"op": "insert_after", "pattern": r"^A$", "text": "B\\n"}]}],
+    }
+    (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
+    rc = patch.main([str(tmp_path / "spec.json"), "--max-files", "0"])
+    assert rc == 2
+
+
+def test_patch_check_is_deterministic_for_same_inputs(tmp_path: Path, capsys):
+    (tmp_path / "a.txt").write_text("A\n", encoding="utf-8")
+    spec = {
+        "spec_version": 1,
+        "files": [{"path": "a.txt", "ops": [{"op": "insert_after", "pattern": r"^A$", "text": "B\\n"}]}],
+    }
+    (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
+
+    old = Path.cwd()
+    try:
+        os.chdir(tmp_path)
+        rc1 = patch.main(["spec.json", "--check"])
+        out1 = capsys.readouterr().out
+        rc2 = patch.main(["spec.json", "--check"])
+        out2 = capsys.readouterr().out
+    finally:
+        os.chdir(old)
+
+    assert rc1 == rc2 == 1
+    assert out1 == out2
