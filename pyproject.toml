@@ -15,6 +15,7 @@ maintainers = [{ name = "SDET Bootcamp maintainers" }]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
@@ -38,6 +39,13 @@ Issues = "https://github.com/sherif69-sa/sdet_bootcamp/issues"
 Changelog = "https://github.com/sherif69-sa/sdet_bootcamp/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
+dev = [
+  "build",
+  "mypy",
+  "pre-commit",
+  "ruff",
+  "twine"
+]
 test = [
   "hypothesis",
   "pytest",
@@ -47,14 +55,6 @@ test = [
 docs = [
   "mkdocs==1.6.1",
   "mkdocs-material==9.7.1"
-]
-dev = [
-  "build",
-  "mypy",
-  "mutmut",
-  "pre-commit",
-  "ruff",
-  "sdetkit[test,docs]"
 ]
 
 [tool.setuptools]
@@ -86,6 +86,9 @@ strict_equality = true
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
 check_untyped_defs = true
+disallow_any_generics = true
+warn_redundant_casts = true
+warn_unused_ignores = true
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
