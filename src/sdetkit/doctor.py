@@ -136,6 +136,56 @@ def _check_tools() -> tuple[list[str], list[str]]:
     return present, missing
 
 
+def _calculate_score(checks: list[bool]) -> int:
+    if not checks:
+        return 100
+    passed = sum(1 for item in checks if item)
+    return round((passed / len(checks)) * 100)
+
+
+def _recommendations(data: dict[str, Any]) -> list[str]:
+    recs: list[str] = []
+
+    if data.get("missing"):
+        tools = ", ".join(str(x) for x in data["missing"])
+        recs.append(f"Install missing developer tools: {tools}.")
+    if data.get("non_ascii"):
+        recs.append("Replace non-ASCII artifacts in src/tools with UTF-8 text or move binaries outside scanned paths.")
+    if data.get("ci_missing"):
+        missing = ", ".join(str(x) for x in data["ci_missing"])
+        recs.append(f"Add missing CI workflows: {missing}.")
+    if data.get("yaml_invalid"):
+        bad = ", ".join(str(x) for x in data["yaml_invalid"])
+        recs.append(f"Fix workflow YAML syntax errors: {bad}.")
+    if data.get("pre_commit_ok") is False:
+        recs.append("Install and validate pre-commit to enforce local quality gates.")
+    if data.get("deps_ok") is False:
+        recs.append("Run dependency updates and resolve `pip check` conflicts.")
+    if data.get("clean_tree_ok") is False:
+        recs.append("Commit or stash pending changes before release/CI validation.")
+
+    if not recs:
+        recs.append("No immediate blockers detected. Keep CI, docs, and tests green for premium delivery quality.")
+    return recs
+
+
+def _print_human_report(data: dict[str, Any]) -> None:
+    lines: list[str] = []
+    lines.append(f"doctor score: {data['score']}%")
+
+    checks = data.get("checks", {})
+    for key in sorted(checks):
+        item = checks[key]
+        marker = "OK" if item["ok"] else "FAIL"
+        lines.append(f"[{marker}] {key}: {item['summary']}")
+
+    lines.append("recommendations:")
+    for rec in data.get("recommendations", []):
+        lines.append(f"- {rec}")
+
+    sys.stdout.write("\n".join(lines) + "\n")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="doctor")
     parser.add_argument("--json", action="store_true")
@@ -160,14 +210,21 @@ def main(argv: list[str] | None = None) -> int:
         ns.clean_tree = True
         ns.dev = True
 
-    data: dict[str, Any] = {"python": _python_info(), "package": _package_info()}
+    data: dict[str, Any] = {"python": _python_info(), "package": _package_info(), "checks": {}}
     ok = True
+    score_items: list[bool] = []
 
     if ns.dev:
         present, missing = _check_tools()
         data["tools"] = present
         data["missing"] = missing
-        if missing:
+        check_ok = not bool(missing)
+        data["checks"]["dev_tools"] = {
+            "ok": check_ok,
+            "summary": "all required developer tools are available" if check_ok else "some developer tools are missing",
+        }
+        score_items.append(check_ok)
+        if not check_ok:
             ok = False
     else:
         data.setdefault("missing", [])
@@ -175,7 +232,13 @@ def main(argv: list[str] | None = None) -> int:
     if ns.ascii:
         bad, bad_err = _scan_non_ascii(root)
         data["non_ascii"] = bad
-        if bad:
+        check_ok = not bool(bad)
+        data["checks"]["ascii"] = {
+            "ok": check_ok,
+            "summary": "only ASCII content found under src/tools" if check_ok else "non-ASCII bytes detected under src/tools",
+        }
+        score_items.append(check_ok)
+        if not check_ok:
             ok = False
         for line in bad_err:
             sys.stderr.write(line + "\n")
@@ -184,32 +247,62 @@ def main(argv: list[str] | None = None) -> int:
         miss, invalid = _check_ci(root)
         data["ci_missing"] = miss
         data["yaml_invalid"] = invalid
-        if miss or invalid:
+        check_ok = not (miss or invalid)
+        data["checks"]["ci"] = {
+            "ok": check_ok,
+            "summary": "required workflow files exist and YAML validates"
+            if check_ok
+            else "CI workflow files are missing or invalid",
+        }
+        score_items.append(check_ok)
+        if not check_ok:
             ok = False
 
     if ns.pre_commit:
         pc_ok = _check_pre_commit(root)
         data["pre_commit_ok"] = pc_ok
+        data["checks"]["pre_commit"] = {
+            "ok": pc_ok,
+            "summary": "pre-commit is installed and configuration is valid"
+            if pc_ok
+            else "pre-commit is missing or configuration is invalid",
+        }
+        score_items.append(pc_ok)
         if not pc_ok:
             ok = False
 
     if ns.deps:
         deps_ok = _check_deps(root)
         data["deps_ok"] = deps_ok
+        data["checks"]["dependencies"] = {
+            "ok": deps_ok,
+            "summary": "pip dependency graph is consistent"
+            if deps_ok
+            else "pip dependency issues detected",
+        }
+        score_items.append(deps_ok)
         if not deps_ok:
             ok = False
 
     if ns.clean_tree:
         ct_ok = _check_clean_tree(root)
         data["clean_tree_ok"] = ct_ok
+        data["checks"]["clean_tree"] = {
+            "ok": ct_ok,
+            "summary": "working tree is clean" if ct_ok else "working tree has uncommitted changes",
+        }
+        score_items.append(ct_ok)
         if not ct_ok:
             ok = False
 
+    data["score"] = _calculate_score(score_items)
+    data["recommendations"] = _recommendations(data)
     data["ok"] = bool(ok)
 
     if ns.json:
         sys.stdout.write(json.dumps(data, sort_keys=True) + "\n")
     else:
+        _print_human_report(data)
         if not ok:
             sys.stderr.write("doctor: problems found\n")
 

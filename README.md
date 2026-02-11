@@ -26,7 +26,7 @@ Production-style SDET utilities + bootcamp exercises: CLI tools, quality gates, 
 - CLI tools:
   - `sdetkit kv` / `kvcli`: parse `key=value` input and output JSON
   - `sdetkit apiget` / `apigetcli`: fetch JSON with pagination/retries/timeouts
-  - `sdetkit doctor`: repo health checks and diagnostics
+  - `sdetkit doctor`: repo health checks, quality score, and actionable recommendations
   - `tools/patch_harness.py`: deterministic spec-driven edits with strict --check
 - Quality gates (local + CI):
   - ruff (lint + format), mypy, pytest, coverage gate, docs build

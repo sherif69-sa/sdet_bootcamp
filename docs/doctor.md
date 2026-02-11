@@ -1,7 +1,6 @@
-```markdown
 # Doctor
 
-`doctor` is a single command that answers: "is this repo healthy?"
+`doctor` is a repo health command focused on practical, release-ready diagnostics.
 
 Run it via:
 
@@ -14,35 +13,39 @@ Common usage:
 sdetkit doctor --ascii
 sdetkit doctor --all
 sdetkit doctor --all --json
-````
+```
 
 ## What it checks
 
-* `--ascii`: scans `src/` and `tools/` for non-ASCII bytes.
-
-  * Skips `__pycache__/` and `.pyc` files.
-* `--ci`: verifies required workflow files exist and runs YAML validation using pre-commit `check-yaml`.
-* `--pre-commit`: validates pre-commit is available and the config can run.
-* `--deps`: runs `pip check` to detect broken dependency resolution.
-* `--clean-tree`: fails if `git status --porcelain` is not empty.
-* `--dev`: checks for required local tools used by this repo.
+- `--ascii`: scans `src/` and `tools/` for non-ASCII bytes.
+  - Skips `__pycache__/` and `.pyc` files.
+- `--ci`: verifies required workflow files exist and validates YAML with pre-commit `check-yaml`.
+- `--pre-commit`: validates pre-commit is installed and config is valid.
+- `--deps`: runs `pip check` to detect dependency issues.
+- `--clean-tree`: fails if `git status --porcelain` is not empty.
+- `--dev`: checks whether required local developer tools are installed.
 
 Convenience flags:
 
-* `--all`: runs the core checks in one go.
-* `--release`: runs release-oriented checks (tag/version alignment and related validation).
+- `--all`: runs the core checks in one command.
+- `--release`: runs release-oriented checks (same core checks as `--all`).
 
-## Output modes
+## Score and recommendations
 
-Default output is human-friendly.
+Every run computes a `score` (0–100) from enabled checks and generates actionable `recommendations`.
 
-Use `--json` to print a stable machine-readable summary, suitable for CI or bots:
+- In human mode, the command prints a compact report with score, per-check status, and next steps.
+- In JSON mode, the report includes `checks`, `score`, `recommendations`, and `ok`.
+
+Example:
 
 ```bash
 sdetkit doctor --all --json
 ```
 
-Exit code behavior:
+## Output and exit codes
 
-* `0` means no issues found.
-* non-zero means at least one check failed.
+- Exit code `0` means all enabled checks passed.
+- Non-zero means at least one enabled check failed.
+
+Use JSON output for CI bots and human output for local debugging.
