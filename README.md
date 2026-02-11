@@ -1,82 +1,93 @@
 <div align="center">
+  <img src="docs/assets/devs69-hero.svg" alt="DevS69 Hero" width="100%" />
 
-# DevS69 (sdetkit)
+  <h1>DevS69 (sdetkit)</h1>
+  <p>
+    <strong>Production-ready SDET toolkit</strong> with enterprise-grade quality gates,
+    security-first workflows, and testable-by-design engineering standards.
+  </p>
 
-Production-ready SDET toolkit and exercises with a strong focus on **clarity**, **quality gates**, **security**, and **testable design**.
+  <p>
+    <a href="https://sherif69-sa.github.io/DevS69-sdetkit/"><strong>🌐 Live Experience Portal</strong></a>
+    ·
+    <a href="docs/index.md"><strong>📚 Documentation</strong></a>
+    ·
+    <a href="CONTRIBUTING.md"><strong>🤝 Contribute</strong></a>
+  </p>
 
-![DevS69 hero banner](docs/assets/devs69-hero.svg)
+  <p>
+    <a href="https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/ci.yml"><img src="https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+    <a href="https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/quality.yml"><img src="https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/quality.yml/badge.svg?branch=main" alt="Quality"></a>
+    <a href="https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/mutation-tests.yml"><img src="https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/mutation-tests.yml/badge.svg?branch=main" alt="Mutation Tests"></a>
+    <a href="https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/security.yml"><img src="https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/security.yml/badge.svg?branch=main" alt="Security"></a>
+    <a href="https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/pages.yml"><img src="https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/pages.yml/badge.svg?branch=main" alt="Pages"></a>
+  </p>
 
-[![CI](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/ci.yml)
-[![Quality](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/quality.yml)
-[![Mutation Tests](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/mutation-tests.yml/badge.svg?branch=main)](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/mutation-tests.yml)
-[![Security](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/security.yml)
-[![Dependency Audit](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/dependency-audit.yml/badge.svg?branch=main)](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/dependency-audit.yml)
-[![OSV Scan](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/osv-scanner.yml/badge.svg?branch=main)](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/osv-scanner.yml)
-[![Pages](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/pages.yml/badge.svg?branch=main)](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/pages.yml)
-
-[![Latest Release](https://img.shields.io/github/v/release/sherif69-sa/sdet_bootcamp?sort=semver)](https://github.com/sherif69-sa/sdet_bootcamp/releases)
-[![License](https://img.shields.io/github/license/sherif69-sa/sdet_bootcamp)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
-[![Code Scanning](https://img.shields.io/badge/security-code%20scanning-success)](https://github.com/sherif69-sa/sdet_bootcamp/security/code-scanning)
-[![Dependabot](https://img.shields.io/badge/dependencies-auto%20update-success)](https://github.com/sherif69-sa/sdet_bootcamp/security/dependabot)
-
+  <p>
+    <a href="https://github.com/sherif69-sa/sdet_bootcamp/releases"><img src="https://img.shields.io/github/v/release/sherif69-sa/sdet_bootcamp?sort=semver" alt="Latest Release"></a>
+    <a href="LICENSE"><img src="https://img.shields.io/github/license/sherif69-sa/sdet_bootcamp" alt="License"></a>
+    <img src="https://img.shields.io/badge/python-3.12+-blue.svg" alt="Python">
+    <a href="https://github.com/sherif69-sa/sdet_bootcamp/security/code-scanning"><img src="https://img.shields.io/badge/security-code%20scanning-success" alt="Code Scanning"></a>
+    <a href="https://github.com/sherif69-sa/sdet_bootcamp/security/dependabot"><img src="https://img.shields.io/badge/dependencies-auto%20update-success" alt="Dependabot"></a>
+  </p>
 </div>
 
-> **First impression boost:** enterprise-style checks, always-on security scans, auto-update bots, and docs-ready onboarding — tuned for global contributors.
+---
 
-## ✨ Experience hub (start here)
+## Platform spotlight
 
-Pick the path that matches what you want to do right now:
+> **First-impression boost:** polished onboarding, always-on security scans, strong quality gates, and contributor-ready guidance — aligned with the live portal at **[sherif69-sa.github.io/DevS69-sdetkit](https://sherif69-sa.github.io/DevS69-sdetkit/)**.
 
-| Goal | Open this | Why it helps |
+## Fast entry paths
+
+| What you need | Start here | Outcome |
 |---|---|---|
-| Get running in minutes | [Quick start](#-quick-start) | Fast environment setup + first quality run |
-| Learn the repo quickly | [Repo tour](docs/repo-tour.md) | Visual orientation map + role-based walkthrough |
-| Use the CLI productively | [CLI guide](docs/cli.md) | Practical command examples |
-| Check repo health | [Doctor docs](docs/doctor.md) | Diagnostics and recommendations |
-| Run safe repo checks and fixes | [Repo audit](docs/repo-audit.md) | Enterprise-focused safety profile |
-| Contribute confidently | [Contributing guide](CONTRIBUTING.md) | Branching, quality gates, and expectations |
+| Get up and running quickly | [Quick start](#quick-start) | Ready-to-run local environment + first quality pass |
+| Understand repository layout | [Repo tour](docs/repo-tour.md) | Role-based orientation and architecture map |
+| Use CLI commands effectively | [CLI guide](docs/cli.md) | Practical usage patterns and examples |
+| Diagnose repository health | [Doctor docs](docs/doctor.md) | Health checks and recommendations |
+| Run safe checks and targeted fixes | [Repo audit](docs/repo-audit.md) | Enterprise-focused guardrails |
+| Contribute with confidence | [Contributing guide](CONTRIBUTING.md) | Quality gates + PR expectations |
 
-> 🌐 Prefer a polished docs UI? Open [GitHub Pages](https://sherif69-sa.github.io/sdet_bootcamp/) or build locally with `mkdocs serve`.
+## Experience navigation (one-click)
 
-## 🧭 Premium navigation panel
+### Governance & trust
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security Policy](SECURITY.md)
+- [Support](SUPPORT.md)
+- [MIT License](LICENSE)
 
-- **Repository essentials**
-  - [README](README.md)
-  - [Code of Conduct](CODE_OF_CONDUCT.md)
-  - [Contributing Guide](CONTRIBUTING.md)
-  - [Security Policy](SECURITY.md)
-  - [Support](SUPPORT.md)
-  - [MIT License](LICENSE)
-- **Engineering standards**
-  - [Quality Playbook](QUALITY_PLAYBOOK.md)
-  - [Release Notes Guide](RELEASE.md)
-  - [Roadmap](ROADMAP.md)
-  - [Changelog](CHANGELOG.md)
-- **Docs and architecture**
-  - [Docs Home](docs/index.md)
-  - [Repo Tour](docs/repo-tour.md)
-  - [Project Structure](docs/project-structure.md)
-  - [Security Docs](docs/security.md)
-  - [Release Process](docs/releasing.md)
+### Engineering standards
+- [Quality Playbook](QUALITY_PLAYBOOK.md)
+- [Release Guide](RELEASE.md)
+- [Roadmap](ROADMAP.md)
+- [Changelog](CHANGELOG.md)
 
-## Why this repo exists
+### Documentation hub
+- [Docs Home](docs/index.md)
+- [Repo Tour](docs/repo-tour.md)
+- [Project Structure](docs/project-structure.md)
+- [Security Docs](docs/security.md)
+- [Release Process](docs/releasing.md)
 
-This repo is designed to be easy to navigate for new contributors and practical for daily engineering work:
+## Why this repository exists
 
-- **Clear entry points** ([sdetkit](src/sdetkit), `kvcli`, `apigetcli`)
-- **Strong quality gates** (lint, format, type checks, tests, coverage, docs)
-- **Modular internals** you can import and test independently
-- **Docs-first navigation** so you can quickly find what to read next
+This project is designed for fast onboarding and high-confidence delivery:
 
-## ⚡ 30-second orientation
+- **Clear entry points** in [`src/sdetkit`](src/sdetkit)
+- **Strong quality gates** across lint, format, type checks, tests, coverage, and docs
+- **Modular internals** that are easy to import, test, and extend
+- **Docs-first architecture** for fast navigation and contributor productivity
 
-1. Start with this [README](README.md) for setup and command snippets.
-2. Jump to [docs/repo-tour.md](docs/repo-tour.md) for a role-based navigation map.
-3. Use [docs/cli.md](docs/cli.md) and [docs/doctor.md](docs/doctor.md) for daily command usage.
-4. Check [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
+## 30-second orientation
 
-## 🚀 Quick start
+1. Read this [README](README.md) for the quickest overview.
+2. Open [docs/repo-tour.md](docs/repo-tour.md) for a visual repository map.
+3. Use [docs/cli.md](docs/cli.md) + [docs/doctor.md](docs/doctor.md) for daily workflows.
+4. Follow [CONTRIBUTING.md](CONTRIBUTING.md) before opening a PR.
+
+## Quick start
 
 ```bash
 python3 -m venv .venv
@@ -84,7 +95,7 @@ python3 -m venv .venv
 bash quality.sh cov
 ```
 
-## 🗺️ Repo map (what lives where)
+## Repository map
 
 ```text
 src/sdetkit/              # package source: CLI + library modules
@@ -94,7 +105,7 @@ scripts/                  # local helper scripts (check, env, bootstrap)
 tools/                    # extra developer tooling + patch harness wrapper
 ```
 
-## 🛠️ Core CLI commands
+## Core CLI commands
 
 ```bash
 ./.venv/bin/sdetkit --help
@@ -104,7 +115,7 @@ tools/                    # extra developer tooling + patch harness wrapper
 ./.venv/bin/python tools/patch_harness.py spec.json --check
 ```
 
-## 🔁 Developer workflow
+## Developer workflow
 
 ```bash
 # full quality gates
@@ -117,7 +128,7 @@ bash quality.sh cov
 bash scripts/shell.sh
 ```
 
-## 📚 Documentation index
+## Documentation index
 
 - [docs/index.md](docs/index.md) — docs homepage
 - [docs/repo-tour.md](docs/repo-tour.md) — visual orientation + role-based quick links
@@ -129,22 +140,22 @@ bash scripts/shell.sh
 - [docs/security.md](docs/security.md) — security policies and notes
 - [docs/releasing.md](docs/releasing.md) — release process
 
-## 🤖 Automation highlights
+## Automation highlights
 
 - Docs deployment: [.github/workflows/pages.yml](.github/workflows/pages.yml)
 - Release workflow: [.github/workflows/release.yml](.github/workflows/release.yml)
 - Version consistency guard: [.github/workflows/versioning.yml](.github/workflows/versioning.yml)
 - PR quality feedback: [.github/workflows/pr-quality-comment.yml](.github/workflows/pr-quality-comment.yml)
-- Security automation: CodeQL + scheduled secret scanning workflow (see [docs/security.md](docs/security.md)).
-- Dependency automation: Dependabot daily updates + safe auto-merge workflow for low-risk updates.
+- Security automation: CodeQL + scheduled secret scanning workflow (see [docs/security.md](docs/security.md))
+- Dependency automation: Dependabot daily updates + safe auto-merge workflow for low-risk updates
 
-## 🤝 Contributing and support
+## Contributing and support
 
-- Contributing guide: [CONTRIBUTING.md](CONTRIBUTING.md)
-- Code of conduct: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
-- Security policy: [SECURITY.md](SECURITY.md)
-- Support notes: [SUPPORT.md](SUPPORT.md)
+- [Contributing Guide](CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Security Policy](SECURITY.md)
+- [Support](SUPPORT.md)
 
-## 📄 License
+## License
 
 MIT. See [LICENSE](LICENSE).
