@@ -918,11 +918,11 @@ def main(argv: list[str] | None = None) -> int:
         except OSError as e:
             report_error = e
             rc = 2
+            report["status_code"] = 2
 
     if main_error is not None:
         print(f"error: {main_error}", file=sys.stderr)
     if report_error is not None:
-        report["status_code"] = 2
         print(f"error: failed to write report: {report_error}", file=sys.stderr)
 
     return rc
