@@ -18,6 +18,8 @@ jobs:
   repo-audit:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v6
+
       - name: Run sdetkit repo audit action
         uses: ./.github/actions/repo-audit
         with:
