@@ -55,7 +55,7 @@ def redact_json(value: object, *, enabled: bool, keys: set[str]) -> object:
         return value
     if isinstance(value, dict):
         out: dict[object, object] = {}
-        for k in sorted(value.keys(), key=lambda x: str(x)):
+        for k in sorted(value.keys(), key=str):
             v = value[k]
             if isinstance(k, str) and is_sensitive_key(k, keys):
                 out[k] = "<redacted>"
