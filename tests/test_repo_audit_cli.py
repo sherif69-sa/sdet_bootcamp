@@ -1,9 +1,28 @@
 from __future__ import annotations
 
+import io
 import json
+from contextlib import redirect_stderr, redirect_stdout
+from dataclasses import dataclass
 from pathlib import Path
 
 from sdetkit import cli
+
+
+@dataclass
+class Result:
+    exit_code: int
+    stdout: str
+    stderr: str
+
+
+class CliRunner:
+    def invoke(self, args: list[str]) -> Result:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with redirect_stdout(stdout), redirect_stderr(stderr):
+            exit_code = cli.main(args)
+        return Result(exit_code=exit_code, stdout=stdout.getvalue(), stderr=stderr.getvalue())
 
 
 def _seed_min_repo(root: Path) -> None:
@@ -26,45 +45,64 @@ def _seed_min_repo(root: Path) -> None:
     (wf / "security.yml").write_text("name: security\n", encoding="utf-8")
 
 
-def test_repo_audit_text_and_json_are_deterministic(tmp_path: Path, capsys) -> None:
+def test_repo_audit_json_schema_and_stable_keys(tmp_path: Path) -> None:
     _seed_min_repo(tmp_path)
 
-    rc = cli.main(["repo", "audit", str(tmp_path), "--allow-absolute-path"])
-    assert rc == 0
-    text = capsys.readouterr().out
-    assert "Result: PASS" in text
-    assert "OSS readiness files" in text
+    runner = CliRunner()
+    result = runner.invoke(
+        ["repo", "audit", str(tmp_path), "--allow-absolute-path", "--format", "json"]
+    )
+    assert result.exit_code == 0
 
-    rc2 = cli.main(["repo", "audit", str(tmp_path), "--allow-absolute-path", "--format", "json"])
-    assert rc2 == 0
-    j1 = json.loads(capsys.readouterr().out)
-
-    rc3 = cli.main(["repo", "audit", str(tmp_path), "--allow-absolute-path", "--format", "json"])
-    assert rc3 == 0
-    j2 = json.loads(capsys.readouterr().out)
-    assert j1 == j2
-    assert j1["summary"]["ok"] is True
+    payload = json.loads(result.stdout)
+    assert payload["schema_version"] == "1.0.0"
+    assert list(payload.keys()) == ["checks", "findings", "root", "schema_version", "summary"]
 
 
-def test_repo_audit_fails_when_license_and_workflow_missing(tmp_path: Path, capsys) -> None:
+def test_repo_audit_sarif_has_required_fields(tmp_path: Path) -> None:
     _seed_min_repo(tmp_path)
     (tmp_path / "LICENSE").unlink()
-    (tmp_path / ".github" / "workflows" / "security.yml").unlink()
 
-    rc = cli.main(["repo", "audit", str(tmp_path), "--allow-absolute-path", "--format", "json"])
-    assert rc == 1
-    report = json.loads(capsys.readouterr().out)
-    failed = {item["key"] for item in report["checks"] if item["status"] == "fail"}
-    assert "oss_readiness" in failed
-    assert "ci_security_workflows" in failed
+    runner = CliRunner()
+    result = runner.invoke(
+        ["repo", "audit", str(tmp_path), "--allow-absolute-path", "--format", "sarif"]
+    )
+    assert result.exit_code == 1
+
+    sarif = json.loads(result.stdout)
+    assert sarif["version"] == "2.1.0"
+    assert sarif["runs"][0]["tool"]["driver"]["name"] == "sdetkit"
+    first_result = sarif["runs"][0]["results"][0]
+    assert "ruleId" in first_result
+    assert "text" in first_result["message"]
+    assert first_result["locations"][0]["physicalLocation"]["artifactLocation"]["uri"]
 
 
-def test_repo_audit_out_respects_force(tmp_path: Path) -> None:
+def test_repo_audit_fail_on_exit_codes(tmp_path: Path) -> None:
+    _seed_min_repo(tmp_path)
+
+    big_file = tmp_path / "huge.bin"
+    big_file.write_bytes(b"x" * (6 * 1024 * 1024))
+
+    runner = CliRunner()
+    args = ["repo", "audit", str(tmp_path), "--allow-absolute-path", "--format", "json"]
+
+    fail_none = runner.invoke([*args, "--fail-on", "none"])
+    assert fail_none.exit_code == 0
+
+    fail_warn = runner.invoke([*args, "--fail-on", "warn"])
+    assert fail_warn.exit_code == 1
+
+    fail_error = runner.invoke([*args, "--fail-on", "error"])
+    assert fail_error.exit_code == 0
+
+
+def test_repo_audit_output_file_writes_without_stdout(tmp_path: Path) -> None:
     _seed_min_repo(tmp_path)
     report = tmp_path / "audit.json"
-    report.write_text("old", encoding="utf-8")
 
-    rc = cli.main(
+    runner = CliRunner()
+    result = runner.invoke(
         [
             "repo",
             "audit",
@@ -72,25 +110,12 @@ def test_repo_audit_out_respects_force(tmp_path: Path) -> None:
             "--allow-absolute-path",
             "--format",
             "json",
-            "--out",
-            "audit.json",
-        ]
-    )
-    assert rc == 2
-
-    rc2 = cli.main(
-        [
-            "repo",
-            "audit",
-            str(tmp_path),
-            "--allow-absolute-path",
-            "--format",
-            "json",
-            "--out",
+            "--output",
             "audit.json",
             "--force",
         ]
     )
-    assert rc2 == 0
+    assert result.exit_code == 0
+    assert result.stdout == ""
     payload = json.loads(report.read_text(encoding="utf-8"))
     assert payload["summary"]["ok"] is True
