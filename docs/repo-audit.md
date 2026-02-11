@@ -6,7 +6,7 @@
 
 ```bash
 sdetkit repo audit
-sdetkit repo audit --format json --out repo-audit.json --force
+sdetkit repo audit --format json --output repo-audit.json --force
 ```
 
 ## Checks performed (`sdetkit repo audit`)
@@ -22,6 +22,7 @@ All checks are deterministic and local-only (no network calls).
 
 - `--format text` (default): human-readable summary with pass/fail details.
 - `--format json`: machine-readable report suitable for CI artifacts and policy engines.
+- `--format sarif`: SARIF 2.1.0 output for code scanning ingestion.
 
 Example JSON run:
 
@@ -29,10 +30,29 @@ Example JSON run:
 sdetkit repo audit --format json
 ```
 
+Example SARIF run:
+
+```bash
+sdetkit repo audit --format sarif --output repo-audit.sarif --force
+```
+
+Fail policy examples:
+
+```bash
+# never fail CI from audit findings
+sdetkit repo audit --fail-on none
+
+# fail when warn/error findings exist (default)
+sdetkit repo audit --fail-on warn
+
+# fail only on error findings
+sdetkit repo audit --fail-on error
+```
+
 ## Exit codes
 
-- `0`: clean / policy pass
-- `1`: one or more audit checks failed
+- `0`: policy pass for selected `--fail-on` threshold
+- `1`: threshold hit by findings per `--fail-on`
 - `2`: invalid usage, unsafe path, or internal/runtime error
 
 ## Complementary commands

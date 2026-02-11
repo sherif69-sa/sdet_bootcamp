@@ -185,6 +185,7 @@ class RepoAuditCheck:
     title: str
     passed: bool
     details: tuple[str, ...]
+    findings: tuple[Finding, ...] = ()
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -892,6 +893,20 @@ def _audit_oss_readiness(root: Path) -> RepoAuditCheck:
         title="OSS readiness files",
         passed=False,
         details=tuple(f"Missing: {name}" for name in missing),
+        findings=tuple(
+            Finding(
+                check="repo_audit",
+                severity="error",
+                path=name,
+                line=1,
+                column=1,
+                code="missing_required_file",
+                message=f"required OSS readiness file is missing: {name}",
+                confidence="high",
+                remediation="add the missing governance file",
+            )
+            for name in missing
+        ),
     )
 
 
@@ -912,11 +927,41 @@ def _audit_ci_security_workflows(root: Path) -> RepoAuditCheck:
         f"CI workflow present: {'yes' if ci_present else 'no'}",
         f"Security workflow present: {'yes' if security_present else 'no'}",
     ]
+    findings: list[Finding] = []
+    if not ci_present:
+        findings.append(
+            Finding(
+                check="repo_audit",
+                severity="error",
+                path=".github/workflows",
+                line=1,
+                column=1,
+                code="missing_ci_workflow",
+                message="no CI workflow detected under .github/workflows",
+                confidence="high",
+                remediation="add a CI workflow file (e.g. ci.yml)",
+            )
+        )
+    if not security_present:
+        findings.append(
+            Finding(
+                check="repo_audit",
+                severity="error",
+                path=".github/workflows",
+                line=1,
+                column=1,
+                code="missing_security_workflow",
+                message="no security workflow detected under .github/workflows",
+                confidence="high",
+                remediation="add a security workflow file (e.g. security.yml)",
+            )
+        )
     return RepoAuditCheck(
         key="ci_security_workflows",
         title="CI and security workflow presence",
         passed=ci_present and security_present,
         details=tuple(details),
+        findings=tuple(findings),
     )
 
 
@@ -931,11 +976,26 @@ def _audit_python_tooling(root: Path) -> RepoAuditCheck:
     details = tuple(
         f"{name}: {'present' if present else 'missing'}" for name, present in sorted(checks.items())
     )
+    findings = tuple(
+        Finding(
+            check="repo_audit",
+            severity="error",
+            path=name,
+            line=1,
+            column=1,
+            code="missing_python_tooling",
+            message=f"required Python tooling file is missing: {name}",
+            confidence="high",
+            remediation="add the missing tooling file or adjust project standards",
+        )
+        for name in missing
+    )
     return RepoAuditCheck(
         key="python_tooling",
         title="Python tooling config presence",
         passed=len(missing) == 0,
         details=details,
+        findings=findings,
     )
 
 
@@ -961,11 +1021,43 @@ def _audit_repo_hygiene(root: Path) -> RepoAuditCheck:
         details.extend(f"Large tracked file: {item}" for item in sorted(large_files))
     else:
         details.append("No files larger than 5 MiB detected.")
+    findings: list[Finding] = []
+    for name, present in sorted(checks.items()):
+        if not present:
+            findings.append(
+                Finding(
+                    check="repo_audit",
+                    severity="error",
+                    path=name.rstrip("/"),
+                    line=1,
+                    column=1,
+                    code="missing_repo_hygiene_item",
+                    message=f"required repository hygiene item is missing: {name}",
+                    confidence="high",
+                    remediation="add the missing repository hygiene file/directory",
+                )
+            )
+    for item in sorted(large_files):
+        findings.append(
+            Finding(
+                check="repo_audit",
+                severity="warn",
+                path=item.split(" ", 1)[0],
+                line=1,
+                column=1,
+                code="large_tracked_file",
+                message=f"tracked file exceeds 5 MiB: {item}",
+                confidence="high",
+                remediation="move binaries to artifacts/storage and keep source repo lean",
+            )
+        )
+
     return RepoAuditCheck(
         key="repo_hygiene",
         title="Basic repository hygiene",
         passed=all(checks.values()) and not large_files,
         details=tuple(details),
+        findings=tuple(findings),
     )
 
 
@@ -978,21 +1070,37 @@ def run_repo_audit(root: Path) -> dict[str, Any]:
     ]
     passed = sum(1 for item in checks if item.passed)
     failed = len(checks) - passed
+    findings = [f.to_dict() for check in checks for f in check.findings]
+    counts = {"info": 0, "warn": 0, "error": 0}
+    for finding in findings:
+        sev = str(finding.get("severity", "error"))
+        counts[sev] = counts.get(sev, 0) + 1
     return {
+        "schema_version": "1.0.0",
         "root": str(root),
         "summary": {
             "checks": len(checks),
             "passed": passed,
             "failed": failed,
             "ok": failed == 0,
+            "counts": {k: counts[k] for k in sorted(counts)},
+            "findings": len(findings),
         },
         "checks": [item.to_dict() for item in checks],
+        "findings": findings,
     }
 
 
 def _render_repo_audit(payload: dict[str, Any], fmt: str) -> str:
     if fmt == "json":
         return json.dumps(payload, ensure_ascii=True, sort_keys=True, indent=2) + "\n"
+    if fmt == "sarif":
+        sarif_payload = {
+            "findings": payload.get("findings", []),
+        }
+        return (
+            json.dumps(_to_sarif(sarif_payload), ensure_ascii=True, sort_keys=True, indent=2) + "\n"
+        )
 
     lines = [
         f"Repo audit: {payload['root']}",
@@ -1002,6 +1110,11 @@ def _render_repo_audit(payload: dict[str, Any], fmt: str) -> str:
             else f"Result: FAIL ({payload['summary']['failed']} checks failed)"
         ),
         (f"Checks: {payload['summary']['passed']}/{payload['summary']['checks']} passed"),
+        (
+            "Findings: "
+            f"{payload['summary']['findings']} (warn={payload['summary']['counts']['warn']}, "
+            f"error={payload['summary']['counts']['error']})"
+        ),
         "",
     ]
     for item in payload["checks"]:
@@ -1011,6 +1124,17 @@ def _render_repo_audit(payload: dict[str, Any], fmt: str) -> str:
             lines.append(f"  - {detail}")
         lines.append("")
     return "\n".join(lines).rstrip() + "\n"
+
+
+def _needs_fail_repo_audit(findings: list[dict[str, Any]], fail_on: str) -> bool:
+    if fail_on == "none":
+        return False
+    if fail_on == "error":
+        return any(str(item.get("severity")) == "error" for item in findings)
+    return any(
+        _severity_rank(str(item.get("severity", "error"))) >= _severity_rank("warn")
+        for item in findings
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -1043,8 +1167,10 @@ def main(argv: list[str] | None = None) -> int:
 
     ap = sub.add_parser("audit")
     ap.add_argument("path", nargs="?", default=".")
-    ap.add_argument("--format", choices=["text", "json"], default="text")
-    ap.add_argument("--out", default=None)
+    ap.add_argument("--profile", choices=["default", "enterprise"], default="default")
+    ap.add_argument("--format", choices=["text", "json", "sarif"], default="text")
+    ap.add_argument("--output", "--out", dest="output", default=None)
+    ap.add_argument("--fail-on", choices=["none", "warn", "error"], default="warn")
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--allow-absolute-path", action="store_true")
 
@@ -1117,10 +1243,9 @@ def main(argv: list[str] | None = None) -> int:
     if ns.repo_cmd == "audit":
         payload = run_repo_audit(root)
         rendered = _render_repo_audit(payload, ns.format)
-        sys.stdout.write(rendered)
-        if ns.out:
+        if ns.output:
             try:
-                out_path = safe_path(root, ns.out, allow_absolute=bool(ns.allow_absolute_path))
+                out_path = safe_path(root, ns.output, allow_absolute=bool(ns.allow_absolute_path))
                 if out_path.exists() and not ns.force:
                     print("refusing to overwrite existing output (use --force)", file=sys.stderr)
                     return 2
@@ -1128,7 +1253,9 @@ def main(argv: list[str] | None = None) -> int:
             except (SecurityError, OSError, ValueError) as exc:
                 print(str(exc), file=sys.stderr)
                 return 2
-        return 0 if payload["summary"]["ok"] else 1
+        else:
+            sys.stdout.write(rendered)
+        return 1 if _needs_fail_repo_audit(payload.get("findings", []), ns.fail_on) else 0
 
     if ns.check and ns.dry_run:
         print("cannot use --check and --dry-run together", file=sys.stderr)
