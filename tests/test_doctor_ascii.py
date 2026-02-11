@@ -60,3 +60,21 @@ def test_doctor_ascii_ignores_pyc(tmp_path: Path, monkeypatch, capsys):
     data = json.loads(out.out)
     assert data["non_ascii"] == []
     assert out.err.strip() == ""
+
+
+def test_doctor_ascii_ignores_egg_info_artifacts(tmp_path: Path, monkeypatch, capsys):
+    root = tmp_path / "repo"
+    (root / "src" / "sdetkit.egg-info").mkdir(parents=True)
+    (root / "tools").mkdir(parents=True)
+
+    (root / "src" / "ok.py").write_text("x = 1\n", encoding="utf-8")
+    (root / "src" / "sdetkit.egg-info" / "PKG-INFO").write_bytes("name: sdetkit – docs\n".encode())
+
+    monkeypatch.chdir(root)
+    rc = doctor.main(["--ascii", "--json"])
+    out = capsys.readouterr()
+
+    assert rc == 0
+    data = json.loads(out.out)
+    assert data["non_ascii"] == []
+    assert out.err.strip() == ""
