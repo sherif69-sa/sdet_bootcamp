@@ -110,7 +110,9 @@ def _compile_regex(pattern: str, label: str) -> re.Pattern[str]:
         raise PatchSpecError(f"{label}: invalid regex: {e}") from e
 
 
-def _find_matches(rx: re.Pattern[str], text: str, *, max_matches: int = _MAX_MATCHES) -> list[re.Match[str]]:
+def _find_matches(
+    rx: re.Pattern[str], text: str, *, max_matches: int = _MAX_MATCHES
+) -> list[re.Match[str]]:
     out: list[re.Match[str]] = []
     for m in rx.finditer(text):
         out.append(m)
@@ -554,7 +556,9 @@ def _op_upsert_method(text: str, op: dict[str, Any]) -> str:
         start = int(getattr(node, "lineno", 0) or 0)
         end = int(getattr(node, "end_lineno", 0) or start)
         if start <= 0 or end <= 0:
-            raise PatchSpecError(f"upsert_method: missing method line info for {cls_name}.{meth_name}")
+            raise PatchSpecError(
+                f"upsert_method: missing method line info for {cls_name}.{meth_name}"
+            )
 
         decos = getattr(node, "decorator_list", None)
         if decos:
@@ -807,7 +811,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--max-total-bytes-changed", type=int, default=_DEFAULT_MAX_TOTAL_BYTES_CHANGED)
     ap.add_argument("--max-op-count", type=int, default=_DEFAULT_MAX_OP_COUNT)
     ap.add_argument("--max-spec-bytes", type=int, default=_DEFAULT_MAX_SPEC_BYTES)
-    ap.add_argument("--report-json", default=None, help="Write operation report to path or '-' for stdout")
+    ap.add_argument(
+        "--report-json", default=None, help="Write operation report to path or '-' for stdout"
+    )
     ns = ap.parse_args(argv)
 
     report: dict[str, Any] = {
@@ -869,7 +875,9 @@ def main(argv: list[str] | None = None) -> int:
             any_change = True
             total_changed_bytes += _count_changed_bytes(old, new)
             if total_changed_bytes > ns.max_total_bytes_changed:
-                raise PatchSpecError(f"changes exceed max total bytes ({ns.max_total_bytes_changed})")
+                raise PatchSpecError(
+                    f"changes exceed max total bytes ({ns.max_total_bytes_changed})"
+                )
 
             diff = difflib.unified_diff(
                 old.splitlines(True),

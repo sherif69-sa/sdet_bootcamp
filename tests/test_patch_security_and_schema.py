@@ -35,7 +35,9 @@ def test_patch_rejects_path_escape(tmp_path: Path):
     (tmp_path / "ok.txt").write_text("A\n", encoding="utf-8")
     spec = {
         "spec_version": 1,
-        "files": [{"path": "../oops.txt", "ops": [{"op": "insert_after", "pattern": "A", "text": "X"}]}],
+        "files": [
+            {"path": "../oops.txt", "ops": [{"op": "insert_after", "pattern": "A", "text": "X"}]}
+        ],
     }
     (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
     rc = patch.main([str(tmp_path / "spec.json"), "--root", str(tmp_path)])
@@ -47,7 +49,9 @@ def test_patch_rejects_symlink_target_by_default(tmp_path: Path):
     (tmp_path / "link.txt").symlink_to(tmp_path / "real.txt")
     spec = {
         "spec_version": 1,
-        "files": [{"path": "link.txt", "ops": [{"op": "insert_after", "pattern": "A", "text": "X"}]}],
+        "files": [
+            {"path": "link.txt", "ops": [{"op": "insert_after", "pattern": "A", "text": "X"}]}
+        ],
     }
     (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
     rc = patch.main([str(tmp_path / "spec.json"), "--root", str(tmp_path)])
@@ -59,7 +63,9 @@ def test_patch_report_json(tmp_path: Path):
     report = tmp_path / "report.json"
     spec = {
         "spec_version": 1,
-        "files": [{"path": "a.txt", "ops": [{"op": "insert_after", "pattern": r"^A$", "text": "B\\n"}]}],
+        "files": [
+            {"path": "a.txt", "ops": [{"op": "insert_after", "pattern": r"^A$", "text": "B\\n"}]}
+        ],
     }
     (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
 
@@ -79,7 +85,9 @@ def test_patch_report_json(tmp_path: Path):
 def test_patch_invalid_spec_version_returns_2(tmp_path: Path):
     (tmp_path / "a.txt").write_text("A\n", encoding="utf-8")
     spec = {
-        "files": [{"path": "a.txt", "ops": [{"op": "insert_after", "pattern": r"^A$", "text": "B\\n"}]}],
+        "files": [
+            {"path": "a.txt", "ops": [{"op": "insert_after", "pattern": r"^A$", "text": "B\\n"}]}
+        ],
     }
     (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
     rc = patch.main([str(tmp_path / "spec.json")])
@@ -90,7 +98,9 @@ def test_patch_limit_flags_must_be_positive(tmp_path: Path):
     (tmp_path / "a.txt").write_text("A\n", encoding="utf-8")
     spec = {
         "spec_version": 1,
-        "files": [{"path": "a.txt", "ops": [{"op": "insert_after", "pattern": r"^A$", "text": "B\\n"}]}],
+        "files": [
+            {"path": "a.txt", "ops": [{"op": "insert_after", "pattern": r"^A$", "text": "B\\n"}]}
+        ],
     }
     (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
     rc = patch.main([str(tmp_path / "spec.json"), "--max-files", "0"])
@@ -101,7 +111,9 @@ def test_patch_check_is_deterministic_for_same_inputs(tmp_path: Path, capsys):
     (tmp_path / "a.txt").write_text("A\n", encoding="utf-8")
     spec = {
         "spec_version": 1,
-        "files": [{"path": "a.txt", "ops": [{"op": "insert_after", "pattern": r"^A$", "text": "B\\n"}]}],
+        "files": [
+            {"path": "a.txt", "ops": [{"op": "insert_after", "pattern": r"^A$", "text": "B\\n"}]}
+        ],
     }
     (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
 
@@ -122,7 +134,9 @@ def test_patch_check_is_deterministic_for_same_inputs(tmp_path: Path, capsys):
 def test_patch_missing_spec_version_defaults_to_v1(tmp_path: Path):
     (tmp_path / "a.txt").write_text("A\n", encoding="utf-8")
     spec = {
-        "files": [{"path": "a.txt", "ops": [{"op": "insert_after", "pattern": r"^A$", "text": "B\\n"}]}],
+        "files": [
+            {"path": "a.txt", "ops": [{"op": "insert_after", "pattern": r"^A$", "text": "B\\n"}]}
+        ],
     }
     (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
 
@@ -140,7 +154,9 @@ def test_patch_spec_size_limit(tmp_path: Path):
     (tmp_path / "a.txt").write_text("A\n", encoding="utf-8")
     spec = {
         "spec_version": 1,
-        "files": [{"path": "a.txt", "ops": [{"op": "insert_after", "pattern": r"^A$", "text": "B\\n"}]}],
+        "files": [
+            {"path": "a.txt", "ops": [{"op": "insert_after", "pattern": r"^A$", "text": "B\\n"}]}
+        ],
     }
     payload = json.dumps(spec)
     (tmp_path / "spec.json").write_text(payload, encoding="utf-8")

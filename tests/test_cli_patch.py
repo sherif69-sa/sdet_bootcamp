@@ -15,7 +15,7 @@ def test_sdetkit_patch_writes_changes(tmp_path: Path, monkeypatch, capsys):
                 "path": "a.txt",
                 "ops": [{"op": "insert_after", "pattern": r"^MARK$", "text": "X\\n"}],
             }
-        ]
+        ],
     }
     (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
 
@@ -36,7 +36,7 @@ def test_sdetkit_patch_check_exits_nonzero_when_changes_needed(tmp_path: Path, m
                 "path": "a.txt",
                 "ops": [{"op": "insert_after", "pattern": r"^MARK$", "text": "X\\n"}],
             }
-        ]
+        ],
     }
     (tmp_path / "spec.json").write_text(json.dumps(spec), encoding="utf-8")
 
