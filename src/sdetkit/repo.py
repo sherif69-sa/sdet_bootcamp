@@ -110,6 +110,7 @@ def _safe_snippet(line: str) -> str:
     if len(line) <= 10:
         return "<redacted>"
     return f"{line[:3]}...{line[-3:]}"
+    return f"{line[:3]}…{line[-3:]}"
 
 
 def _git_commit_sha(root: Path) -> str | None:
@@ -138,6 +139,7 @@ def _changed_files(root: Path, base: str) -> set[str]:
                 "--diff-filter=ACMRTUXB",
                 f"{base}...HEAD",
             ],
+            ["git", "-C", str(root), "diff", "--name-only", "--diff-filter=ACMRTUXB", f"{base}...HEAD"],
             check=False,
             capture_output=True,
             text=True,
@@ -350,6 +352,7 @@ def run_checks(
                 (".env", ".ini", ".cfg", ".conf", ".toml", ".yaml", ".yml", ".json")
             )
             if config_like and ("debug=true" in lower or "allow_all_origins=true" in lower):
+            if "debug=true" in lower or "allow_all_origins=true" in lower:
                 findings.append(
                     Finding(
                         "config_hardening",
@@ -372,6 +375,7 @@ def run_checks(
             and rel.startswith(".github/workflows/")
             and rel.endswith((".yml", ".yaml"))
         ):
+        if profile == "enterprise" and rel.startswith(".github/workflows/") and rel.endswith((".yml", ".yaml")):
             findings.extend(_scan_workflow(rel, text))
 
         if path.name in PRIVATE_KEY_FILES or path.suffix.lower() in PRIVATE_KEY_SUFFIXES:
@@ -458,6 +462,11 @@ def _scan_python_ast(rel: str, text: str) -> list[Finding]:
                                 remediation="pass argv list and keep shell=False",
                             )
                         )
+                out.append(Finding("code_risk", "error", rel, node.lineno, node.col_offset + 1, name.replace(".", "_"), f"unsafe call: {name}", remediation="use safer alternatives"))
+            if name == "subprocess.run" or name == "subprocess.Popen":
+                for kw in node.keywords:
+                    if kw.arg == "shell" and isinstance(kw.value, ast.Constant) and kw.value.value is True:
+                        out.append(Finding("code_risk", "error", rel, node.lineno, node.col_offset + 1, "subprocess_shell_true", "subprocess with shell=True", remediation="pass argv list and keep shell=False"))
     return out
 
 
@@ -520,6 +529,14 @@ def _scan_workflow(rel: str, text: str) -> list[Finding]:
                     remediation="download, verify checksum/signature, then execute",
                 )
             )
+                out.append(Finding("gha_hardening", "warn", rel, idx, 1, "unpinned_action", "GitHub Action is not pinned to full commit SHA", remediation="pin action with @<40-char-SHA>"))
+        lower = line.lower()
+        if "pull_request_target" in lower:
+            out.append(Finding("gha_hardening", "error", rel, idx, 1, "pull_request_target", "pull_request_target requires strict hardening", remediation="prefer pull_request unless privileged flow is required"))
+        if "permissions: write-all" in lower:
+            out.append(Finding("gha_hardening", "error", rel, idx, 1, "write_all_permissions", "workflow uses write-all permissions", remediation="use least privilege permissions block"))
+        if "curl" in lower and "|" in lower and "bash" in lower:
+            out.append(Finding("gha_hardening", "error", rel, idx, 1, "curl_bash", "curl|bash pattern in workflow", remediation="download, verify checksum/signature, then execute"))
     return out
 
 
@@ -563,6 +580,14 @@ def _scan_dependency_hygiene(root: Path, only: set[str] | None) -> list[Finding]
         for i, line in enumerate(
             req.read_text(encoding="utf-8", errors="ignore").splitlines(), start=1
         ):
+            out.append(Finding("dependency_hygiene", "warn", "pyproject.toml", 1, 1, "missing_python_lockfile", "Python manifest found without lockfile", remediation="add poetry.lock or uv.lock for deterministic installs"))
+    if has_node_manifest and not any((root / x).exists() for x in ("package-lock.json", "pnpm-lock.yaml", "yarn.lock")):
+        if only is None or "package.json" in only:
+            out.append(Finding("dependency_hygiene", "warn", "package.json", 1, 1, "missing_node_lockfile", "Node manifest found without lockfile", remediation="commit a Node lockfile"))
+
+    req = root / "requirements.txt"
+    if req.exists() and (only is None or "requirements.txt" in only):
+        for i, line in enumerate(req.read_text(encoding="utf-8", errors="ignore").splitlines(), start=1):
             stripped = line.strip()
             if not stripped or stripped.startswith("#"):
                 continue
@@ -579,6 +604,7 @@ def _scan_dependency_hygiene(root: Path, only: set[str] | None) -> list[Finding]
                         remediation="pin with == exact version",
                     )
                 )
+                out.append(Finding("dependency_hygiene", "warn", "requirements.txt", i, 1, "unpinned_dependency", "dependency is not pinned to exact version", remediation="pin with == exact version"))
     return out
 
 
@@ -606,6 +632,7 @@ def _apply_baseline(findings: list[Finding], baseline: list[dict[str, Any]]) -> 
                 if dt.date.fromisoformat(exp) < today:
                     continue
             except ValueError:
+                # Invalid expires format: treat as non-expiring and keep the item active.
                 pass
         active.append(item)
 
@@ -641,6 +668,7 @@ def _score(findings: list[Finding]) -> int:
 def _report_payload(
     root: Path, findings: list[Finding], *, profile: str, policy_text: str | None
 ) -> dict[str, Any]:
+def _report_payload(root: Path, findings: list[Finding], *, profile: str, policy_text: str | None) -> dict[str, Any]:
     counts = {"info": 0, "warn": 0, "error": 0}
     by_check: dict[str, int] = {}
     for f in findings:
@@ -657,6 +685,7 @@ def _report_payload(
             "generated_at_utc": dt.datetime.now(_UTC).isoformat()
             if profile == "enterprise"
             else "",
+            "generated_at_utc": dt.datetime.now(dt.timezone.utc).isoformat() if profile == "enterprise" else "",  # noqa: UP017
             "policy_hash": policy_hash,
         },
         "summary": {
@@ -681,6 +710,7 @@ def _to_sarif(payload: dict[str, Any]) -> dict[str, Any]:
                 "name": item["check"],
                 "shortDescription": {"text": item["message"]},
             }
+            rules[rid] = {"id": rid, "name": item["check"], "shortDescription": {"text": item["message"]}}
         results.append(
             {
                 "ruleId": rid,
@@ -708,12 +738,19 @@ def _to_sarif(payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+        "runs": [{"tool": {"driver": {"name": "sdetkit", "rules": list(rules.values())}}, "results": results}],
+    }
+
+
+
+
 def _generate_sbom(root: Path) -> dict[str, Any]:
     components: list[dict[str, str]] = []
     pyproject = root / "pyproject.toml"
     if pyproject.exists():
         text = pyproject.read_text(encoding="utf-8", errors="ignore")
         for dep in re.findall(r"[\"\']([A-Za-z0-9_.-]+)(?:[^\"\']*)[\"\']", text):
+        for dep in re.findall(r'[\"\']([A-Za-z0-9_.-]+)(?:[^\"\']*)[\"\']', text):
             if dep.lower() in {"project", "dependencies", "name", "x"}:
                 continue
             components.append({"type": "library", "name": dep, "purl": f"pkg:pypi/{dep}"})
@@ -893,6 +930,7 @@ def main(argv: list[str] | None = None) -> int:
                 policy_path = safe_path(
                     root, ns.policy, allow_absolute=bool(ns.allow_absolute_path)
                 )
+                policy_path = safe_path(root, ns.policy, allow_absolute=bool(ns.allow_absolute_path))
                 policy_text = policy_path.read_text(encoding="utf-8")
             except (SecurityError, OSError):
                 policy_text = None
@@ -902,6 +940,7 @@ def main(argv: list[str] | None = None) -> int:
                 baseline_path = safe_path(
                     root, ns.baseline, allow_absolute=bool(ns.allow_absolute_path)
                 )
+                baseline_path = safe_path(root, ns.baseline, allow_absolute=bool(ns.allow_absolute_path))
             except SecurityError:
                 baseline_path = None
         findings = run_checks(
@@ -928,6 +967,11 @@ def main(argv: list[str] | None = None) -> int:
                     json.dumps(_generate_sbom(root), ensure_ascii=True, sort_keys=True, indent=2)
                     + "\n",
                 )
+                sbom_path = safe_path(root, ns.sbom_out, allow_absolute=bool(ns.allow_absolute_path))
+                if sbom_path.exists() and not ns.force:
+                    print("refusing to overwrite existing SBOM output (use --force)", file=sys.stderr)
+                    return 2
+                atomic_write_text(sbom_path, json.dumps(_generate_sbom(root), ensure_ascii=True, sort_keys=True, indent=2) + "\n")
             except (SecurityError, OSError, ValueError) as exc:
                 print(str(exc), file=sys.stderr)
                 return 2
