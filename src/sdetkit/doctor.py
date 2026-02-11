@@ -53,7 +53,7 @@ def _check_pyproject_toml(root: Path) -> tuple[bool, str]:
         import tomllib
 
         with path.open("rb") as f:
-            tomllib.loads(f.read().decode("utf-8"))  # type: ignore[attr-defined]
+            tomllib.loads(f.read().decode("utf-8"))
     except Exception as exc:  # pragma: no cover - defensive error path
         return False, f"pyproject.toml parse failed: {exc}"
     return True, "pyproject.toml is valid TOML"
