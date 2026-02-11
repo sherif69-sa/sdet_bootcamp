@@ -1,0 +1,25 @@
+name: OSV Vulnerability Scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "45 4 * * *"
+
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+
+jobs:
+  scan:
+    name: OSV scheduled/repo scan
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@2a387edfbe02a11d856b89172f6e978100177eb4 # v2.3.2
+    with:
+      scan-args: |-
+        -r
+        ./
+      fail-on-vuln: false
+      upload-sarif: true
