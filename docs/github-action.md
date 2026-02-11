@@ -34,7 +34,7 @@ jobs:
           upload_sarif: true
 ```
 
-> Installation strategy: the action installs `sdetkit` from PyPI (`pip install sdetkit`). If `sdetkit` is not published for your target version, the action fails with a clear error so teams can add an internal package source or a custom install step.
+> Installation strategy: the action first tries `pip install sdetkit` from PyPI. If that is unavailable, it falls back to editable install from the checked-out workspace (`$GITHUB_WORKSPACE`) or the requested audit path when a `pyproject.toml` is present. If neither source is available, the action fails with a clear error.
 
 ## Inputs
 
