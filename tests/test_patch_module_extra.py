@@ -57,9 +57,7 @@ def test_patch_replace_block_and_insert_fallback(tmp_path: Path):
 def test_patch_upsert_def_class_and_method(tmp_path: Path):
     f = tmp_path / "m.py"
     f.write_text(
-        "class A:\n"
-        "    def f(self):\n"
-        "        return 1\n",
+        "class A:\n    def f(self):\n        return 1\n",
         encoding="utf-8",
     )
 
