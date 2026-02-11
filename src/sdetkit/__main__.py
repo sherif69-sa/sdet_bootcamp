@@ -48,7 +48,6 @@ def _cassette_get(argv: list[str]) -> int:
 
     if ns.replay:
         try:
-            replay_path = safe_path(Path.cwd(), ns.replay, allow_absolute=True)
             replay_path = safe_path(
                 Path.cwd(), ns.replay, allow_absolute=True
             )
@@ -68,7 +67,6 @@ def _cassette_get(argv: list[str]) -> int:
 
     if ns.record:
         try:
-            record_path = safe_path(Path.cwd(), ns.record, allow_absolute=True)
             record_path = safe_path(
                 Path.cwd(), ns.record, allow_absolute=True
             )
