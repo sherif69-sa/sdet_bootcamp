@@ -35,3 +35,20 @@ Only opt out when necessary and scoped:
 - `0`: success
 - `1`: expected negative result (for example, `patch --check` found changes needed; doctor checks failed)
 - `2`: invalid usage/config, unsafe path, or runtime error
+
+## Continuous security automation
+
+The repository includes always-on security maintenance so it behaves like an auto-update system:
+
+- **CodeQL scanning** runs on push, pull requests, and schedule.
+- **Dependabot** checks Python and GitHub Actions dependencies daily.
+- **Dependabot auto-merge** is enabled for **minor/patch** updates after checks pass.
+- **Secret scanning bot** runs daily using gitleaks and uploads SARIF to GitHub code scanning.
+- **Weekly maintenance issue** is refreshed automatically with checklist items and links.
+- **OSV vulnerability scanning** runs daily and uploads SARIF into code scanning.
+- **Pre-commit hooks auto-update** runs weekly and opens a maintenance PR.
+
+Use the GitHub Security tab to review alerts:
+
+- Code scanning: `https://github.com/sherif69-sa/sdet_bootcamp/security/code-scanning`
+- Dependabot alerts: `https://github.com/sherif69-sa/sdet_bootcamp/security/dependabot`

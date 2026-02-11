@@ -1,20 +1,28 @@
 <div align="center">
 
-# SDET Bootcamp (sdetkit)
+# DevS69 (sdetkit)
 
-Production-style SDET toolkit and exercises with a strong focus on **clarity**, **quality gates**, and **testable design**.
+Production-ready SDET toolkit and exercises with a strong focus on **clarity**, **quality gates**, **security**, and **testable design**.
+
+![DevS69 hero banner](docs/assets/devs69-hero.svg)
 
 [![CI](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/ci.yml)
 [![Quality](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/quality.yml)
 [![Mutation Tests](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/mutation-tests.yml/badge.svg?branch=main)](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/mutation-tests.yml)
 [![Security](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/security.yml)
 [![Dependency Audit](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/dependency-audit.yml/badge.svg?branch=main)](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/dependency-audit.yml)
+[![OSV Scan](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/osv-scanner.yml/badge.svg?branch=main)](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/osv-scanner.yml)
 [![Pages](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/pages.yml/badge.svg?branch=main)](https://github.com/sherif69-sa/sdet_bootcamp/actions/workflows/pages.yml)
 
 [![Latest Release](https://img.shields.io/github/v/release/sherif69-sa/sdet_bootcamp?sort=semver)](https://github.com/sherif69-sa/sdet_bootcamp/releases)
 [![License](https://img.shields.io/github/license/sherif69-sa/sdet_bootcamp)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
+[![Code Scanning](https://img.shields.io/badge/security-code%20scanning-success)](https://github.com/sherif69-sa/sdet_bootcamp/security/code-scanning)
+[![Dependabot](https://img.shields.io/badge/dependencies-auto%20update-success)](https://github.com/sherif69-sa/sdet_bootcamp/security/dependabot)
 
 </div>
+
+> **First impression boost:** enterprise-style checks, always-on security scans, auto-update bots, and docs-ready onboarding — tuned for global contributors.
 
 ## 🚀 Experience hub (start here)
 
@@ -106,6 +114,8 @@ bash scripts/shell.sh
 - Release workflow: `.github/workflows/release.yml`
 - Version consistency guard: `.github/workflows/versioning.yml`
 - PR quality feedback: `.github/workflows/pr-quality-comment.yml`
+- Security automation: CodeQL + scheduled secret scanning workflow (see security docs for links).
+- Dependency automation: Dependabot daily updates + safe auto-merge workflow for low-risk updates.
 
 ## Contributing and support
 

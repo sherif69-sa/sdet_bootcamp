@@ -1,0 +1,101 @@
+name: Security Maintenance Bot
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 3 * * *"
+
+permissions:
+  contents: read
+  issues: write
+  security-events: write
+
+jobs:
+  secret-scan:
+    name: Secret scan (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_COMMENTS: "false"
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: "true"
+
+      - name: Check SARIF presence
+        if: always()
+        id: sarif
+        run: |
+          if [ -f results.sarif ]; then
+            echo 'present=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'present=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Send SARIF
+        if: steps.sarif.outputs.present == 'true'
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: results.sarif
+
+  weekly-maintenance-issue:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create or update weekly maintenance issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const title = `🔐 Weekly security + maintenance checklist`;
+            const label = 'maintenance';
+
+            const body = [
+              'This issue is auto-generated to keep the repository secure and continuously updated.',
+              '',
+              '## Security auto-update checklist',
+              '- [ ] Review Dependabot PRs and approve any major upgrades.',
+              '- [ ] Confirm all security workflows are green in Actions.',
+              '- [ ] Review GitHub code scanning alerts and close/resolution as needed.',
+              '- [ ] Review open vulnerabilities in Dependency graph.',
+              '',
+              '## Suggested enhancement pipeline',
+              '- [ ] Open at least 1 enhancement issue from customer/user feedback.',
+              '- [ ] Tag enhancements with `enhancement` and priority labels.',
+              '- [ ] Link roadmap updates in `docs/roadmap.md`.',
+              '',
+              '## Quick links',
+              `- Code scanning: https://github.com/${owner}/${repo}/security/code-scanning`,
+              `- Dependabot: https://github.com/${owner}/${repo}/security/dependabot`,
+              `- Actions: https://github.com/${owner}/${repo}/actions`,
+            ].join('\n');
+
+            // Ensure label exists
+            try {
+              await github.rest.issues.getLabel({ owner, repo, name: label });
+            } catch {
+              await github.rest.issues.createLabel({ owner, repo, name: label, color: '0E8A16', description: 'Automated maintenance tracking' });
+            }
+
+            const issues = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: 'open',
+              labels: label,
+              per_page: 100,
+            });
+
+            const existing = issues.data.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.update({ owner, repo, issue_number: existing.number, body });
+            } else {
+              await github.rest.issues.create({ owner, repo, title, body, labels: [label] });
+            }

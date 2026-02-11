@@ -1,0 +1,56 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DevS69 sdetkit hero banner">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="640" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B1020"/>
+      <stop offset="1" stop-color="#162447"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#00D4FF"/>
+      <stop offset="1" stop-color="#7B61FF"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <circle cx="1040" cy="120" r="180" fill="#1B3A6B" opacity="0.35"/>
+  <circle cx="220" cy="520" r="200" fill="#0F2E56" opacity="0.45"/>
+
+  <g opacity="0.2" stroke="#9CC9FF">
+    <path d="M80 120H1200"/>
+    <path d="M80 220H1200"/>
+    <path d="M80 320H1200"/>
+    <path d="M80 420H1200"/>
+    <path d="M80 520H1200"/>
+    <path d="M140 80V560"/>
+    <path d="M340 80V560"/>
+    <path d="M540 80V560"/>
+    <path d="M740 80V560"/>
+    <path d="M940 80V560"/>
+    <path d="M1140 80V560"/>
+  </g>
+
+  <rect x="90" y="90" width="1100" height="460" rx="24" fill="#0D162F" stroke="#284B7A"/>
+
+  <g filter="url(#glow)">
+    <text x="150" y="230" fill="url(#accent)" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="72" font-weight="800">DevS69 (sdetkit)</text>
+  </g>
+  <text x="150" y="290" fill="#D9E7FF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="600">Production-ready SDET toolkit • Security-first • Auto-updating</text>
+
+  <rect x="150" y="340" width="250" height="54" rx="27" fill="#11284E" stroke="#3A6CB4"/>
+  <text x="186" y="374" fill="#A7CBFF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="700">CI + Quality</text>
+
+  <rect x="420" y="340" width="270" height="54" rx="27" fill="#11284E" stroke="#3A6CB4"/>
+  <text x="454" y="374" fill="#A7CBFF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="700">Code Scanning</text>
+
+  <rect x="710" y="340" width="340" height="54" rx="27" fill="#11284E" stroke="#3A6CB4"/>
+  <text x="742" y="374" fill="#A7CBFF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="700">Auto Maintenance Bots</text>
+
+  <text x="150" y="448" fill="#7FB3FF" font-family="JetBrains Mono,Consolas,monospace" font-size="22">sdetkit doctor --all   •   sdetkit repo check --profile enterprise</text>
+  <text x="150" y="490" fill="#7FB3FF" font-family="JetBrains Mono,Consolas,monospace" font-size="22">quality.sh cov         •   dependabot + security automation on schedule</text>
+</svg>
