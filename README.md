@@ -106,6 +106,8 @@ bash scripts/shell.sh
 - Release workflow: `.github/workflows/release.yml`
 - Version consistency guard: `.github/workflows/versioning.yml`
 - PR quality feedback: `.github/workflows/pr-quality-comment.yml`
+- Security scanning (CodeQL + secret scanning bot): `.github/workflows/security.yml`, `.github/workflows/security-maintenance-bot.yml`
+- Dependency auto-update + safe auto-merge: `.github/dependabot.yml`, `.github/workflows/dependency-auto-merge.yml`
 
 ## Contributing and support
 
