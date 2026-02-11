@@ -72,7 +72,8 @@ class Fixer(Protocol):
 
     def fix(
         self, repo_root: Path, findings: list[Finding], context: dict[str, Any]
-    ) -> list[Fix]: ...
+    ) -> list[Fix]:
+        pass
 
 
 @dataclass(frozen=True)
