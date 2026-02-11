@@ -24,3 +24,5 @@ build/
 *.egg-info/
 site/
 .mypy_cache/
+
+/tools/git-pushit
