@@ -16,3 +16,4 @@ nav:
   - Roadmap: roadmap.md
   - Contributing: contributing.md
   - Security: security.md
+  - Releasing: releasing.md

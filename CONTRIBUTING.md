@@ -1,50 +1,55 @@
 # Contributing
 
-Thanks for helping improve sdetkit.
+Thanks for helping improve `sdetkit`.
 
-## Setup
+## 1) Local development setup
 
 ```bash
 cd ~/sdet_bootcamp
 python3 -m venv .venv
-./.venv/bin/python -m pip install -r requirements-test.txt -r requirements-docs.txt -e .
+source .venv/bin/activate
+python -m pip install -U pip
+python -m pip install -e .[dev,test,docs]
 ```
 
-## Quality gates (same as CI)
+## 2) Enable pre-commit hooks
 
 ```bash
-bash scripts/check.sh all
-```
-
-Individual steps:
-
-```bash
-bash scripts/check.sh fmt
-bash scripts/check.sh lint
-bash scripts/check.sh types
-bash scripts/check.sh tests
-bash scripts/check.sh coverage
-bash scripts/check.sh docs
-```
-
-## Making changes
-
-- Prefer small PRs with clear intent.
-- Add/extend tests for behavior changes.
-- Keep types clean (mypy passes).
-- Keep formatting/lint clean (ruff passes).
-
-## PR checklist
-
-- [ ] `bash scripts/check.sh all` is green locally
-- [ ] Tests added/updated for the change
-- [ ] Docs updated if the CLI/API changed
-- [ ] PR description includes what/why + how to verify
-
-## Pre-commit (recommended)
-
-```bash
-python -m pip install pre-commit
 pre-commit install
 pre-commit run -a
 ```
+
+## 3) Run quality gates locally
+
+Use the same commands expected by CI:
+
+```bash
+pre-commit run -a
+bash quality.sh cov
+python -m build
+python -m twine check dist/*
+mkdocs build
+```
+
+## 4) Common day-to-day commands
+
+```bash
+ruff format .
+ruff check .
+mypy src
+pytest -q
+```
+
+## 5) Pull request checklist
+
+- [ ] `pre-commit run -a` passes.
+- [ ] `bash quality.sh cov` passes.
+- [ ] `python -m build` and `python -m twine check dist/*` pass.
+- [ ] `mkdocs build` passes for docs changes.
+- [ ] `CHANGELOG.md` updated if behavior changed.
+
+## 6) Commit guidance
+
+- Keep commits focused and easy to review.
+- Include tests for behavior changes.
+- Prefer typed public APIs and clear error messages.
