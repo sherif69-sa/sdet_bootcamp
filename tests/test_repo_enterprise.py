@@ -32,7 +32,6 @@ def test_enterprise_workflow_and_sarif_output(tmp_path: Path, capsys) -> None:
             "sarif",
         ]
     )
-    rc = cli.main(["repo", "check", str(tmp_path), "--allow-absolute-path", "--profile", "enterprise", "--format", "sarif"])
     assert rc == 1
     sarif = json.loads(capsys.readouterr().out)
     assert sarif["version"] == "2.1.0"
@@ -70,7 +69,6 @@ def test_enterprise_baseline_suppresses_findings(tmp_path: Path, capsys) -> None
             "baseline.json",
         ]
     )
-    rc = cli.main(["repo", "check", str(tmp_path), "--allow-absolute-path", "--format", "json", "--baseline", "baseline.json"])
     assert rc == 1
     report = json.loads(capsys.readouterr().out)
     assert all(f["code"] != "auth_header" for f in report["findings"])
@@ -89,7 +87,6 @@ def test_enterprise_changed_only_uses_diff_base(tmp_path: Path, capsys) -> None:
     subprocess.run(
         ["git", "checkout", "-b", "feature"], cwd=tmp_path, check=True, capture_output=True
     )
-    subprocess.run(["git", "checkout", "-b", "feature"], cwd=tmp_path, check=True, capture_output=True)
     (tmp_path / "new.txt").write_text("bad  \n", encoding="utf-8")
     subprocess.run(["git", "add", "."], cwd=tmp_path, check=True)
     subprocess.run(["git", "commit", "-m", "new"], cwd=tmp_path, check=True, capture_output=True)
