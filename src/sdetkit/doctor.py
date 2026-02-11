@@ -279,8 +279,6 @@ def main(argv: list[str] | None = None) -> int:
             else "virtual environment is not active (recommended for stable tooling/deps)",
         }
         score_items.append(venv_ok)
-        if not venv_ok:
-            ok = False
 
         present, missing = _check_tools()
         data["tools"] = present

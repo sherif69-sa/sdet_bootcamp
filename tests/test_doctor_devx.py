@@ -28,12 +28,15 @@ def test_doctor_dev_flags_report_missing_venv_and_pr_mode(tmp_path: Path, monkey
     monkeypatch.setattr(doctor, "_run", fake_run)
     monkeypatch.setattr(doctor, "_check_tools", lambda: (["git", "python3"], []))
     monkeypatch.setattr(doctor, "_in_virtualenv", lambda: False)
+    monkeypatch.setattr(
+        doctor, "_check_pyproject_toml", lambda _root: (True, "pyproject.toml is valid TOML")
+    )
     monkeypatch.chdir(root)
 
     rc = doctor.main(["--dev", "--ci", "--deps", "--clean-tree", "--pr"])
     out = capsys.readouterr()
 
-    assert rc == 1
+    assert rc == 0
     assert "### SDET Doctor Report" in out.out
     assert "`venv`" in out.out
     assert "virtual environment is not active" in out.out
