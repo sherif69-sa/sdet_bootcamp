@@ -60,6 +60,8 @@ def _check_pyproject_toml(root: Path) -> tuple[bool, str]:
 
 
 def _is_ignored_binary(p: Path) -> bool:
+    if any(part.endswith(".egg-info") for part in p.parts):
+        return True
     if p.suffix.lower() == ".pyc":
         return True
     parts = p.parts
@@ -180,7 +182,7 @@ def _recommendations(data: dict[str, Any]) -> list[str]:
         recs.append("Fix pyproject.toml syntax and re-run doctor before opening a PR.")
     if data.get("non_ascii"):
         recs.append(
-            "Replace non-ASCII artifacts in src/tools with UTF-8 text or move binaries outside scanned paths."
+            "Replace non-ASCII artifacts in src/ or tools/ with UTF-8 text, or move binaries outside scanned paths."
         )
     if data.get("ci_missing"):
         missing = ", ".join(str(x) for x in data["ci_missing"])
@@ -311,9 +313,9 @@ def main(argv: list[str] | None = None) -> int:
         check_ok = not bool(bad)
         data["checks"]["ascii"] = {
             "ok": check_ok,
-            "summary": "only ASCII content found under src/tools"
+            "summary": "only ASCII content found under src/ and tools/"
             if check_ok
-            else "non-ASCII bytes detected under src/tools",
+            else "non-ASCII bytes detected under src/ or tools/",
         }
         score_items.append(check_ok)
         if not check_ok:
