@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import importlib.metadata as importlib_metadata
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Protocol
@@ -156,6 +157,16 @@ TEMPLATE_DEPENDABOT = (
     "    schedule:\n"
     "      interval: weekly\n"
 )
+TEMPLATE_CODEOWNERS = "# Default owners\n* @org/team\n"
+TEMPLATE_PRE_COMMIT = (
+    "repos:\n"
+    "  - repo: https://github.com/pre-commit/pre-commit-hooks\n"
+    "    rev: v4.6.0\n"
+    "    hooks:\n"
+    "      - id: check-yaml\n"
+    "      - id: end-of-file-fixer\n"
+    "      - id: trailing-whitespace\n"
+)
 TEMPLATE_REPO_AUDIT_WORKFLOW = (
     "name: repo-audit\n"
     "on:\n"
@@ -200,6 +211,277 @@ class _MissingFileRule:
                 },
             ).with_fingerprint()
         ]
+
+
+@dataclass(frozen=True)
+class _SecuritySecretsRule:
+    meta: RuleMeta
+
+    def run(self, repo_root: Path, context: dict[str, Any]) -> list[Finding]:
+        exec_ctx = context.get("_exec_ctx")
+        findings: list[Finding] = []
+        allow_fixture_prefixes = ("tests/fixtures/", "test/fixtures/")
+        key_names = {"id_rsa", "id_dsa"}
+        key_suffixes = (".pem", ".key")
+        for path in sorted(repo_root.rglob("*"), key=lambda p: p.as_posix()):
+            if not path.is_file():
+                continue
+            rel = path.relative_to(repo_root).as_posix()
+            if rel.startswith(".git/"):
+                continue
+            if exec_ctx is not None and hasattr(exec_ctx, "track_file"):
+                exec_ctx.track_file(rel)
+            name = path.name
+            lower = name.lower()
+            is_fixture = any(rel.startswith(prefix) for prefix in allow_fixture_prefixes)
+
+            env_like = (
+                lower == ".env"
+                or (lower.startswith(".env.") and lower != ".env.example")
+                or lower == ".envrc"
+            )
+            key_like = lower in key_names or lower.endswith(key_suffixes)
+
+            if env_like:
+                findings.append(
+                    Finding(
+                        rule_id=self.meta.id,
+                        severity="warn",
+                        message="potential secret file committed to repository",
+                        path=rel,
+                        line=1,
+                        details={
+                            "pack": _pack_from_tags(self.meta.tags),
+                            "fixture_allowlisted": is_fixture,
+                            "fixable": self.meta.supports_fix,
+                        },
+                    ).with_fingerprint()
+                )
+                continue
+
+            if key_like and not is_fixture:
+                findings.append(
+                    Finding(
+                        rule_id=self.meta.id,
+                        severity="error",
+                        message="private key material-like filename committed to repository",
+                        path=rel,
+                        line=1,
+                        details={
+                            "pack": _pack_from_tags(self.meta.tags),
+                            "fixture_allowlisted": is_fixture,
+                            "fixable": self.meta.supports_fix,
+                        },
+                    ).with_fingerprint()
+                )
+        return findings
+
+
+@dataclass(frozen=True)
+class _SecurityFixtureAllowlistRule:
+    meta: RuleMeta
+
+    def run(self, repo_root: Path, context: dict[str, Any]) -> list[Finding]:
+        exec_ctx = context.get("_exec_ctx")
+        findings: list[Finding] = []
+        allow_fixture_prefixes = ("tests/fixtures/", "test/fixtures/")
+        key_names = {"id_rsa", "id_dsa"}
+        key_suffixes = (".pem", ".key")
+        for path in sorted(repo_root.rglob("*"), key=lambda p: p.as_posix()):
+            if not path.is_file():
+                continue
+            rel = path.relative_to(repo_root).as_posix()
+            if exec_ctx is not None and hasattr(exec_ctx, "track_file"):
+                exec_ctx.track_file(rel)
+            if not any(rel.startswith(prefix) for prefix in allow_fixture_prefixes):
+                continue
+            lower = path.name.lower()
+            if lower in key_names or lower.endswith(key_suffixes):
+                findings.append(
+                    Finding(
+                        rule_id=self.meta.id,
+                        severity=self.meta.default_severity,
+                        message="fixture allowlist matched key-like filename; verify it is sanitized",
+                        path=rel,
+                        line=1,
+                        details={"pack": _pack_from_tags(self.meta.tags), "fixable": False},
+                    ).with_fingerprint()
+                )
+        return findings
+
+
+@dataclass(frozen=True)
+class _SecurityCodeownersRule:
+    meta: RuleMeta
+
+    def run(self, repo_root: Path, context: dict[str, Any]) -> list[Finding]:
+        exec_ctx = context.get("_exec_ctx")
+        candidates = ("CODEOWNERS", ".github/CODEOWNERS", "docs/CODEOWNERS")
+        for rel in candidates:
+            if exec_ctx is not None and hasattr(exec_ctx, "track_file"):
+                exec_ctx.track_file(rel)
+            if (repo_root / rel).exists():
+                return []
+        return [
+            Finding(
+                rule_id=self.meta.id,
+                severity=self.meta.default_severity,
+                message="missing CODEOWNERS file in supported locations",
+                path=".github/CODEOWNERS",
+                line=1,
+                details={
+                    "pack": _pack_from_tags(self.meta.tags),
+                    "fixable": self.meta.supports_fix,
+                },
+            ).with_fingerprint()
+        ]
+
+
+@dataclass(frozen=True)
+class _SecurityWorkflowRule:
+    meta: RuleMeta
+
+    def run(self, repo_root: Path, context: dict[str, Any]) -> list[Finding]:
+        workflows_dir = repo_root / ".github" / "workflows"
+        exec_ctx = context.get("_exec_ctx")
+        findings: list[Finding] = []
+        if exec_ctx is not None and hasattr(exec_ctx, "track_file"):
+            exec_ctx.track_file(".github/workflows")
+        if not workflows_dir.exists() or not workflows_dir.is_dir():
+            return findings
+
+        floating_refs = {"main", "master", "latest", "head"}
+        sha_ref = re.compile(r"^[0-9a-f]{40}$")
+        tag_ref = re.compile(r"^v?\d+(?:\.\d+){0,3}$")
+
+        for wf in sorted(workflows_dir.iterdir(), key=lambda p: p.as_posix()):
+            if not wf.is_file() or wf.suffix not in {".yml", ".yaml"}:
+                continue
+            rel = wf.relative_to(repo_root).as_posix()
+            if exec_ctx is not None and hasattr(exec_ctx, "track_file"):
+                exec_ctx.track_file(rel)
+            lines = wf.read_text(encoding="utf-8", errors="ignore").splitlines()
+            saw_permissions = False
+            for idx, raw in enumerate(lines, start=1):
+                stripped = raw.strip()
+                if stripped.startswith("permissions:"):
+                    saw_permissions = True
+                if "uses:" not in stripped:
+                    continue
+                _, rhs = stripped.split("uses:", 1)
+                spec = rhs.strip().strip("\"'")
+                if "@" not in spec:
+                    continue
+                ref = spec.rsplit("@", 1)[1].strip()
+                low = ref.lower()
+                if low in floating_refs and self.meta.id == "SEC_GH_ACTIONS_PINNING":
+                    findings.append(
+                        Finding(
+                            rule_id=self.meta.id,
+                            severity=self.meta.default_severity,
+                            message="workflow action uses floating reference; pin to tag or commit SHA",
+                            path=rel,
+                            line=idx,
+                            details={
+                                "pack": _pack_from_tags(self.meta.tags),
+                                "ref": ref,
+                                "fixable": False,
+                            },
+                        ).with_fingerprint()
+                    )
+                    continue
+                if sha_ref.match(ref) or tag_ref.match(ref):
+                    continue
+
+            if not saw_permissions and self.meta.id == "SEC_GH_PERMISSIONS_MISSING":
+                findings.append(
+                    Finding(
+                        rule_id=self.meta.id,
+                        severity=self.meta.default_severity,
+                        message="workflow missing permissions block; define least-privilege permissions",
+                        path=rel,
+                        line=1,
+                        details={"pack": _pack_from_tags(self.meta.tags), "fixable": False},
+                    ).with_fingerprint()
+                )
+        return findings
+
+
+@dataclass(frozen=True)
+class _SecurityPythonHygieneRule:
+    meta: RuleMeta
+
+    def run(self, repo_root: Path, context: dict[str, Any]) -> list[Finding]:
+        exec_ctx = context.get("_exec_ctx")
+        if exec_ctx is not None and hasattr(exec_ctx, "track_file"):
+            exec_ctx.track_file("pyproject.toml")
+        has_pyproject = (repo_root / "pyproject.toml").exists()
+        has_python = has_pyproject or any(repo_root.rglob("*.py"))
+        if self.meta.id == "SEC_PY_DEPENDENCY_FILES_MISSING":
+            req_candidates = [
+                p.relative_to(repo_root).as_posix()
+                for p in sorted(repo_root.glob("requirements*.txt"), key=lambda p: p.as_posix())
+            ]
+            if exec_ctx is not None and hasattr(exec_ctx, "track_file"):
+                exec_ctx.track_file("requirements.txt")
+                for req in req_candidates:
+                    exec_ctx.track_file(req)
+            if not has_python:
+                return []
+            if has_pyproject or req_candidates:
+                return []
+            return [
+                Finding(
+                    rule_id=self.meta.id,
+                    severity=self.meta.default_severity,
+                    message="python project missing dependency declaration file",
+                    path="pyproject.toml",
+                    line=1,
+                    details={"pack": _pack_from_tags(self.meta.tags), "fixable": False},
+                ).with_fingerprint()
+            ]
+        if self.meta.id == "SEC_PY_PRECOMMIT_MISSING":
+            target = ".pre-commit-config.yaml"
+            if exec_ctx is not None and hasattr(exec_ctx, "track_file"):
+                exec_ctx.track_file(target)
+            if not has_python or (repo_root / target).exists():
+                return []
+            return [
+                Finding(
+                    rule_id=self.meta.id,
+                    severity=self.meta.default_severity,
+                    message="missing .pre-commit-config.yaml for python hygiene checks",
+                    path=target,
+                    line=1,
+                    details={"pack": _pack_from_tags(self.meta.tags), "fixable": True},
+                ).with_fingerprint()
+            ]
+        if self.meta.id == "SEC_PY_BANDIT_CONFIG_HINT":
+            bandit_targets = (".bandit", "pyproject.toml", "bandit.yaml", "bandit.yml")
+            if exec_ctx is not None and hasattr(exec_ctx, "track_file"):
+                for rel in bandit_targets:
+                    exec_ctx.track_file(rel)
+            has_bandit = (
+                (repo_root / ".bandit").exists()
+                or (repo_root / "bandit.yaml").exists()
+                or (repo_root / "bandit.yml").exists()
+            )
+            if not has_bandit and has_pyproject:
+                text = (repo_root / "pyproject.toml").read_text(encoding="utf-8", errors="ignore")
+                has_bandit = "[tool.bandit" in text
+            if not has_python or has_bandit:
+                return []
+            return [
+                Finding(
+                    rule_id=self.meta.id,
+                    severity=self.meta.default_severity,
+                    message="optional bandit configuration not found",
+                    path="pyproject.toml",
+                    line=1,
+                    details={"pack": _pack_from_tags(self.meta.tags), "fixable": False},
+                ).with_fingerprint()
+            ]
+        return []
 
 
 @dataclass(frozen=True)
@@ -292,7 +574,7 @@ def builtin_rules() -> list[AuditRule]:
         ),
         _MissingFileRule(
             meta=RuleMeta(
-                id="SEC_DEPENDABOT_MISSING",
+                id="SEC_GH_DEPENDABOT_MISSING",
                 title="Dependabot config exists",
                 description="Repository should configure dependency update automation.",
                 default_severity="warn",
@@ -300,6 +582,100 @@ def builtin_rules() -> list[AuditRule]:
                 supports_fix=True,
             ),
             rel_path=".github/dependabot.yml",
+        ),
+        _SecuritySecretsRule(
+            meta=RuleMeta(
+                id="SEC_SECRETS_ENV_IN_REPO",
+                title="Secret-like files are not committed",
+                description=(
+                    "Detects likely secret-bearing files such as .env variants and private-key "
+                    "filename patterns, with fixture allowlist handling."
+                ),
+                default_severity="warn",
+                tags=("pack:security", "secrets"),
+                supports_fix=False,
+            )
+        ),
+        _SecurityCodeownersRule(
+            meta=RuleMeta(
+                id="SEC_GH_CODEOWNERS_MISSING",
+                title="CODEOWNERS exists",
+                description="Repository should define code ownership coverage.",
+                default_severity="warn",
+                tags=("pack:security", "github"),
+                supports_fix=True,
+            )
+        ),
+        _MissingFileRule(
+            meta=RuleMeta(
+                id="SEC_GH_SECURITY_MD_MISSING",
+                title="SECURITY.md exists",
+                description="Repository should provide a security disclosure policy.",
+                default_severity="warn",
+                tags=("pack:security", "github"),
+                supports_fix=True,
+            ),
+            rel_path="SECURITY.md",
+        ),
+        _SecurityWorkflowRule(
+            meta=RuleMeta(
+                id="SEC_GH_ACTIONS_PINNING",
+                title="GitHub Actions are pinned",
+                description="Workflow actions should avoid floating refs such as @main/@master.",
+                default_severity="warn",
+                tags=("pack:security", "github", "actions"),
+                supports_fix=False,
+            )
+        ),
+        _SecurityWorkflowRule(
+            meta=RuleMeta(
+                id="SEC_GH_PERMISSIONS_MISSING",
+                title="GitHub Actions permissions declared",
+                description="Workflow files should declare permissions blocks for least privilege.",
+                default_severity="warn",
+                tags=("pack:security", "github", "actions"),
+                supports_fix=False,
+            )
+        ),
+        _SecurityPythonHygieneRule(
+            meta=RuleMeta(
+                id="SEC_PY_DEPENDENCY_FILES_MISSING",
+                title="Python dependency file present",
+                description="Python repos should include pyproject.toml or requirements*.txt.",
+                default_severity="warn",
+                tags=("pack:security", "python"),
+                supports_fix=False,
+            )
+        ),
+        _SecurityPythonHygieneRule(
+            meta=RuleMeta(
+                id="SEC_PY_PRECOMMIT_MISSING",
+                title="pre-commit config present",
+                description="Python repos should include a baseline pre-commit configuration.",
+                default_severity="warn",
+                tags=("pack:security", "python"),
+                supports_fix=True,
+            )
+        ),
+        _SecurityPythonHygieneRule(
+            meta=RuleMeta(
+                id="SEC_PY_BANDIT_CONFIG_HINT",
+                title="Bandit config hint",
+                description="Informational hint when no bandit configuration is found.",
+                default_severity="info",
+                tags=("pack:security", "python"),
+                supports_fix=False,
+            )
+        ),
+        _SecurityFixtureAllowlistRule(
+            meta=RuleMeta(
+                id="SEC_SECRETS_TEST_FIXTURES_ALLOW",
+                title="Fixture secret filename allowlist",
+                description="Allows test fixture paths while still warning on key-like filenames.",
+                default_severity="warn",
+                tags=("pack:security", "secrets"),
+                supports_fix=False,
+            )
         ),
         _MissingFileRule(
             meta=RuleMeta(
@@ -328,7 +704,14 @@ def builtin_fixers() -> list[Fixer]:
         _MissingFileFixer(
             "CORE_MISSING_PR_TEMPLATE", ".github/PULL_REQUEST_TEMPLATE.md", TEMPLATE_PR
         ),
-        _MissingFileFixer("SEC_DEPENDABOT_MISSING", ".github/dependabot.yml", TEMPLATE_DEPENDABOT),
+        _MissingFileFixer(
+            "SEC_GH_DEPENDABOT_MISSING", ".github/dependabot.yml", TEMPLATE_DEPENDABOT
+        ),
+        _MissingFileFixer("SEC_GH_SECURITY_MD_MISSING", "SECURITY.md", TEMPLATE_SECURITY),
+        _MissingFileFixer("SEC_GH_CODEOWNERS_MISSING", ".github/CODEOWNERS", TEMPLATE_CODEOWNERS),
+        _MissingFileFixer(
+            "SEC_PY_PRECOMMIT_MISSING", ".pre-commit-config.yaml", TEMPLATE_PRE_COMMIT
+        ),
         _MissingFileFixer(
             "ENT_REPO_AUDIT_WORKFLOW_MISSING",
             ".github/workflows/repo-audit.yml",

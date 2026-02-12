@@ -107,6 +107,8 @@ Init examples:
 
 See: repo-init.md and plugins-and-fix.md
 
+See also: security-suite.md
+
 See also: pr-automation.md
 
 GitHub Action integration:

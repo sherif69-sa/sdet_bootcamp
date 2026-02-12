@@ -1021,11 +1021,17 @@ def _to_sarif(payload: dict[str, Any]) -> dict[str, Any]:
             or f"{item.get('check', 'repo_audit')}/{item.get('code', 'unknown')}"
         )
         if rid not in rules:
+            tags = item.get("rule_tags", [])
+            if not isinstance(tags, list):
+                tags = []
             rules[rid] = {
                 "id": rid,
-                "name": rid,
-                "shortDescription": {"text": str(item.get("message", rid))},
-                "help": {"text": str(item.get("remediation", item.get("message", "")))},
+                "name": str(item.get("rule_title") or rid),
+                "shortDescription": {
+                    "text": str(item.get("rule_title") or item.get("message", rid))
+                },
+                "help": {"text": str(item.get("rule_description") or item.get("remediation", ""))},
+                "properties": {"tags": tags, "pack": item.get("pack", "core")},
             }
         results.append(
             {
@@ -1837,6 +1843,9 @@ def _plugin_finding_to_dict(finding: PluginFinding, meta: RuleMeta) -> dict[str,
         "message": normalized.message,
         "confidence": "high",
         "remediation": meta.description,
+        "rule_title": meta.title,
+        "rule_description": meta.description,
+        "rule_tags": list(meta.tags),
         "snippet": "",
         "fingerprint": normalized.fingerprint,
         "pack": pack,
