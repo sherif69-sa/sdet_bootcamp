@@ -16,6 +16,9 @@ on:
   schedule:
     - cron: "0 3 * * 0"  # weekly (UTC)
 
+permissions:
+  contents: read
+
 concurrency:
   group: mutmut-${{ github.ref }}
   cancel-in-progress: true
@@ -25,9 +28,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: "pip"
@@ -99,7 +102,7 @@ jobs:
 
       - name: Upload mutmut report
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: mutmut-${{ github.run_id }}
           path: artifacts

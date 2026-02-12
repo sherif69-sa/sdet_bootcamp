@@ -24,7 +24,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -47,7 +47,7 @@ jobs:
           git fetch --tags --force origin
           git checkout "refs/tags/${{ steps.resolved.outputs.tag }}"
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: "pip"
@@ -69,7 +69,7 @@ jobs:
         run: |
           set -euo pipefail
           python -m pip install -r requirements-test.txt -r requirements-docs.txt -e .
-          python -m pip install build twine
+          python -m pip install build==1.2.2.post1 twine==6.1.0
           bash quality.sh cov
 
       - name: Build dist
