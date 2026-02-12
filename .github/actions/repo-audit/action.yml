@@ -53,7 +53,6 @@ runs:
         AUDIT_PATH: ${{ inputs.path }}
       run: |
         set -euo pipefail
-        python -m pip install --upgrade pip
 
         if python -m pip install sdetkit; then
           exit 0

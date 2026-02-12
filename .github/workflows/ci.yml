@@ -26,7 +26,6 @@ jobs:
 
       - name: Install project
         run: |
-          python -m pip install -U pip
           python -m pip install -e .
 
       - name: Run repo audit
@@ -53,7 +52,6 @@ jobs:
 
       - name: Install project + dev/test extras
         run: |
-          python -m pip install -U pip
           python -m pip install -e .[dev,test]
 
       - name: Ruff format check
@@ -85,7 +83,6 @@ jobs:
 
       - name: Install packaging tooling
         run: |
-          python -m pip install -U pip
           python -m pip install -e .[dev]
 
       - name: Build distributions
@@ -119,7 +116,6 @@ jobs:
         run: |
           python -m venv .venv-smoke
           . .venv-smoke/bin/activate
-          python -m pip install -U pip
           python -m pip install dist/*.whl
           sdetkit --help
 
@@ -138,7 +134,6 @@ jobs:
 
       - name: Install project + all extras
         run: |
-          python -m pip install -U pip
           python -m pip install -e .[dev,test,docs]
 
       - name: Pre-commit
