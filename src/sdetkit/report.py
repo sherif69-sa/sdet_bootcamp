@@ -338,10 +338,6 @@ def build_dashboard(history_dir: Path, output: Path, fmt: str, since: int | None
 
     totals = [
         int(item.get("aggregates", {}).get("counts_by_severity", {}).get("error", 0))
-        for item in runs
-    ]
-    totals = [
-        int(item.get("aggregates", {}).get("counts_by_severity", {}).get("error", 0))
         + int(item.get("aggregates", {}).get("counts_by_severity", {}).get("warn", 0))
         for item in runs
     ]
