@@ -373,12 +373,12 @@ def _apply_policy(
 
 
 def _resolve_threshold(ns: argparse.Namespace, policy: dict[str, Any]) -> str:
-    if ns.fail_on:
+    if isinstance(ns.fail_on, str):
         return ns.fail_on
     thresholds = policy.get("thresholds") if isinstance(policy, dict) else None
     if isinstance(thresholds, dict):
         candidate = thresholds.get("fail_on")
-        if candidate in SEVERITY_ORDER:
+        if isinstance(candidate, str) and candidate in SEVERITY_ORDER:
             return candidate
     return "high"
 
