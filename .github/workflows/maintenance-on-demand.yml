@@ -36,11 +36,11 @@ jobs:
   maintenance:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: pip
@@ -55,7 +55,7 @@ jobs:
         run: bash scripts/maintenance_ci.sh "${{ inputs.mode }}" "${{ inputs.fix && 'true' || 'false' }}" artifacts/maintenance
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: maintenance-on-demand
           path: |
