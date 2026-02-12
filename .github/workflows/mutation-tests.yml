@@ -16,6 +16,9 @@ on:
   schedule:
     - cron: "0 3 * * 0"  # weekly (UTC)
 
+permissions:
+  contents: read
+
 concurrency:
   group: mutmut-${{ github.ref }}
   cancel-in-progress: true

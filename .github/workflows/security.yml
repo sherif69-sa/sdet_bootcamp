@@ -8,6 +8,9 @@ on:
   schedule:
     - cron: "0 2 * * 1"  # weekly (UTC)
 
+permissions:
+  contents: read
+
 jobs:
   codeql:
     runs-on: ubuntu-latest

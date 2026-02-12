@@ -54,25 +54,17 @@ runs:
       run: |
         set -euo pipefail
 
-        if python -m pip install sdetkit; then
-          exit 0
-        fi
-
         if [ -f "$GITHUB_WORKSPACE/pyproject.toml" ]; then
-          echo "PyPI install unavailable; falling back to editable install from GITHUB_WORKSPACE." >&2
           python -m pip install -e "$GITHUB_WORKSPACE"
           exit 0
         fi
 
         if [ -f "$AUDIT_PATH/pyproject.toml" ]; then
-          echo "PyPI install unavailable; falling back to editable install from audit path." >&2
           python -m pip install -e "$AUDIT_PATH"
           exit 0
         fi
 
-        echo "Failed to install sdetkit from PyPI, and no local pyproject.toml was found for fallback install." >&2
-        echo "Publish sdetkit, configure an internal index, or run this action in a repo containing sdetkit source." >&2
-        exit 1
+        python -m pip install sdetkit
 
     - name: Run sdetkit repo audit
       shell: bash

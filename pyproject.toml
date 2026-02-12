@@ -40,11 +40,11 @@ Changelog = "https://github.com/sherif69-sa/DevS69-sdetkit/blob/main/CHANGELOG.m
 
 [project.optional-dependencies]
 dev = [
-  "build",
-  "mypy",
-  "pre-commit",
-  "ruff",
-  "twine"
+  "build==1.2.2.post1",
+  "mypy==1.17.1",
+  "pre-commit==4.3.0",
+  "ruff==0.12.10",
+  "twine==6.1.0"
 ]
 test = [
   "hypothesis",
@@ -114,6 +114,9 @@ runner = "PYTHONPATH=src pytest -q --ignore=mutants"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+  "network: allow real network access for this test",
+]
 
 [project.scripts]
 sdetkit = "sdetkit.cli:main"

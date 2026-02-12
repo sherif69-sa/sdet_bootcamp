@@ -69,7 +69,7 @@ jobs:
         run: |
           set -euo pipefail
           python -m pip install -r requirements-test.txt -r requirements-docs.txt -e .
-          python -m pip install build twine
+          python -m pip install build==1.2.2.post1 twine==6.1.0
           bash quality.sh cov
 
       - name: Build dist
