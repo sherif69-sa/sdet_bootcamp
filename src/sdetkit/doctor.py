@@ -12,6 +12,8 @@ from importlib import metadata
 from pathlib import Path
 from typing import Any, cast
 
+from .import_hazards import find_stdlib_shadowing
+
 
 def _run(cmd: list[str], *, cwd: str | Path | None = None) -> tuple[int, str, str]:
     p = subprocess.run(
@@ -382,6 +384,14 @@ def main(argv: list[str] | None = None) -> int:
 
     data["score"] = _calculate_score(score_items)
     data["recommendations"] = _recommendations(data)
+    shadow = find_stdlib_shadowing(Path("."))
+    if shadow:
+        print("[WARN] stdlib-shadow: " + ", ".join(shadow))
+        _recs = locals().get("recommendations")
+        if isinstance(_recs, list):
+            _recs.append(
+                "Remove top-level modules under src/ that shadow the Python standard library."
+            )
     data["ok"] = bool(ok)
 
     if ns.json:
