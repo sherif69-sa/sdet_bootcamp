@@ -1,0 +1,56 @@
+<svg width="420" height="170" viewBox="0 0 420 170" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Documentation">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="420" y2="170" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B1020"/>
+      <stop offset="1" stop-color="#162447"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#00D4FF"/>
+      <stop offset="1" stop-color="#7B61FF"/>
+    </linearGradient>
+    <filter id="lift" x="-20%" y="-20%" width="140%" height="140%">
+      <feOffset dy="6" result="off"/>
+      <feGaussianBlur in="off" stdDeviation="10" result="blur"/>
+      <feColorMatrix in="blur" type="matrix"
+        values="0 0 0 0 0
+                0 0 0 0 0
+                0 0 0 0 0
+                0 0 0 0.35 0" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="420" height="170" rx="22" fill="url(#bg)"/>
+  <g opacity="0.18" stroke="#9CC9FF">
+    <path d="M18 44H402"/>
+    <path d="M18 86H402"/>
+    <path d="M18 128H402"/>
+    <path d="M62 18V152"/>
+    <path d="M150 18V152"/>
+    <path d="M238 18V152"/>
+    <path d="M326 18V152"/>
+  </g>
+
+  <g filter="url(#lift)">
+    <rect x="16" y="16" width="388" height="138" rx="18" fill="#0D1734" stroke="#284B7A"/>
+  </g>
+
+  <circle cx="338" cy="60" r="34" fill="#1B3A6B" opacity="0.35"/>
+  <circle cx="80" cy="126" r="40" fill="#0F2E56" opacity="0.38"/>
+
+  <rect x="286" y="26" width="98" height="30" rx="15" fill="#08152E" stroke="#2D5EA3" opacity="0.95"/>
+  <text x="335" y="47" text-anchor="middle" fill="#A7CBFF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13" font-weight="800">Docs</text>
+
+  <path d="M72 62C72 57 76 53 81 53H137C142 53 146 57 146 62V128C146 133 142 137 137 137H81C76 137 72 133 72 128V62Z" stroke="url(#accent)" stroke-width="3"/>
+  <path d="M86 70H132" stroke="#A7CBFF" stroke-width="2" opacity="0.9"/>
+  <path d="M86 86H126" stroke="#A7CBFF" stroke-width="2" opacity="0.75"/>
+  <path d="M86 102H120" stroke="#A7CBFF" stroke-width="2" opacity="0.6"/>
+  <path d="M86 118H114" stroke="#A7CBFF" stroke-width="2" opacity="0.5"/>
+
+  <text x="170" y="78" fill="url(#accent)" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="26" font-weight="850">Documentation</text>
+  <text x="170" y="106" fill="#D9E7FF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="15" font-weight="600">CLI guides + architecture</text>
+  <text x="170" y="128" fill="#9CC9FF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13" font-weight="600">Fast onboarding paths</text>
+</svg>
