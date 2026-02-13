@@ -3,7 +3,7 @@
 Commercial use of this repository requires a separate paid license agreement
 from DevS69.
 
-To request pricing and terms, contact: `<CONTACT_EMAIL_OR_URL>`
+To request pricing and terms, contact: `Sherif69-sa`
 
 ## What counts as commercial use?
 
