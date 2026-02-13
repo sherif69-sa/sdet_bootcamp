@@ -31,3 +31,6 @@ doctor.json
 
 # local tooling
 .sdetkit/
+
+# docs build output
+site/
