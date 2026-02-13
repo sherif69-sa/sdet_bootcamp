@@ -921,6 +921,19 @@ def _report_payload(
         counts[f.severity] = counts.get(f.severity, 0) + 1
         by_check[f.check] = by_check.get(f.check, 0) + 1
     policy_hash = hashlib.sha256((policy_text or "").encode("utf-8")).hexdigest()
+    generated_at = ""
+    if profile == "enterprise":
+        source_date_epoch = os.environ.get("SOURCE_DATE_EPOCH")
+        if source_date_epoch:
+            try:
+                generated_at = dt.datetime.fromtimestamp(int(source_date_epoch), tz=_UTC).strftime(
+                    "%Y-%m-%dT%H:%M:%SZ"
+                )
+            except ValueError:
+                generated_at = dt.datetime.now(_UTC).isoformat()
+        else:
+            generated_at = dt.datetime.now(_UTC).isoformat()
+
     return {
         "root": str(root),
         "metadata": {
@@ -928,9 +941,7 @@ def _report_payload(
             "version": "1.0.0",
             "profile": profile,
             "git_commit": _git_commit_sha(root),
-            "generated_at_utc": dt.datetime.now(_UTC).isoformat()
-            if profile == "enterprise"
-            else "",
+            "generated_at_utc": generated_at,
             "policy_hash": policy_hash,
         },
         "summary": {
@@ -953,6 +964,14 @@ def _to_sarif(payload: dict[str, Any]) -> dict[str, Any]:
             normalized = normalized[3:]
         normalized = normalized.lstrip("/")
         return normalized or "."
+
+    def _as_int(value: Any, default: int = 1) -> int:
+        if isinstance(value, int):
+            return value
+        try:
+            return int(str(value))
+        except (TypeError, ValueError):
+            return default
 
     rules: dict[str, dict[str, Any]] = {}
     results: list[dict[str, Any]] = []
@@ -1004,6 +1023,31 @@ def _to_sarif(payload: dict[str, Any]) -> dict[str, Any]:
                 ],
             }
         )
+    results.sort(
+        key=lambda item: (
+            str(item.get("ruleId", "")),
+            str(item.get("level", "")),
+            str(
+                item.get("locations", [{}])[0]
+                .get("physicalLocation", {})
+                .get("artifactLocation", {})
+                .get("uri", "")
+            ),
+            _as_int(
+                item.get("locations", [{}])[0]
+                .get("physicalLocation", {})
+                .get("region", {})
+                .get("startLine", 1)
+            ),
+            _as_int(
+                item.get("locations", [{}])[0]
+                .get("physicalLocation", {})
+                .get("region", {})
+                .get("startColumn", 1)
+            ),
+            str(item.get("message", {}).get("text", "")),
+        )
+    )
     rules_list = [rules[key] for key in sorted(rules)]
     summary = payload.get("summary") if isinstance(payload, dict) else None
     run_properties: dict[str, Any] = {}

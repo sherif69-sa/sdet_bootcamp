@@ -14,6 +14,7 @@ def _run(tool_root: Path, cwd: Path, *args: str) -> subprocess.CompletedProcess[
     env = os.environ.copy()
     env["PYTHONPATH"] = str(tool_root / "src")
     env["PYTHONHASHSEED"] = "0"
+    env["SOURCE_DATE_EPOCH"] = "1700000000"
     return subprocess.run(
         [sys.executable, "-m", "sdetkit", "repo", *args],
         cwd=str(cwd),
@@ -82,6 +83,32 @@ def _scrub_obj(obj, *, drop_stats: bool, _path: tuple[str, ...] = ()):
         return obj
 
     return obj
+
+
+def _assert_sarif_shape(doc: dict) -> None:
+    assert isinstance(doc.get("version"), str)
+    assert isinstance(doc.get("runs"), list)
+    assert doc["runs"], "expected at least one SARIF run"
+
+    for run in doc["runs"]:
+        assert isinstance(run, dict)
+        results = run.get("results")
+        assert isinstance(results, list)
+        for result in results:
+            assert isinstance(result.get("ruleId"), str)
+            msg = result.get("message")
+            assert isinstance(msg, dict) and isinstance(msg.get("text"), str)
+            locations = result.get("locations")
+            if locations is not None:
+                assert isinstance(locations, list)
+
+
+def _assert_html_shape(rendered: str) -> None:
+    lower = rendered.lower()
+    assert "<html" in lower
+    assert "</html>" in lower
+    assert "<body" in lower
+    assert not rendered.startswith("Repo audit:")
 
 
 def _parse_json(proc: subprocess.CompletedProcess[str]) -> dict:
@@ -187,6 +214,9 @@ def test_repo_check_export_formats_are_stable(tmp_path: Path) -> None:
         if fmt in ("json", "sarif"):
             j1 = _scrub_obj(json.loads(p1.stdout), drop_stats=True)
             j2 = _scrub_obj(json.loads(p2.stdout), drop_stats=True)
+            if fmt == "sarif":
+                _assert_sarif_shape(j1)
+                _assert_sarif_shape(j2)
             t1 = _norm_text(json.dumps(j1, sort_keys=True), repo)
             t2 = _norm_text(json.dumps(j2, sort_keys=True), repo)
             assert t1 == t2
@@ -195,7 +225,7 @@ def test_repo_check_export_formats_are_stable(tmp_path: Path) -> None:
             t2 = _norm_text(p2.stdout, repo)
             assert t1 == t2
             if fmt == "html":
-                assert "<html" in t1.lower()
+                _assert_html_shape(t1)
 
 
 def test_repo_audit_export_formats_are_stable(tmp_path: Path) -> None:
@@ -236,6 +266,9 @@ def test_repo_audit_export_formats_are_stable(tmp_path: Path) -> None:
         if fmt in ("json", "sarif"):
             j1 = _scrub_obj(json.loads(p1.stdout), drop_stats=True)
             j2 = _scrub_obj(json.loads(p2.stdout), drop_stats=True)
+            if fmt == "sarif":
+                _assert_sarif_shape(j1)
+                _assert_sarif_shape(j2)
             t1 = _norm_text(json.dumps(j1, sort_keys=True), repo)
             t2 = _norm_text(json.dumps(j2, sort_keys=True), repo)
             assert t1 == t2
@@ -244,4 +277,4 @@ def test_repo_audit_export_formats_are_stable(tmp_path: Path) -> None:
             t2 = _norm_text(p2.stdout, repo)
             assert t1 == t2
             if fmt == "html":
-                assert "<html" in t1.lower()
+                _assert_html_shape(t1)
