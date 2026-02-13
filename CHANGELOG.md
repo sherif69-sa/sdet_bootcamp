@@ -1,4 +1,8 @@
 # Changelog
+## [1.0.2]
+
+- Packaging: modernize license metadata.
+
 
 ## v1.0.1
 - CI gate: run `sdetkit doctor --all` and `sdetkit repo check --profile enterprise` on every PR.
