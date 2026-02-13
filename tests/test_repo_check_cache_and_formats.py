@@ -167,10 +167,10 @@ def test_repo_audit_changed_only_cache_hit_and_invalidation(tmp_path: Path) -> N
     )
     assert p3.returncode == 0, p3.stderr
     j3 = _parse_json(p3)
-    h3, m3 = _cache_totals(j3)
+    _, m3 = _cache_totals(j3)
 
     assert m3 >= m2
-    assert h3 <= h2
+    assert j3.get("summary", {}).get("cache", {}).get("hit") is False
 
 
 def test_repo_check_export_formats_are_stable(tmp_path: Path) -> None:
