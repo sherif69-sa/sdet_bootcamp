@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.0.1
+- CI gate: run `sdetkit doctor --all` and `sdetkit repo check --profile enterprise` on every PR.
+
 ## v1.0.0
 - Enterprise hardening: GitHub Actions pinned to commit SHAs.
 - Dependency hygiene: requirements pinned and lockfiles added.
