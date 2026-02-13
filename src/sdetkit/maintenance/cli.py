@@ -20,10 +20,26 @@ class StderrLogger:
         print(message, file=sys.stderr)
 
 
+def _generated_at(env: dict[str, str]) -> str:
+    s = env.get("SDETKIT_NOW")
+    if not s:
+        return datetime.now(UTC).isoformat()
+    try:
+        if s.endswith("Z"):
+            s = s[:-1] + "+00:00"
+        dt = datetime.fromisoformat(s)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=UTC)
+        return dt.astimezone(UTC).isoformat()
+    except Exception:
+        return datetime.now(UTC).isoformat()
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="sdetkit maintenance")
     parser.add_argument("--format", choices=["text", "json", "md"], default="text")
     parser.add_argument("--out", default=None)
+    parser.add_argument("--allow-network", action="store_true")
     parser.add_argument("--mode", choices=["quick", "full"], default="quick")
     parser.add_argument("--fix", action="store_true")
     parser.add_argument("--quiet", action="store_true")
@@ -104,7 +120,7 @@ def _build_report(ctx: MaintenanceContext) -> dict[str, Any]:
         "recommendations": recommendations,
         "meta": {
             "schema_version": SCHEMA_VERSION,
-            "generated_at": datetime.now(UTC).isoformat(),
+            "generated_at": _generated_at(ctx.env),
             "mode": ctx.mode,
             "fix": ctx.fix,
             "python": ctx.python_exe,
@@ -135,12 +151,16 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         return 2
 
+    env = dict(os.environ)
+    if ns.allow_network:
+        env["SDETKIT_ALLOW_NETWORK"] = "1"
+
     ctx = MaintenanceContext(
         repo_root=Path.cwd(),
         python_exe=sys.executable,
         mode=ns.mode,
         fix=bool(ns.fix),
-        env=dict(os.environ),
+        env=env,
         logger=StderrLogger(),
     )
 
