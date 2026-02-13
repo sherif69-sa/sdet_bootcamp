@@ -18,6 +18,12 @@ jobs:
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
         with:
           python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: |
+            pyproject.toml
+            requirements*.txt
+            requirements*.txt.lock
+            poetry.lock
 
       - name: Install package
         run: |
@@ -31,10 +37,67 @@ jobs:
       - name: Repo check (enterprise)
         run: |
           sdetkit repo check . --profile enterprise --format json > sdet_check.json
+          python - <<'PY'
+          import json
+          from collections import Counter
+          from pathlib import Path
+
+          p = Path('sdet_check.json')
+          d = json.load(p.open('r', encoding='utf-8'))
+          findings = list(d.get('findings') or [])
+
+          sev_order = {'ERROR': 0, 'WARN': 1, 'WARNING': 1, 'INFO': 2, 'OK': 3}
+          def key(f):
+              sev = str(f.get('severity') or f.get('level') or f.get('status') or '').upper()
+              sev_rank = sev_order.get(sev, 9)
+              check = str(f.get('check') or '')
+              code = str(f.get('code') or '')
+              path = str(f.get('path') or f.get('file') or f.get('filename') or '')
+              line = f.get('line')
+              line = int(line) if isinstance(line, int) or (isinstance(line, str) and line.isdigit()) else 10**9
+              msg = str(f.get('message') or '')
+              return (sev_rank, sev, check, code, path, line, msg)
+
+          findings = sorted(findings, key=key)
+          d['findings'] = findings
+
+          for k in ('generated_at', 'generated', 'timestamp', 'time'):
+              if k in d and isinstance(d[k], str):
+                  d[k] = '1970-01-01T00:00:00Z'
+
+          p.write_text(json.dumps(d, sort_keys=True, indent=2) + '\n', encoding='utf-8')
+
+          counts = Counter([str(f.get('severity') or f.get('level') or f.get('status') or '').upper() for f in findings])
+          lines = []
+          lines.append('# sdetkit enterprise gate')
+          lines.append('')
+          lines.append('- findings: {}'.format(len(findings)))
+          if counts:
+              parts = ['{}={}'.format(k.lower(), counts[k]) for k in sorted(counts.keys())]
+              lines.append('- severities: ' + ', '.join(parts))
+          lines.append('')
+          if findings:
+              lines.append('## Top findings')
+              lines.append('')
+              for f in findings[:50]:
+                  sev = str(f.get('severity') or f.get('level') or f.get('status') or '').upper()
+                  code = str(f.get('code') or '')
+                  check = str(f.get('check') or '')
+                  path = str(f.get('path') or f.get('file') or f.get('filename') or '')
+                  line = f.get('line')
+                  loc = ('{}:L{}'.format(path, line) if line is not None and str(line) != '' else path)
+                  msg = str(f.get('message') or '').strip().replace('\n', ' ')
+                  lines.append('- **{}** `{}` `{}` `{}` - {}'.format(sev, code, check, loc, msg))
+
+          Path('sdet_check.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          PY
           python -c "import json; d=json.load(open('sdet_check.json','r',encoding='utf-8')); f=d.get('findings', []); (_ for _ in ()).throw(SystemExit(f'enterprise gate failed: findings={len(f)}')) if f else print('enterprise gate ok: findings=0')"
 
       - name: Upload report
+        if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
         with:
           name: sdet_check
-          path: sdet_check.json
+          path: |
+            sdet_check.json
+            sdet_check.md
