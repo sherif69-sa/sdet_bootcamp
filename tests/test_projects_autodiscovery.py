@@ -65,10 +65,20 @@ def test_autodiscover_dedupes_same_python_root(tmp_path: Path) -> None:
     assert python_projects[0].config_path == "pkg/pyproject.toml"
 
 
-def test_autodiscover_tooling_folder_with_manifest_is_ignored(tmp_path: Path) -> None:
-    _write(tmp_path / "scripts" / "package.json", '{"private":true}\n')
-    _write(tmp_path / "tooling" / "requirements.txt", "pytest\n")
-    _write(tmp_path / ".github" / "go.mod", "module example/ci\n")
+def test_autodiscover_setup_py_is_detected_as_python_manifest(tmp_path: Path) -> None:
+    _write(tmp_path / "legacy_pkg" / "setup.py", "from setuptools import setup\n")
+
+    _, projects = discover_projects(tmp_path)
+
+    assert [(p.name, p.root, p.config_path) for p in projects] == [
+        ("python:legacy_pkg", "legacy_pkg", "legacy_pkg/setup.py"),
+    ]
+
+
+def test_autodiscover_tooling_folder_without_manifest_is_ignored(tmp_path: Path) -> None:
+    _write(tmp_path / "docs" / "README.md", "docs\n")
+    _write(tmp_path / "scripts" / "lint.sh", "#!/usr/bin/env bash\n")
+    _write(tmp_path / ".github" / "workflows" / "ci.yml", "name: ci\n")
 
     _, projects = discover_projects(tmp_path)
 
