@@ -56,6 +56,7 @@ SKIP_DIRS: frozenset[str] = frozenset(
         ".nox",
         ".tox",
         ".venv",
+        ".sdetkit",
         "venv",
         "node_modules",
         "dist",
@@ -325,6 +326,8 @@ class _FileInventoryCache:
             payload = json.loads(self._path.read_text(encoding="utf-8"))
         except (OSError, ValueError):
             return
+        if isinstance(payload, dict) and int(payload.get("schema_version", 0)) != 1:
+            return
         entries = payload.get("entries") if isinstance(payload, dict) else None
         if isinstance(entries, dict):
             self._entries = {str(k): dict(v) for k, v in entries.items() if isinstance(v, dict)}
@@ -360,10 +363,81 @@ class _FileInventoryCache:
             if not self._dirty:
                 return
         self._path.parent.mkdir(parents=True, exist_ok=True)
-        payload = {"entries": {k: self._entries[k] for k in sorted(self._entries)}}
+        payload = {
+            "schema_version": 1,
+            "entries": {k: self._entries[k] for k in sorted(self._entries)},
+        }
         atomic_write_text(
             self._path, json.dumps(payload, ensure_ascii=True, sort_keys=True, indent=2) + "\n"
         )
+
+
+RUN_CACHE_SCHEMA_VERSION = 1
+REPO_AUDIT_RULESET_VERSION = "1"
+
+
+def _repo_fingerprint(root: Path, inventory: _FileInventoryCache) -> str:
+    material: list[dict[str, str | None]] = []
+    for path in _iter_files(root):
+        rel = path.relative_to(root).as_posix()
+        material.append({"path": rel, "digest": inventory.digest_for(root, rel)})
+    payload = json.dumps(material, ensure_ascii=True, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _run_cache_file(cache_dir: Path, key: str) -> Path:
+    return cache_dir / "runs" / f"{key}.json"
+
+
+def _run_cache_key(
+    *,
+    profile: str,
+    packs: tuple[str, ...],
+    repo_fingerprint: str,
+    changed_only: bool,
+    since_ref: str,
+) -> str:
+    material = {
+        "profile": profile,
+        "packs": list(packs),
+        "repo_fingerprint": repo_fingerprint,
+        "ruleset_version": REPO_AUDIT_RULESET_VERSION,
+        "changed_only": changed_only,
+        "since_ref": since_ref,
+    }
+    payload = json.dumps(material, ensure_ascii=True, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _load_run_cache(cache_dir: Path, key: str) -> dict[str, Any] | None:
+    target = _run_cache_file(cache_dir, key)
+    if not target.exists():
+        return None
+    try:
+        payload = json.loads(target.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    if not isinstance(payload, dict):
+        return None
+    if int(payload.get("schema_version", 0)) != RUN_CACHE_SCHEMA_VERSION:
+        return None
+    cached = payload.get("payload")
+    return cached if isinstance(cached, dict) else None
+
+
+def _store_run_cache(cache_dir: Path, key: str, payload: dict[str, Any]) -> None:
+    target = _run_cache_file(cache_dir, key)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    atomic_write_text(
+        target,
+        json.dumps(
+            {"schema_version": RUN_CACHE_SCHEMA_VERSION, "payload": payload},
+            ensure_ascii=True,
+            sort_keys=True,
+            indent=2,
+        )
+        + "\n",
+    )
 
 
 class RepoRuleExecutionContext:
@@ -931,15 +1005,25 @@ def _to_sarif(payload: dict[str, Any]) -> dict[str, Any]:
             }
         )
     rules_list = [rules[key] for key in sorted(rules)]
+    summary = payload.get("summary") if isinstance(payload, dict) else None
+    run_properties: dict[str, Any] = {}
+    if isinstance(summary, dict):
+        incremental = summary.get("incremental")
+        if isinstance(incremental, dict):
+            run_properties["incremental"] = incremental
+        cache = summary.get("cache")
+        if isinstance(cache, dict):
+            run_properties["cache"] = cache
+    run_doc: dict[str, Any] = {
+        "tool": {"driver": {"name": "sdetkit", "rules": rules_list}},
+        "results": results,
+    }
+    if run_properties:
+        run_doc["properties"] = run_properties
     return {
         "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
         "version": "2.1.0",
-        "runs": [
-            {
-                "tool": {"driver": {"name": "sdetkit", "rules": rules_list}},
-                "results": results,
-            }
-        ],
+        "runs": [run_doc],
     }
 
 
@@ -1877,6 +1961,7 @@ def _rule_cache_key(
     repo_identity = repo_root.resolve(strict=False).as_posix()
     material = {
         "tool_version": _tool_version(),
+        "ruleset_version": REPO_AUDIT_RULESET_VERSION,
         "rule_id": rule_id,
         "repo_root": repo_identity,
         "config": _config_hash(profile=profile, packs=packs),
@@ -1894,7 +1979,11 @@ def _load_cached_rule(cache_dir: Path, key: str) -> dict[str, Any] | None:
         payload = json.loads(target.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return None
-    return payload if isinstance(payload, dict) else None
+    if not isinstance(payload, dict):
+        return None
+    if int(payload.get("schema_version", 0)) != 1:
+        return None
+    return payload
 
 
 def _cache_valid(payload: dict[str, Any], manifest: dict[str, str | None]) -> bool:
@@ -1914,6 +2003,7 @@ def _store_rule_cache(
 ) -> None:
     cache_dir.mkdir(parents=True, exist_ok=True)
     doc = {
+        "schema_version": 1,
         "findings": findings,
         "dependencies": {k: dependencies[k] for k in sorted(dependencies)},
     }
@@ -1961,6 +2051,23 @@ def run_repo_audit(
     cache_enabled = not no_cache
     cache_root = root / cache_dir
     inventory = _FileInventoryCache(cache_root)
+    repo_fingerprint = _repo_fingerprint(root, inventory)
+    run_cache_key = _run_cache_key(
+        profile=profile,
+        packs=selected_packs,
+        repo_fingerprint=repo_fingerprint,
+        changed_only=changed_only,
+        since_ref=since_ref,
+    )
+    if cache_enabled:
+        cached_run = _load_run_cache(cache_root, run_cache_key)
+        if cached_run is not None:
+            summary = dict(cached_run.get("summary") or {})
+            if cache_stats:
+                summary["cache"] = {"hit": True, "incremental_used": incremental_used}
+            cached_run["summary"] = summary
+            inventory.save()
+            return cached_run
 
     def run_one(loaded: Any) -> tuple[str, dict[str, Any], list[dict[str, Any]], int, int]:
         rule_id = loaded.meta.id
@@ -2071,16 +2178,21 @@ def run_repo_audit(
     }
     if cache_stats:
         summary["cache"] = {
+            "hit": False,
+            "incremental_used": incremental_used,
             "hits": {k: cache_hits[k] for k in sorted(cache_hits)},
             "misses": {k: cache_misses[k] for k in sorted(cache_misses)},
         }
-    return {
+    payload = {
         "schema_version": "1.1.0",
         "root": str(root),
         "summary": summary,
         "checks": checks,
         "findings": findings,
     }
+    if cache_enabled:
+        _store_run_cache(cache_root, run_cache_key, payload)
+    return payload
 
 
 def list_repo_rules(
@@ -2113,6 +2225,7 @@ def _render_repo_audit(payload: dict[str, Any], fmt: str) -> str:
     if fmt == "sarif":
         sarif_payload = {
             "findings": payload.get("findings", []),
+            "summary": payload.get("summary", {}),
         }
         return (
             json.dumps(_to_sarif(sarif_payload), ensure_ascii=True, sort_keys=True, indent=2) + "\n"
