@@ -4,24 +4,52 @@
       <stop stop-color="#0B1020"/>
       <stop offset="1" stop-color="#162447"/>
     </linearGradient>
+
     <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
       <stop stop-color="#00D4FF"/>
       <stop offset="1" stop-color="#7B61FF"/>
     </linearGradient>
-    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="12" result="blur"/>
+
+    <linearGradient id="panel" x1="90" y1="90" x2="1190" y2="550" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0D1734"/>
+      <stop offset="1" stop-color="#0A132B"/>
+    </linearGradient>
+
+    <linearGradient id="pill" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#112B55"/>
+      <stop offset="1" stop-color="#0E2242"/>
+    </linearGradient>
+
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
       <feMerge>
         <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="lift" x="-20%" y="-20%" width="140%" height="140%">
+      <feOffset dy="6" result="off"/>
+      <feGaussianBlur in="off" stdDeviation="10" result="blur"/>
+      <feColorMatrix in="blur" type="matrix"
+        values="0 0 0 0 0
+                0 0 0 0 0
+                0 0 0 0 0
+                0 0 0 0.35 0" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
 
   <rect width="1280" height="640" fill="url(#bg)"/>
-  <circle cx="1040" cy="120" r="180" fill="#1B3A6B" opacity="0.35"/>
-  <circle cx="220" cy="520" r="200" fill="#0F2E56" opacity="0.45"/>
 
-  <g opacity="0.2" stroke="#9CC9FF">
+  <circle cx="1040" cy="120" r="180" fill="#1B3A6B" opacity="0.32"/>
+  <circle cx="220" cy="520" r="210" fill="#0F2E56" opacity="0.42"/>
+  <circle cx="1120" cy="520" r="140" fill="#1A2C5A" opacity="0.18"/>
+
+  <g opacity="0.18" stroke="#9CC9FF">
     <path d="M80 120H1200"/>
     <path d="M80 220H1200"/>
     <path d="M80 320H1200"/>
@@ -35,22 +63,54 @@
     <path d="M1140 80V560"/>
   </g>
 
-  <rect x="90" y="90" width="1100" height="460" rx="24" fill="#0D162F" stroke="#284B7A"/>
-
-  <g filter="url(#glow)">
-    <text x="150" y="230" fill="url(#accent)" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="72" font-weight="800">DevS69 (sdetkit)</text>
+  <g filter="url(#lift)">
+    <rect x="90" y="90" width="1100" height="460" rx="28" fill="url(#panel)" stroke="#284B7A"/>
+    <path d="M118 156C210 116 342 98 502 106C666 114 850 150 1062 146" stroke="#2E5DA0" opacity="0.35"/>
+    <path d="M118 486C248 522 408 536 598 522C784 508 954 466 1120 446" stroke="#2E5DA0" opacity="0.22"/>
   </g>
-  <text x="150" y="290" fill="#D9E7FF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="600">Production-ready SDET toolkit • Security-first • Auto-updating</text>
 
-  <rect x="150" y="340" width="250" height="54" rx="27" fill="#11284E" stroke="#3A6CB4"/>
-  <text x="186" y="374" fill="#A7CBFF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="700">CI + Quality</text>
+  <rect x="980" y="122" width="170" height="44" rx="22" fill="#0B1D3B" stroke="#2D5EA3" opacity="0.95"/>
+  <text x="1065" y="151" text-anchor="middle" fill="#A7CBFF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="700">v1.0.2</text>
 
-  <rect x="420" y="340" width="270" height="54" rx="27" fill="#11284E" stroke="#3A6CB4"/>
-  <text x="454" y="374" fill="#A7CBFF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="700">Code Scanning</text>
+  <g filter="url(#softGlow)">
+    <text x="640" y="210" text-anchor="middle" fill="url(#accent)" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="70" font-weight="850">DevS69 (sdetkit)</text>
+  </g>
 
-  <rect x="710" y="340" width="340" height="54" rx="27" fill="#11284E" stroke="#3A6CB4"/>
-  <text x="742" y="374" fill="#A7CBFF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="700">Auto Maintenance Bots</text>
+  <text x="640" y="262" text-anchor="middle" fill="#D9E7FF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="30" font-weight="650">
+    Production-grade SDET toolkit • Security-first • Deterministic
+  </text>
 
-  <text x="150" y="448" fill="#7FB3FF" font-family="JetBrains Mono,Consolas,monospace" font-size="22">sdetkit doctor --all   •   sdetkit repo check --profile enterprise</text>
-  <text x="150" y="490" fill="#7FB3FF" font-family="JetBrains Mono,Consolas,monospace" font-size="22">quality.sh cov         •   dependabot + security automation on schedule</text>
+  <text x="640" y="298" text-anchor="middle" fill="#9CC9FF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="600">
+    Monorepo-aware projects • Incremental caching • Multi-format exporters
+  </text>
+
+  <path d="M190 318H1090" stroke="#2D5EA3" opacity="0.35"/>
+
+  <rect x="120" y="338" width="320" height="58" rx="29" fill="url(#pill)" stroke="#3A6CB4"/>
+  <text x="280" y="374" text-anchor="middle" fill="#A7CBFF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="750">
+    Monorepo Projects
+  </text>
+
+  <rect x="480" y="338" width="320" height="58" rx="29" fill="url(#pill)" stroke="#3A6CB4"/>
+  <text x="640" y="374" text-anchor="middle" fill="#A7CBFF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="750">
+    Incremental + Cache
+  </text>
+
+  <rect x="840" y="338" width="320" height="58" rx="29" fill="url(#pill)" stroke="#3A6CB4"/>
+  <text x="1000" y="362" text-anchor="middle" fill="#A7CBFF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="800">
+    <tspan x="1000" dy="0">Reports: JSON • SARIF</tspan>
+    <tspan x="1000" dy="20">MD • HTML</tspan>
+  </text>
+
+  <rect x="150" y="422" width="980" height="102" rx="18" fill="#08152E" stroke="#2D5EA3" opacity="0.95"/>
+
+  <text x="184" y="454" fill="#7FB3FF" font-family="JetBrains Mono,Consolas,monospace" font-size="20">
+    sdetkit doctor --all --format sarif --out reports/
+  </text>
+  <text x="184" y="484" fill="#7FB3FF" font-family="JetBrains Mono,Consolas,monospace" font-size="20">
+    sdetkit repo check --profile enterprise --projects auto --cache
+  </text>
+  <text x="184" y="514" fill="#7FB3FF" font-family="JetBrains Mono,Consolas,monospace" font-size="20">
+    sdetkit repo export --format html --out reports/
+  </text>
 </svg>
