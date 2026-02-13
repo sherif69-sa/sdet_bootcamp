@@ -2062,10 +2062,10 @@ def run_repo_audit(
     if cache_enabled:
         cached_run = _load_run_cache(cache_root, run_cache_key)
         if cached_run is not None:
-            summary = dict(cached_run.get("summary") or {})
+            cached_summary = dict(cached_run.get("summary") or {})
             if cache_stats:
-                summary["cache"] = {"hit": True, "incremental_used": incremental_used}
-            cached_run["summary"] = summary
+                cached_summary["cache"] = {"hit": True, "incremental_used": incremental_used}
+            cached_run["summary"] = cached_summary
             inventory.save()
             return cached_run
 
