@@ -17,6 +17,7 @@ import sys
 import tempfile
 import tomllib as _tomllib
 import urllib.error
+import logging
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass
@@ -455,13 +456,23 @@ class _FileInventoryCache:
             if f is not None:
                 try:
                     f.close()
-                except Exception:
-                    pass
+                except Exception as exc:
+                    logging.debug(
+                        "Failed to close temporary file %r in _atomic_write_json: %s",
+                        getattr(f, "name", None),
+                        exc,
+                        exc_info=True,
+                    )
             if tmp is not None and os.path.exists(tmp):
                 try:
                     os.unlink(tmp)
-                except Exception:
-                    pass
+                except Exception as exc:
+                    logging.debug(
+                        "Failed to remove temporary file %r in _atomic_write_json: %s",
+                        tmp,
+                        exc,
+                        exc_info=True,
+                    )
 
     def save(self, repo_root: Path | None = None, inventory: list[FileInfo] | None = None) -> None:
         if repo_root is None or inventory is None:
