@@ -2006,6 +2006,32 @@ def _rule_cache_key(
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
+def _repo_audit_tree_sig(repo_root: Path, ignore_dir: Path | None = None) -> str:
+    ignore_prefixes: list[str] = [".git"]
+    if ignore_dir is not None:
+        try:
+            rel = ignore_dir.relative_to(repo_root).as_posix().rstrip("/")
+        except ValueError:
+            rel = ""
+        if rel:
+            ignore_prefixes.append(rel)
+    items: list[tuple[str, int, int, int]] = []
+    for fp in _iter_files(repo_root):
+        relp = fp.relative_to(repo_root).as_posix()
+        skip = False
+        for pref in ignore_prefixes:
+            if relp == pref or relp.startswith(pref + "/"):
+                skip = True
+                break
+        if skip:
+            continue
+        st = fp.stat()
+        items.append((relp, st.st_mtime_ns, st.st_size, getattr(st, "st_ctime_ns", 0)))
+    items.sort()
+    b = json.dumps(items, ensure_ascii=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(b).hexdigest()
+
+
 def _load_cached_rule(cache_dir: Path, key: str) -> dict[str, Any] | None:
     target = _rule_cache_file(cache_dir, key)
     if not target.exists():
@@ -2090,6 +2116,9 @@ def run_repo_audit(
         key = _rule_cache_key(
             rule_id=rule_id, repo_root=root, profile=profile, packs=selected_packs
         )
+        key = hashlib.sha256(
+            (key + ":" + _repo_audit_tree_sig(root, cache_root)).encode("utf-8")
+        ).hexdigest()
         cached_doc = _load_cached_rule(cache_root, key) if cache_enabled else None
 
         if cached_doc is not None and changed_only and incremental_used:

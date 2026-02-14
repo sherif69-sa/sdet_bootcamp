@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
+import tempfile
 from pathlib import Path
 
 from sdetkit import cli
@@ -31,22 +33,30 @@ def _seed_repo(root: Path) -> None:
 
 
 def _run_capture(root: Path, *extra: str) -> tuple[int, dict]:
-    out = root / "audit_out.json"
-    rc = cli.main(
-        [
-            "repo",
-            "audit",
-            str(root),
-            "--allow-absolute-path",
-            "--format",
-            "json",
-            "--output",
-            str(out),
-            "--force",
-            *extra,
-        ]
-    )
-    return rc, json.loads(out.read_text(encoding="utf-8"))
+    with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:
+        out = Path(f.name)
+    try:
+        rc = cli.main(
+            [
+                "repo",
+                "audit",
+                str(root),
+                "--allow-absolute-path",
+                "--format",
+                "json",
+                "--output",
+                str(out),
+                "--force",
+                *extra,
+            ]
+        )
+        payload = json.loads(out.read_text(encoding="utf-8"))
+    finally:
+        try:
+            out.unlink()
+        except FileNotFoundError:
+            pass
+    return rc, payload
 
 
 def test_changed_only_collects_git_states(tmp_path: Path) -> None:
@@ -91,3 +101,37 @@ def test_non_git_fallback_and_require_git(tmp_path: Path) -> None:
         ["repo", "audit", str(tmp_path), "--allow-absolute-path", "--changed-only", "--require-git"]
     )
     assert rc2 == 2
+
+
+def test_cache_invalidates_on_content_change_even_when_mtime_restored(tmp_path: Path) -> None:
+    _seed_repo(tmp_path)
+
+    first_rc, first = _run_capture(tmp_path, "--cache-stats")
+    assert first_rc in {0, 1}
+    assert first["summary"]["cache"]["misses"]
+
+    second_rc, second = _run_capture(tmp_path, "--cache-stats")
+    assert second_rc in {0, 1}
+    assert second["summary"]["cache"]["hits"]
+
+    readme = tmp_path / "README.md"
+    old = readme.read_text(encoding="utf-8")
+    assert old
+
+    st = readme.stat()
+    mtime_ns = st.st_mtime_ns
+
+    if len(old) == 1:
+        new = "Y" if old != "Y" else "Z"
+    else:
+        head = "Y" if old[0] != "Y" else "Z"
+        new = head + old[1:]
+    assert new != old
+    assert len(new.encode("utf-8")) == len(old.encode("utf-8"))
+
+    readme.write_text(new, encoding="utf-8")
+    os.utime(readme, ns=(mtime_ns, mtime_ns))
+
+    third_rc, third = _run_capture(tmp_path, "--cache-stats")
+    assert third_rc in {0, 1}
+    assert third["summary"]["cache"]["misses"]
