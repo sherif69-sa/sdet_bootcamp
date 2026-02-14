@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
@@ -100,14 +101,98 @@ def _load_manifest_doc(repo_root: Path) -> tuple[dict[str, Any], str] | None:
     return projects, "pyproject.toml"
 
 
+_SKIP_DIRS: set[str] = {
+    ".git",
+    ".hg",
+    ".svn",
+    ".venv",
+    "venv",
+    "node_modules",
+    "__pycache__",
+    ".tox",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".sdetkit",
+    "dist",
+    "build",
+}
+
+_AUTODISCOVER_BASES: tuple[str, ...] = ("packages", "apps")
+
+
+def _pyproject_project_name(pyproject: Path) -> str | None:
+    try:
+        data = cast(Any, _tomllib).loads(pyproject.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    if not isinstance(data, dict):
+        return None
+    proj = data.get("project")
+    if not isinstance(proj, dict):
+        return None
+    name = proj.get("name")
+    if not isinstance(name, str):
+        return None
+    name = name.strip()
+    return name or None
+
+
+def _autodiscover_projects(repo_root: Path) -> list[RepoProject]:
+    bases: list[Path] = []
+    for base_name in _AUTODISCOVER_BASES:
+        d = repo_root / base_name
+        if d.is_dir():
+            bases.append(d)
+    if not bases:
+        return []
+
+    found: list[RepoProject] = []
+    seen: set[str] = set()
+
+    for base in bases:
+        for dirpath, dirnames, filenames in os.walk(base):
+            dirnames[:] = [d for d in dirnames if d not in _SKIP_DIRS and not d.startswith(".")]
+            if "pyproject.toml" not in filenames:
+                continue
+            pyproject = Path(dirpath) / "pyproject.toml"
+            name = _pyproject_project_name(pyproject)
+            if not name:
+                continue
+            root_rel = pyproject.parent.relative_to(repo_root).as_posix()
+            if name in seen:
+                raise ProjectsConfigError(f"duplicate project name: {name}")
+            seen.add(name)
+            found.append(
+                RepoProject(
+                    name=name,
+                    root=_normalize_rel(root_rel, field="root"),
+                    config_path=None,
+                    profile=None,
+                    packs=(),
+                    baseline_path=None,
+                    exclude_paths=(),
+                )
+            )
+
+    found.sort(key=lambda pr: pr.root)
+    return found
+
+
 def discover_projects(
-    repo_root: Path, *, sort: bool = False
+    repo_root: Path,
+    *,
+    sort: bool = False,
 ) -> tuple[str | None, list[RepoProject]]:
     loaded = _load_manifest_doc(repo_root)
     if loaded is None:
-        return None, []
-    data, source = loaded
+        auto_projects = _autodiscover_projects(repo_root)
+        if not auto_projects:
+            return None, []
+        if sort:
+            auto_projects.sort(key=lambda p: p.name)
+        return "autodiscover", auto_projects
 
+    data, source = loaded
     raw_items = data.get("project")
     if raw_items is None:
         return source, []
