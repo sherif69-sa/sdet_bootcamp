@@ -405,7 +405,9 @@ def _detect_business_scenario(runs: list[dict[str, Any]]) -> str:
     return str(best[0]) if best[1] > 0 else "engineering"
 
 
-def _top_recurring(findings: list[dict[str, Any]], key: str, limit: int = 5) -> list[tuple[str, int]]:
+def _top_recurring(
+    findings: list[dict[str, Any]], key: str, limit: int = 5
+) -> list[tuple[str, int]]:
     counts: dict[str, int] = {}
     for finding in findings:
         value = str(finding.get(key, "unknown"))
