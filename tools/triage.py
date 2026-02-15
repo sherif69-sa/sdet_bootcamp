@@ -1,7 +1,7 @@
 import argparse
+import re
 import subprocess
 import sys
-import tokenize
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -22,228 +22,311 @@ def _iter_py_files(root: Path, targets: list[str]) -> list[Path]:
         if p.is_file() and p.suffix == ".py":
             out.append(p)
         elif p.is_dir():
-            out.extend(list(p.rglob("*.py")))
-    out.sort(key=lambda x: x.as_posix())
-    return out
+            out.extend(sorted(p.rglob("*.py")))
+    seen: set[Path] = set()
+    uniq: list[Path] = []
+    for x in out:
+        if x not in seen:
+            seen.add(x)
+            uniq.append(x)
+    return uniq
 
 
-def _context(path: Path, line: int | None, radius: int) -> str:
+def _read_text_best_effort(p: Path) -> str:
     try:
-        lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+        return p.read_text(encoding="utf-8", errors="replace")
     except OSError:
         return ""
-    if not line or line < 1:
-        lo = 1
-        hi = min(len(lines), 1 + 2 * radius)
-    else:
-        lo = max(1, line - radius)
-        hi = min(len(lines), line + radius)
-    buf: list[str] = []
-    for i in range(lo, hi + 1):
-        buf.append(f"{i:5d}: {lines[i - 1]}")
-    return "\n".join(buf)
 
 
-def _has_nul(path: Path) -> bool:
-    try:
-        b = path.read_bytes()
-    except OSError:
-        return False
-    return b"\x00" in b
-
-
-def _maybe_fix_nul(root: Path, rel: str) -> bool:
-    if not (root / ".git").exists():
-        return False
-    try:
-        proc = subprocess.run(
-            ["git", "-C", str(root), "checkout", "--", rel],
-            check=False,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-    except OSError:
-        return False
-    return proc.returncode == 0
-
-
-def _compile_check(
-    root: Path, targets: list[str], fix_nul: bool, radius: int
-) -> tuple[int, list[Issue]]:
+def _compile_check(root: Path, targets: list[str], fix_nul: bool, radius: int) -> int:
     issues: list[Issue] = []
+    marker_re = re.compile(r"(?m)^[ \t]*(<<<<<<<|=======|>>>>>>>)")
+
     for fp in _iter_py_files(root, targets):
         rel = fp.relative_to(root).as_posix()
-        if _has_nul(fp):
-            fixed = False
-            if fix_nul:
-                fixed = _maybe_fix_nul(root, rel)
-            if not fixed:
-                issues.append(Issue(kind="nul", path=rel, message="file contains NUL bytes"))
-                continue
+
         try:
-            src = tokenize.open(fp).read()
-        except Exception as e:
-            issues.append(Issue(kind="decode", path=rel, message=str(e)))
+            raw = fp.read_bytes()
+        except OSError as e:
+            issues.append(Issue("read-error", rel, message=str(e)))
             continue
-        try:
-            compile(src, str(fp), "exec")
-        except SyntaxError as e:
-            issues.append(
-                Issue(
-                    kind="syntax",
-                    path=rel,
-                    line=int(e.lineno) if e.lineno else None,
-                    col=int(e.offset) if e.offset else None,
-                    message=str(e.msg or "SyntaxError"),
-                )
-            )
-        except Exception as e:
-            issues.append(Issue(kind="compile", path=rel, message=str(e)))
 
-    rc = 0 if not issues else 1
-
-    if issues:
-        print("triage: compile issues found")
-        for it in sorted(issues, key=lambda x: (x.path, x.line or 0, x.col or 0, x.kind)):
-            loc = ""
-            if it.line:
-                loc = f":{it.line}"
-                if it.col:
-                    loc += f":{it.col}"
-            print(f"- {it.kind}: {it.path}{loc}: {it.message}")
-            if it.kind in {"syntax", "compile", "decode"}:
-                ctx = _context(root / it.path, it.line, radius)
-                if ctx:
-                    print(ctx)
-        print("")
-        print("suggested commands:")
-        for it in sorted(issues, key=lambda x: (x.path, x.line or 0, x.kind)):
-            if it.line:
-                lo = max(1, it.line - radius)
-                hi = it.line + radius
-                print(f"  nl -ba {it.path} | sed -n '{lo},{hi}p'")
+        if b"\x00" in raw:
+            if fix_nul:
+                raw2 = raw.replace(b"\x00", b"")
+                try:
+                    fp.write_bytes(raw2)
+                except OSError as e:
+                    issues.append(Issue("nul-bytes", rel, message=str(e)))
+                else:
+                    raw = raw2
             else:
-                print(f"  python3 -m compileall -q {it.path}")
-        if fix_nul and any(i.kind == "nul" for i in issues):
-            print("")
-            print(
-                "note: --fix-nul can restore tracked files with NUL bytes via git checkout -- <file>"
-            )
-
-    return rc, issues
-
-
-def _parse_pytest_log(text: str) -> tuple[list[str], list[tuple[str, int]]]:
-    nodeids: set[str] = set()
-    files: set[tuple[str, int]] = set()
-
-    for line in text.splitlines():
-        if line.startswith("FAILED "):
-            rest = line[len("FAILED ") :].strip()
-            node = rest.split(" - ", 1)[0].strip()
-            if node:
-                nodeids.add(node)
-
-    for line in text.splitlines():
-        line = line.strip()
-        if line.startswith('File "') and '", line ' in line:
-            try:
-                left = line.split('File "', 1)[1]
-                path_s, right = left.split('", line ', 1)
-                n_s = ""
-                for ch in right:
-                    if ch.isdigit():
-                        n_s += ch
-                    else:
-                        break
-                if path_s and n_s:
-                    files.add((path_s, int(n_s)))
-            except Exception:
+                issues.append(Issue("nul-bytes", rel, message="NUL byte found"))
                 continue
 
-    return sorted(nodeids), sorted(files, key=lambda x: (x[0], x[1]))
+        text = raw.decode("utf-8", errors="replace")
+        if marker_re.search(text):
+            issues.append(Issue("conflict-marker", rel, message="git conflict marker lines found"))
+
+        try:
+            _ = compile(text, rel, "exec")
+        except (SyntaxError, IndentationError) as e:
+            ln = getattr(e, "lineno", None)
+            col = getattr(e, "offset", None)
+            msg = getattr(e, "msg", "") or str(e)
+            issues.append(Issue("syntax-error", rel, line=ln, col=col, message=msg))
+
+    if not issues:
+        return 0
+
+    print(f"triage: compile failures: {len(issues)}")
+    for it in issues:
+        where = it.path
+        if it.line is not None:
+            where += f":{it.line}"
+            if it.col is not None:
+                where += f":{it.col}"
+        print(f"- {it.kind} {where}: {it.message}")
+
+        if it.kind == "syntax-error" and it.line is not None:
+            fp = root / it.path
+            src = _read_text_best_effort(fp).splitlines()
+            lo = it.line - radius
+            if lo < 1:
+                lo = 1
+            hi = it.line + radius
+            if hi > len(src):
+                hi = len(src)
+            for i in range(lo, hi + 1):
+                line = src[i - 1] if 0 <= i - 1 < len(src) else ""
+                print(f"  {i:>6}  {line}")
+    return 1
 
 
-def _print_pytest_suggestions(nodeids: list[str], files: list[tuple[str, int]], radius: int) -> int:
-    if not nodeids and not files:
-        print("triage: no recognizable pytest failures found in log")
-        return 1
+def _parse_pytest_log(text: str) -> tuple[list[str], list[tuple[str, int]], list[str]]:
+    nodeids: list[str] = []
+    locs: list[tuple[str, int]] = []
+    e_lines: list[str] = []
 
-    print("triage: pytest log hints")
-    if nodeids:
-        print("failed nodeids:")
-        for n in nodeids:
-            print(f"- {n}")
-    if files:
-        print("file locations:")
-        for f, ln in files:
-            print(f"- {f}:{ln}")
+    for line in text.splitlines():
+        m = re.match(r"^(FAILED|ERROR)\s+(\S+)", line)
+        if m:
+            nodeids.append(m.group(2))
 
-    print("")
-    print("suggested commands:")
+        m2 = re.match(r'^\s*File\s+"([^"]+)",\s+line\s+(\d+),', line)
+        if m2:
+            locs.append((m2.group(1), int(m2.group(2))))
+
+        if line.startswith("E   "):
+            e = line[4:].strip()
+            if e:
+                e_lines.append(e)
+
+    return nodeids, locs, e_lines
+
+
+def _print_pytest_summary(
+    nodeids: list[str], locs: list[tuple[str, int]], radius: int, max_items: int
+) -> tuple[list[str], list[tuple[str, int]]]:
+    n = sorted(set(nodeids))
+    f = sorted(set(locs), key=lambda t: (t[0], t[1]))
+
+    counts: dict[str, int] = {}
+    for path, _ln in f:
+        counts[path] = counts.get(path, 0) + 1
+    buckets = sorted(counts.items(), key=lambda t: (-t[1], t[0]))
+
+    print("triage: failure summary")
+    print(f"failed nodeids: {len(n)}")
+    print(f"file locations: {len(f)}")
+    if buckets:
+        top = ", ".join([f"{k}={c}" for k, c in buckets[: min(5, len(buckets))]])
+        print(f"top files: {top}")
+
+    if n:
+        print("top nodeids:")
+        for x in n[:max_items]:
+            print(f"- {x}")
+
+    if f:
+        print("top locations:")
+        for path, ln in f[:max_items]:
+            print(f"- {path}:{ln}")
+
+    if n:
+        print("suggested reruns:")
+        for x in n[:max_items]:
+            print(f"  pytest -q {x}")
+
+    if f:
+        print("suggested context views:")
+        for path, ln in f[:max_items]:
+            lo = ln - radius
+            if lo < 1:
+                lo = 1
+            hi = ln + radius
+            print(f"  nl -ba {path} | sed -n '{lo},{hi}p'")
+
+    return n, f
+
+
+def _default_grep_terms(nodeids: list[str], e_lines: list[str]) -> list[str]:
+    out: list[str] = []
+    for e in e_lines:
+        out.append(e)
     for n in nodeids:
-        print(f"  pytest -q {n}")
-    for f, ln in files:
-        lo = max(1, ln - radius)
-        hi = ln + radius
-        print(f"  nl -ba {f} | sed -n '{lo},{hi}p'")
-    return 0
+        base = n.split("::", 1)[0]
+        if base and base.endswith(".py"):
+            out.append(base)
+    seen: set[str] = set()
+    uniq: list[str] = []
+    for t in out:
+        t2 = t.strip()
+        if not t2:
+            continue
+        if t2 in seen:
+            continue
+        seen.add(t2)
+        uniq.append(t2)
+    return uniq
+
+
+def _grep_repo(root: Path, targets: list[str], terms: list[str], limit: int) -> None:
+    if not terms:
+        return
+
+    files = _iter_py_files(root, targets)
+    hits = 0
+    print("triage: grep hits")
+    for term in terms:
+        term_hits = 0
+        for fp in files:
+            if term_hits >= limit:
+                break
+            rel = fp.relative_to(root).as_posix()
+            text = _read_text_best_effort(fp)
+            if not text:
+                continue
+            for i, line in enumerate(text.splitlines(), start=1):
+                if term in line:
+                    print(f"- {term}  {rel}:{i}: {line.strip()}")
+                    term_hits += 1
+                    hits += 1
+                    if term_hits >= limit:
+                        break
+        if term_hits == 0:
+            print(f"- {term}  (no hits)")
+    if hits == 0:
+        print("triage: grep found no matches")
+
+
+def _run_pytest(args: argparse.Namespace, root: Path) -> tuple[int, str]:
+    extra = list(args.pytest_args) if args.pytest_args else ["-q"]
+    cmd = ["pytest"] + extra
+    proc = subprocess.run(
+        cmd,
+        check=False,
+        cwd=str(root),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+    )
+    out = proc.stdout or ""
+    if args.tee:
+        try:
+            Path(args.tee).write_text(out, encoding="utf-8")
+        except OSError:
+            pass
+    return int(proc.returncode), out
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="triage.py")
-    parser.add_argument("--path", default=".", help="Repo root (default: .)")
-    parser.add_argument("--targets", default="src,tools,tests")
+    parser = argparse.ArgumentParser(prog="triage")
+    parser.add_argument("--path", default="")
+    parser.add_argument("--targets", nargs="*", dest="targets_opt", default=None)
     parser.add_argument("--mode", choices=["compile", "pytest", "both"], default="both")
-    parser.add_argument("--radius", type=int, default=20)
+    parser.add_argument("--radius", type=int, default=3)
     parser.add_argument("--fix-nul", action="store_true")
-    parser.add_argument("--parse-pytest-log", default=None)
+    parser.add_argument("--tee", default="")
+    parser.add_argument("--max-items", type=int, default=25)
+    parser.add_argument("--parse-pytest-log", default="")
+    parser.add_argument("--run", action="store_true")
+    parser.add_argument("--rerun", action="store_true")
+    parser.add_argument("--grep", action="store_true")
+    parser.add_argument("--grep-term", action="append", dest="grep_terms", default=[])
+    parser.add_argument("--grep-limit", type=int, default=5)
+    parser.add_argument("--pytest-args", nargs=argparse.REMAINDER, default=[])
+    parser.add_argument("targets", nargs="*", default=["src", "tools", "tests"])
+    args = parser.parse_args(argv)
 
-    args, rest = parser.parse_known_args(argv)
-
-    root = Path(args.path).resolve()
-    targets = [x.strip() for x in str(args.targets).split(",") if x.strip()]
+    root = Path(args.path) if args.path else Path.cwd()
+    targets = (
+        list(args.targets_opt)
+        if args.targets_opt is not None and len(args.targets_opt)
+        else list(args.targets)
+    )
     radius = int(args.radius)
-
-    if args.parse_pytest_log:
-        logp = Path(args.parse_pytest_log)
-        try:
-            text = logp.read_text(encoding="utf-8", errors="replace")
-        except OSError:
-            print(f"triage: log file not found: {logp}")
-            print("suggested command:")
-            print(f"  pytest -q 2>&1 | tee {logp}")
-            return 2
-        nodeids, files = _parse_pytest_log(text)
-        return _print_pytest_suggestions(nodeids, files, radius)
-
-    rc = 0
+    max_items = int(args.max_items)
 
     if args.mode in {"compile", "both"}:
-        rc_compile, _ = _compile_check(root, targets, bool(args.fix_nul), radius)
+        rc_compile = _compile_check(root, targets, bool(args.fix_nul), radius)
         if rc_compile == 0:
             print("triage: compile ok")
-        rc = max(rc, rc_compile)
+        else:
+            return rc_compile
 
     if args.mode in {"pytest", "both"}:
-        cmd = [sys.executable, "-m", "pytest", "-q", *rest]
-        proc = subprocess.run(
-            cmd,
-            cwd=str(root),
-            check=False,
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-        )
-        out = proc.stdout or ""
-        if proc.returncode == 0:
-            print("triage: pytest ok")
-        else:
-            nodeids, files = _parse_pytest_log(out)
-            _print_pytest_suggestions(nodeids, files, radius)
-        rc = max(rc, 0 if proc.returncode == 0 else 1)
+        text = ""
 
-    return int(rc)
+        if args.parse_pytest_log:
+            logp = Path(args.parse_pytest_log)
+            try:
+                text = logp.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                print(f"triage: log file not found: {logp}")
+                print("suggested command:")
+                print(f"  pytest -q 2>&1 | tee {logp}")
+                return 2
+
+        run_now = bool(args.run) or (not args.parse_pytest_log and (bool(args.tee) or True))
+        if not args.parse_pytest_log and run_now:
+            rc, text = _run_pytest(args, root)
+            if rc == 0:
+                print("triage: pytest ok")
+                return 0
+
+        nodeids, locs, e_lines = _parse_pytest_log(text)
+        if not nodeids and not locs:
+            print("triage: no failures found in log")
+            return 0
+
+        nodeids2, locs2 = _print_pytest_summary(nodeids, locs, radius, max_items)
+
+        if args.grep:
+            terms = (
+                list(args.grep_terms) if args.grep_terms else _default_grep_terms(nodeids2, e_lines)
+            )
+            _grep_repo(root, targets, terms, int(args.grep_limit))
+
+        if args.rerun and nodeids2:
+            top = nodeids2[: min(3, len(nodeids2))]
+            cmd = ["pytest", "-q"] + top
+            proc = subprocess.run(
+                cmd,
+                check=False,
+                cwd=str(root),
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+            )
+            print("\n=== triage rerun ===\n")
+            sys.stdout.write(proc.stdout or "")
+            return int(proc.returncode)
+
+        return 1
+
+    return 0
 
 
 if __name__ == "__main__":
