@@ -137,9 +137,40 @@ def _pyproject_project_name(pyproject: Path) -> str | None:
     return name or None
 
 
-def _autodiscover_projects(repo_root: Path) -> list[RepoProject]:
+def _autodiscover_roots(*, data: dict[str, Any] | None, field_prefix: str) -> tuple[str, ...]:
+    if data is None:
+        return _AUTODISCOVER_BASES
+    roots = data.get("autodiscover_roots")
+    if roots is None:
+        return _AUTODISCOVER_BASES
+    if isinstance(roots, str):
+        values = tuple(part.strip() for part in roots.split(",") if part.strip())
+    elif isinstance(roots, list) and all(isinstance(item, str) for item in roots):
+        values = tuple(item.strip() for item in roots if item.strip())
+    else:
+        raise ProjectsConfigError(
+            f"{field_prefix}.autodiscover_roots must be a list of strings or csv string"
+        )
+    if not values:
+        return _AUTODISCOVER_BASES
+    normalized: list[str] = []
+    seen: set[str] = set()
+    for raw in values:
+        rel = _normalize_rel(raw, field="autodiscover_roots")
+        if rel in seen:
+            continue
+        seen.add(rel)
+        normalized.append(rel)
+    return tuple(normalized)
+
+
+def _autodiscover_projects(
+    repo_root: Path,
+    *,
+    base_roots: tuple[str, ...] = _AUTODISCOVER_BASES,
+) -> list[RepoProject]:
     bases: list[Path] = []
-    for base_name in _AUTODISCOVER_BASES:
+    for base_name in base_roots:
         d = repo_root / base_name
         if d.is_dir():
             bases.append(d)
@@ -194,7 +225,22 @@ def discover_projects(
 
     data, source = loaded
     raw_items = data.get("project")
+    autodiscover = data.get("autodiscover")
+    if autodiscover is None:
+        autodiscover_enabled = False
+    elif isinstance(autodiscover, bool):
+        autodiscover_enabled = autodiscover
+    else:
+        raise ProjectsConfigError("[tool.sdetkit.projects].autodiscover must be a boolean")
+
+    autodiscover_roots = _autodiscover_roots(data=data, field_prefix="[tool.sdetkit.projects]")
+
     if raw_items is None:
+        if autodiscover_enabled:
+            auto_projects = _autodiscover_projects(repo_root, base_roots=autodiscover_roots)
+            if sort:
+                auto_projects.sort(key=lambda p: p.name)
+            return f"{source} (autodiscover)", auto_projects
         return source, []
     if not isinstance(raw_items, list) or any(not isinstance(item, dict) for item in raw_items):
         raise ProjectsConfigError("projects manifest must define [[project]] entries")
