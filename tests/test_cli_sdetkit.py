@@ -1,6 +1,7 @@
 import json
 
 import httpx
+import pytest
 
 from sdetkit import apiget, cli
 
@@ -80,6 +81,40 @@ def test_python_m_sdetkit_help():
     )
     assert p.returncode == 0
     assert "usage: sdetkit" in p.stdout
+
+
+def test_python_m_sdetkit_version():
+    import subprocess
+    import sys
+
+    p = subprocess.run(
+        [sys.executable, "-m", "sdetkit", "--version"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+    )
+    assert p.returncode == 0
+    assert p.stdout.strip()
+
+
+def test_sdetkit_version_flag_prints_resolved_version(monkeypatch, capsys):
+    monkeypatch.setattr(cli, "_tool_version", lambda: "9.9.9")
+
+    with pytest.raises(SystemExit) as excinfo:
+        cli.main(["--version"])
+
+    assert excinfo.value.code == 0
+    out = capsys.readouterr().out
+    assert out == "9.9.9\n"
+
+
+def test_sdetkit_version_flag_uses_unknown_when_metadata_missing(monkeypatch):
+    def _raise_not_found(_: str) -> str:
+        raise cli.metadata.PackageNotFoundError
+
+    monkeypatch.setattr(cli.metadata, "version", _raise_not_found)
+
+    assert cli._tool_version() == "0+unknown"
 
 
 def test_kvcli_help():
