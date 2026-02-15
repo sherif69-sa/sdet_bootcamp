@@ -3,9 +3,17 @@ from __future__ import annotations
 import argparse
 import os
 from collections.abc import Sequence
+from importlib import metadata
 
 from . import apiget, kvcli, patch, repo, report
 from .maintenance import main as maintenance_main
+
+
+def _tool_version() -> str:
+    try:
+        return metadata.version("sdetkit")
+    except metadata.PackageNotFoundError:
+        return "0+unknown"
 
 
 def _add_apiget_args(p: argparse.ArgumentParser) -> None:
@@ -56,6 +64,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         return maintenance_main(list(argv[1:]))
 
     p = argparse.ArgumentParser(prog="sdetkit", add_help=True)
+    p.add_argument("--version", action="version", version=_tool_version())
     sub = p.add_subparsers(dest="cmd", required=True)
 
     kv = sub.add_parser("kv")
