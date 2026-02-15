@@ -195,6 +195,28 @@ def _findings_map(run: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return out
 
 
+_DIFF_MUTATION_FIELDS = (
+    "severity",
+    "rule_id",
+    "message",
+    "path",
+    "line",
+    "pack",
+    "fixable",
+    "suppressed",
+    "suppression_reason",
+)
+
+
+def _is_finding_changed(old: dict[str, Any], new: dict[str, Any]) -> tuple[bool, list[str]]:
+    changed_fields = [field for field in _DIFF_MUTATION_FIELDS if old.get(field) != new.get(field)]
+    old_tags = sorted(str(x) for x in (old.get("tags") or []))
+    new_tags = sorted(str(x) for x in (new.get("tags") or []))
+    if old_tags != new_tags:
+        changed_fields.append("tags")
+    return bool(changed_fields), changed_fields
+
+
 def diff_runs(
     from_run: dict[str, Any], to_run: dict[str, Any], *, new_limit: int | None = None
 ) -> dict[str, Any]:
@@ -205,6 +227,7 @@ def diff_runs(
     new_only = sorted(new_fps - old_fps)
     resolved = sorted(old_fps - new_fps)
     unchanged = sorted(new_fps & old_fps)
+    changed: list[dict[str, Any]] = []
 
     counts = {"info": 0, "warn": 0, "error": 0}
     for fp in new_only:
@@ -224,16 +247,50 @@ def diff_runs(
     if new_limit is not None:
         top_new = top_new[: max(new_limit, 0)]
 
+    for fp in unchanged:
+        old = old_map[fp]
+        new = new_map[fp]
+        is_changed, changed_fields = _is_finding_changed(old, new)
+        if not is_changed:
+            continue
+        changed.append(
+            {
+                "fingerprint": fp,
+                "changed_fields": changed_fields,
+                "from": {
+                    "severity": str(old.get("severity", "error")),
+                    "rule_id": str(old.get("rule_id", "unknown")),
+                    "path": str(old.get("path", ".")),
+                },
+                "to": {
+                    "severity": str(new.get("severity", "error")),
+                    "rule_id": str(new.get("rule_id", "unknown")),
+                    "path": str(new.get("path", ".")),
+                },
+            }
+        )
+
+    changed.sort(
+        key=lambda item: (
+            -_severity_rank(str(item.get("to", {}).get("severity", "error"))),
+            str(item.get("to", {}).get("rule_id", "")),
+            str(item.get("to", {}).get("path", "")),
+            str(item.get("fingerprint", "")),
+        )
+    )
+
     return {
         "from": from_run.get("source", {}),
         "to": to_run.get("source", {}),
         "counts": {
             "new": len(new_only),
             "resolved": len(resolved),
-            "unchanged": len(unchanged),
+            "unchanged": len(unchanged) - len(changed),
+            "changed": len(changed),
             "new_by_severity": {k: counts[k] for k in sorted(counts)},
         },
         "new": top_new,
+        "changed": changed,
         "resolved": [old_map[fp] for fp in resolved],
     }
 
@@ -243,7 +300,7 @@ def _render_diff_text(payload: dict[str, Any], limit: int | None = 10) -> str:
         (
             "NEW: "
             f"{payload['counts']['new']} RESOLVED: {payload['counts']['resolved']} "
-            f"UNCHANGED: {payload['counts']['unchanged']}"
+            f"UNCHANGED: {payload['counts']['unchanged']} CHANGED: {payload['counts']['changed']}"
         ),
         (
             "NEW by severity: "
@@ -256,6 +313,18 @@ def _render_diff_text(payload: dict[str, Any], limit: int | None = 10) -> str:
     for item in items:
         lines.append(
             f"- [{item.get('severity')}] {item.get('rule_id')} {item.get('path')}#{item.get('fingerprint')}"
+        )
+    changed_items = (
+        payload.get("changed", []) if limit is None else payload.get("changed", [])[:limit]
+    )
+    for item in changed_items:
+        from_meta = item.get("from", {})
+        to_meta = item.get("to", {})
+        lines.append(
+            "~ "
+            f"[{from_meta.get('severity')}->{to_meta.get('severity')}] "
+            f"{to_meta.get('rule_id')} {to_meta.get('path')}#{item.get('fingerprint')} "
+            f"fields={','.join(str(x) for x in item.get('changed_fields', []))}"
         )
     return "\n".join(lines) + "\n"
 

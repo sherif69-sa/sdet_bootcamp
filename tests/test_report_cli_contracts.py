@@ -281,6 +281,62 @@ def test_report_diff_limit_new_applies_deterministically_to_text_and_json(tmp_pa
     assert [item["fingerprint"] for item in payload["new"]] == ["error-rule", "warn-rule"]
 
 
+def test_report_diff_detects_changed_findings_with_same_fingerprint(tmp_path: Path) -> None:
+    runner = CliRunner()
+    a = tmp_path / "a.json"
+    b = tmp_path / "b.json"
+
+    _write_run(
+        a,
+        captured_at="2020-01-01T00:00:00Z",
+        findings=[
+            {
+                "fingerprint": "same-fp",
+                "rule_id": "r1",
+                "severity": "warn",
+                "message": "message before",
+                "path": "a.py",
+                "tags": ["legacy"],
+            }
+        ],
+    )
+    _write_run(
+        b,
+        captured_at="2020-01-02T00:00:00Z",
+        findings=[
+            {
+                "fingerprint": "same-fp",
+                "rule_id": "r1",
+                "severity": "error",
+                "message": "message after",
+                "path": "a.py",
+                "tags": ["modern"],
+            }
+        ],
+    )
+
+    js = runner.invoke(["report", "diff", "--from", str(a), "--to", str(b), "--format", "json"])
+    assert js.exit_code == 0
+    payload = json.loads(js.stdout)
+    assert payload["counts"]["new"] == 0
+    assert payload["counts"]["resolved"] == 0
+    assert payload["counts"]["unchanged"] == 0
+    assert payload["counts"]["changed"] == 1
+    assert payload["changed"] == [
+        {
+            "fingerprint": "same-fp",
+            "changed_fields": ["severity", "message", "tags"],
+            "from": {"severity": "warn", "rule_id": "r1", "path": "a.py"},
+            "to": {"severity": "error", "rule_id": "r1", "path": "a.py"},
+        }
+    ]
+
+    text = runner.invoke(["report", "diff", "--from", str(a), "--to", str(b), "--format", "text"])
+    assert text.exit_code == 0
+    assert "CHANGED: 1" in text.stdout
+    assert "~ [warn->error] r1 a.py#same-fp fields=severity,message,tags" in text.stdout
+
+
 def test_report_build_md_and_html_are_stable(tmp_path: Path, monkeypatch) -> None:
     runner = CliRunner()
     history = tmp_path / "history"
