@@ -146,3 +146,49 @@ version = "1.0.0"
 
     _, projects = discover_projects(repo)
     assert [(p.name, p.root) for p in projects] == [("pep621-name", "packages/mixed")]
+
+
+def test_autodiscover_detects_node_package_json_projects(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+
+    web = repo / "apps" / "web"
+    web.mkdir(parents=True)
+    (web / "package.json").write_text(
+        '{"name": "@acme/web", "private": true}',
+        encoding="utf-8",
+    )
+
+    api = repo / "packages" / "api"
+    api.mkdir(parents=True)
+    (api / "package.json").write_text(
+        '{"name": "acme-api", "version": "1.0.0"}',
+        encoding="utf-8",
+    )
+
+    _, projects = discover_projects(repo, sort=True)
+    assert [(p.name, p.root) for p in projects] == [
+        ("@acme/web", "apps/web"),
+        ("acme-api", "packages/api"),
+    ]
+
+
+def test_autodiscover_prefers_pyproject_name_when_package_json_is_also_present(
+    tmp_path: Path,
+) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+
+    svc = repo / "packages" / "svc"
+    svc.mkdir(parents=True)
+    (svc / "pyproject.toml").write_text(
+        '[project]\nname = "python-name"\nversion = "0.0.0"\n',
+        encoding="utf-8",
+    )
+    (svc / "package.json").write_text(
+        '{"name": "node-name"}',
+        encoding="utf-8",
+    )
+
+    _, projects = discover_projects(repo)
+    assert [(p.name, p.root) for p in projects] == [("python-name", "packages/svc")]

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -168,6 +169,20 @@ def _pyproject_project_name(pyproject: Path) -> str | None:
     return None
 
 
+def _package_json_project_name(package_json: Path) -> str | None:
+    try:
+        data = json.loads(package_json.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    if not isinstance(data, dict):
+        return None
+    name = data.get("name")
+    if not isinstance(name, str):
+        return None
+    stripped = name.strip()
+    return stripped or None
+
+
 def _autodiscover_roots(*, data: dict[str, Any] | None, field_prefix: str) -> tuple[str, ...]:
     if data is None:
         return _AUTODISCOVER_BASES
@@ -214,13 +229,19 @@ def _autodiscover_projects(
     for base in bases:
         for dirpath, dirnames, filenames in os.walk(base):
             dirnames[:] = [d for d in dirnames if d not in _SKIP_DIRS and not d.startswith(".")]
-            if "pyproject.toml" not in filenames:
+            has_pyproject = "pyproject.toml" in filenames
+            has_package_json = "package.json" in filenames
+            if not has_pyproject and not has_package_json:
                 continue
-            pyproject = Path(dirpath) / "pyproject.toml"
-            name = _pyproject_project_name(pyproject)
+            project_dir = Path(dirpath)
+            name: str | None = None
+            if has_pyproject:
+                name = _pyproject_project_name(project_dir / "pyproject.toml")
+            if not name and has_package_json:
+                name = _package_json_project_name(project_dir / "package.json")
             if not name:
                 continue
-            root_rel = pyproject.parent.relative_to(repo_root).as_posix()
+            root_rel = project_dir.relative_to(repo_root).as_posix()
             if name in seen:
                 raise ProjectsConfigError(f"duplicate project name: {name}")
             seen.add(name)
