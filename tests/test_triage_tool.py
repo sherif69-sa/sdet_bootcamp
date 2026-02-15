@@ -1,7 +1,6 @@
 import importlib.util
 import io
 import os
-import sys
 from contextlib import redirect_stdout
 from pathlib import Path
 
@@ -13,7 +12,6 @@ def _load_triage():
     assert spec is not None
     assert spec.loader is not None
     mod = importlib.util.module_from_spec(spec)
-    sys.modules["triage"] = mod
     spec.loader.exec_module(mod)
     return mod
 
@@ -41,11 +39,10 @@ def test_compile_mode_reports_syntax_error_context(tmp_path: Path) -> None:
         ["--path", str(tmp_path), "--mode", "compile", "--targets", "src", "--radius", "2"],
         tmp_path,
     )
-
     assert rc == 1
-    assert "syntax" in out
-    assert "src/bad.py" in out
-    assert "def f():" in out
+    assert "syntax-error" in out
+    assert "bad.py" in out
+    assert "def f()" in out
 
 
 def test_compile_mode_reports_nul_bytes(tmp_path: Path) -> None:
@@ -57,10 +54,17 @@ def test_compile_mode_reports_nul_bytes(tmp_path: Path) -> None:
     rc, out = _run(
         triage, ["--path", str(tmp_path), "--mode", "compile", "--targets", "src"], tmp_path
     )
-
     assert rc == 1
-    assert "nul" in out.lower()
-    assert "src/nul.py" in out
+    assert "nul-bytes" in out
+
+    rc2, out2 = _run(
+        triage,
+        ["--path", str(tmp_path), "--mode", "compile", "--targets", "src", "--fix-nul"],
+        tmp_path,
+    )
+    assert rc2 == 0
+    assert "compile ok" in out2
+    assert b"\x00" not in bad.read_bytes()
 
 
 def test_parse_pytest_log_prints_useful_commands(tmp_path: Path) -> None:
@@ -69,7 +73,7 @@ def test_parse_pytest_log_prints_useful_commands(tmp_path: Path) -> None:
         "\n".join(
             [
                 "FAILED tests/test_x.py::test_a - AssertionError: nope",
-                'File "/tmp/tests/test_x.py", line 12, in test_a',
+                'File "tests/test_x.py", line 12, in test_a',
                 "E   assert 1 == 2",
             ]
         )
@@ -79,17 +83,128 @@ def test_parse_pytest_log_prints_useful_commands(tmp_path: Path) -> None:
 
     triage = _load_triage()
     rc, out = _run(triage, ["--parse-pytest-log", str(log), "--radius", "3"], tmp_path)
-
-    assert rc == 0
+    assert rc == 1
+    assert "triage: failure summary" in out
     assert "pytest -q tests/test_x.py::test_a" in out
-    assert "nl -ba" in out
-    assert "sed -n" in out
+    assert "nl -ba tests/test_x.py | sed -n '9,15p'" in out
 
 
-def test_parse_pytest_log_missing_file_reports_message(tmp_path: Path) -> None:
-    missing = tmp_path / "missing.log"
+def test_parse_pytest_log_pass_only_returns_ok(tmp_path: Path) -> None:
+    log = tmp_path / "pass.log"
+    log.write_text("371 passed in 1.23s\n", encoding="utf-8")
     triage = _load_triage()
-    rc, out = _run(triage, ["--parse-pytest-log", str(missing), "--radius", "3"], tmp_path)
-    assert rc == 2
-    assert "log file not found" in out
-    assert "pytest -q" in out
+    rc, out = _run(triage, ["--parse-pytest-log", str(log)], tmp_path)
+    assert rc == 0
+    assert "no failures found in log" in out
+
+
+def test_run_pytest_success_writes_tee(tmp_path: Path) -> None:
+    triage = _load_triage()
+
+    class R:
+        returncode = 0
+        stdout = "3 passed in 0.01s\n"
+
+    def fake_run(*a, **k):
+        return R()
+
+    triage.subprocess.run = fake_run
+    log = tmp_path / "pytest.log"
+    rc, out = _run(
+        triage, ["--path", str(tmp_path), "--mode", "pytest", "--run", "--tee", str(log)], tmp_path
+    )
+    assert rc == 0
+    assert "pytest ok" in out
+    assert log.read_text(encoding="utf-8") == R.stdout
+
+
+def test_run_pytest_failure_prints_summary_and_commands(tmp_path: Path) -> None:
+    triage = _load_triage()
+
+    class R:
+        returncode = 1
+        stdout = (
+            "\n".join(
+                [
+                    "FAILED tests/test_x.py::test_a - AssertionError: nope",
+                    'File "tests/test_x.py", line 12, in test_a',
+                    "E   assert 1 == 2",
+                ]
+            )
+            + "\n"
+        )
+
+    def fake_run(*a, **k):
+        return R()
+
+    triage.subprocess.run = fake_run
+    log = tmp_path / "pytest.log"
+    rc, out = _run(
+        triage,
+        [
+            "--path",
+            str(tmp_path),
+            "--mode",
+            "pytest",
+            "--run",
+            "--tee",
+            str(log),
+            "--max-items",
+            "10",
+        ],
+        tmp_path,
+    )
+    assert rc == 1
+    assert "triage: failure summary" in out
+    assert "pytest -q tests/test_x.py::test_a" in out
+    assert log.read_text(encoding="utf-8") == R.stdout
+
+
+def test_run_pytest_failure_emits_targeted_grep_hits(tmp_path: Path) -> None:
+    triage = _load_triage()
+    (tmp_path / "tests").mkdir()
+    (tmp_path / "src").mkdir()
+    (tmp_path / "tests" / "test_x.py").write_text(
+        "def test_a():\n    assert 1 == 2\n", encoding="utf-8"
+    )
+    (tmp_path / "src" / "x.py").write_text('VALUE = "nope"\n', encoding="utf-8")
+
+    class R:
+        returncode = 1
+        stdout = (
+            "FAILED tests/test_x.py::test_a - AssertionError: nope\n"
+            'File "tests/test_x.py", line 2, in test_a\n'
+            "E   assert 1 == 2\n"
+        )
+
+    def fake_run(*a, **k):
+        return R()
+
+    triage.subprocess.run = fake_run
+    log = tmp_path / "pytest.log"
+    rc, out = _run(
+        triage,
+        [
+            "--path",
+            str(tmp_path),
+            "--mode",
+            "pytest",
+            "--run",
+            "--tee",
+            str(log),
+            "--grep",
+            "--grep-term",
+            "assert 1 == 2",
+            "--grep-limit",
+            "5",
+            "--targets",
+            "src",
+            "tests",
+            "--pytest-args",
+            "-q",
+        ],
+        tmp_path,
+    )
+    assert rc == 1
+    assert "triage: grep hits" in out
+    assert "tests/test_x.py:2" in out
