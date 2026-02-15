@@ -40,6 +40,7 @@ Diff uses finding fingerprint sets and reports:
 - NEW
 - RESOLVED
 - UNCHANGED
+- CHANGED (same fingerprint with changed severity/rule/path/message/tags metadata)
 
 Exit codes:
 
