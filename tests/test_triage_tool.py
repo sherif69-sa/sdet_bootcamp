@@ -84,3 +84,12 @@ def test_parse_pytest_log_prints_useful_commands(tmp_path: Path) -> None:
     assert "pytest -q tests/test_x.py::test_a" in out
     assert "nl -ba" in out
     assert "sed -n" in out
+
+
+def test_parse_pytest_log_missing_file_reports_message(tmp_path: Path) -> None:
+    missing = tmp_path / "missing.log"
+    triage = _load_triage()
+    rc, out = _run(triage, ["--parse-pytest-log", str(missing), "--radius", "3"], tmp_path)
+    assert rc == 2
+    assert "log file not found" in out
+    assert "pytest -q" in out
