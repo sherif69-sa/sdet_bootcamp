@@ -7,6 +7,17 @@
 Preferred file: `.sdetkit/projects.toml`.
 Fallback: `pyproject.toml` with `[tool.sdetkit.projects]`.
 
+If you prefer not to maintain explicit `[[project]]` entries, you can enable autodiscovery
+from `pyproject.toml`:
+
+```toml
+[tool.sdetkit.projects]
+autodiscover = true
+autodiscover_roots = ["services", "libs"]
+```
+
+`autodiscover_roots` accepts a string list or comma-separated string.
+
 ```toml
 [[project]]
 name = "api"
