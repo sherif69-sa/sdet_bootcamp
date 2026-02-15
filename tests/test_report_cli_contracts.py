@@ -337,6 +337,80 @@ def test_report_diff_detects_changed_findings_with_same_fingerprint(tmp_path: Pa
     assert "~ [warn->error] r1 a.py#same-fp fields=severity,message,tags" in text.stdout
 
 
+def test_report_diff_fail_on_error_triggers_for_severity_regressions(tmp_path: Path) -> None:
+    runner = CliRunner()
+    a = tmp_path / "a.json"
+    b = tmp_path / "b.json"
+
+    _write_run(
+        a,
+        captured_at="2020-01-01T00:00:00Z",
+        findings=[
+            {
+                "fingerprint": "same",
+                "rule_id": "r1",
+                "severity": "warn",
+                "message": "warn before",
+                "path": "svc.py",
+            },
+        ],
+    )
+    _write_run(
+        b,
+        captured_at="2020-01-02T00:00:00Z",
+        findings=[
+            {
+                "fingerprint": "same",
+                "rule_id": "r1",
+                "severity": "error",
+                "message": "error now",
+                "path": "svc.py",
+            },
+        ],
+    )
+
+    diff = runner.invoke(["report", "diff", "--from", str(a), "--to", str(b), "--fail-on", "error"])
+    assert diff.exit_code == 1
+    assert "CHANGED: 1" in diff.stdout
+
+
+def test_report_diff_fail_on_ignores_non_severity_changes(tmp_path: Path) -> None:
+    runner = CliRunner()
+    a = tmp_path / "a.json"
+    b = tmp_path / "b.json"
+
+    _write_run(
+        a,
+        captured_at="2020-01-01T00:00:00Z",
+        findings=[
+            {
+                "fingerprint": "same",
+                "rule_id": "r1",
+                "severity": "error",
+                "message": "before",
+                "path": "svc.py",
+            },
+        ],
+    )
+    _write_run(
+        b,
+        captured_at="2020-01-02T00:00:00Z",
+        findings=[
+            {
+                "fingerprint": "same",
+                "rule_id": "r1",
+                "severity": "error",
+                "message": "after",
+                "path": "svc.py",
+            },
+        ],
+    )
+
+    diff = runner.invoke(["report", "diff", "--from", str(a), "--to", str(b), "--fail-on", "error"])
+    assert diff.exit_code == 0
+    assert "CHANGED: 1" in diff.stdout
+
+
 def test_report_build_md_and_html_are_stable(tmp_path: Path, monkeypatch) -> None:
     runner = CliRunner()
     history = tmp_path / "history"

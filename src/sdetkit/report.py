@@ -344,6 +344,25 @@ def _new_count_at_or_above(payload: dict[str, Any], threshold: str) -> int:
     )
 
 
+def _changed_count_crossing_threshold(payload: dict[str, Any], threshold: str) -> int:
+    rank = _threshold_rank(threshold)
+    if rank > _severity_rank("error"):
+        return 0
+
+    return sum(
+        1
+        for item in payload.get("changed", [])
+        if _severity_rank(str(item.get("from", {}).get("severity", "error"))) < rank
+        and _severity_rank(str(item.get("to", {}).get("severity", "error"))) >= rank
+    )
+
+
+def _fail_count_at_or_above(payload: dict[str, Any], threshold: str) -> int:
+    return _new_count_at_or_above(payload, threshold) + _changed_count_crossing_threshold(
+        payload, threshold
+    )
+
+
 def _summary_markdown(run: dict[str, Any], diff_payload: dict[str, Any] | None = None) -> str:
     findings = [x for x in run.get("findings", []) if isinstance(x, dict)]
     suppressed = sum(1 for x in findings if x.get("suppressed"))
@@ -764,7 +783,7 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 text_limit = ns.limit_new if ns.limit_new is not None else 10
                 sys.stdout.write(_render_diff_text(payload, limit=text_limit))
-            return 1 if _new_count_at_or_above(payload, ns.fail_on) > 0 else 0
+            return 1 if _fail_count_at_or_above(payload, ns.fail_on) > 0 else 0
 
         if ns.report_cmd == "recommend":
             history_dir = safe_path(Path.cwd(), ns.history_dir, allow_absolute=True)
