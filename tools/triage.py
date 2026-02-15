@@ -207,7 +207,13 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.parse_pytest_log:
         logp = Path(args.parse_pytest_log)
-        text = logp.read_text(encoding="utf-8", errors="replace")
+        try:
+            text = logp.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            print(f"triage: log file not found: {logp}")
+            print("suggested command:")
+            print(f"  pytest -q 2>&1 | tee {logp}")
+            return 2
         nodeids, files = _parse_pytest_log(text)
         return _print_pytest_suggestions(nodeids, files, radius)
 
@@ -215,6 +221,8 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.mode in {"compile", "both"}:
         rc_compile, _ = _compile_check(root, targets, bool(args.fix_nul), radius)
+        if rc_compile == 0:
+            print("triage: compile ok")
         rc = max(rc, rc_compile)
 
     if args.mode in {"pytest", "both"}:
