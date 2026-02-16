@@ -778,6 +778,14 @@ def serve(host: str, port: int, history_dir: Path) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
+    from .ops_control import cli as control_cli
+
+    argv = list(argv or [])
+    if argv and argv[0] in {"init", "plan"}:
+        return control_cli(argv)
+    if argv and argv[0] == "run" and (len(argv) == 1 or argv[1].startswith("--")):
+        return control_cli(argv)
+
     p = argparse.ArgumentParser(prog="sdetkit ops")
     sub = p.add_subparsers(dest="cmd", required=True)
 

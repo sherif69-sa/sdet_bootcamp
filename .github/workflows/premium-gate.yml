@@ -31,7 +31,14 @@ jobs:
         run: bash premium-gate.sh
 
       - name: Upload SARIF
-        if: always() && hashFiles('security.sarif') != ''
+        if: always() && hashFiles('.sdetkit/out/security.sarif') != ''
         uses: github/codeql-action/upload-sarif@45cbd0c69e560cd9e7cd7f8c32362050c9b7ded2  # v4
         with:
-          sarif_file: security.sarif
+          sarif_file: .sdetkit/out/security.sarif
+
+      - name: Upload evidence pack
+        if: always() && hashFiles('.sdetkit/out/evidence.zip') != ''
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808  # v4
+        with:
+          name: evidence-pack
+          path: .sdetkit/out/evidence.zip

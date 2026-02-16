@@ -26,8 +26,8 @@ class _EPs:
 
 def test_notify_missing_adapter_is_friendly(capsys) -> None:
     rc = cli.main(["notify", "telegram", "--message", "hello"])
-    assert rc == 0
-    assert "not installed" in capsys.readouterr().out
+    assert rc == 2
+    assert "adapter" in capsys.readouterr().out
 
 
 def test_notify_loads_stub_adapter(monkeypatch, capsys) -> None:

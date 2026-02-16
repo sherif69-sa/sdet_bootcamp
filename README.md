@@ -248,6 +248,18 @@ More details:
 - [Security gate guide](docs/security-gate.md)
 - [Security model](docs/security-model.md)
 
+
+## 🏢 Company adoption quickstart
+
+```bash
+python3 -m sdetkit ops init
+python3 -m sdetkit policy snapshot --output .sdetkit/policies/baseline.json
+python3 -m sdetkit policy check --baseline .sdetkit/policies/baseline.json
+bash premium-gate.sh
+```
+
+Outputs are written under `.sdetkit/out/` by default (including `security.sarif` and `evidence.zip`).
+
 ## 🧩 Why this repository exists
 
 This project is designed for fast onboarding and high-confidence delivery:

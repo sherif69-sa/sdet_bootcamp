@@ -133,3 +133,8 @@ kvcli = "sdetkit._entrypoints:kvcli"
 apigetcli = "sdetkit._entrypoints:apigetcli"
 
 [project.entry-points."sdetkit.notify_adapters"]
+stdout = "sdetkit.notify_plugins:stdout_adapter"
+telegram = "sdetkit.notify_plugins:telegram_adapter"
+whatsapp = "sdetkit.notify_plugins:whatsapp_adapter"
+
+[project.entry-points."sdetkit.ops_tasks"]

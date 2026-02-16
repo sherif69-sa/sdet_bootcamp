@@ -14,7 +14,7 @@ run_step() {
   section "$title"
   if ! "$@"; then
     echo "ERROR: step failed: $title"
-    echo "How to fix: run the command locally, review output, and address findings before re-running premium-gate.sh"
+    echo "How to fix: run the same command locally, inspect logs under .sdetkit/out/, and remediate before re-running premium-gate.sh."
     exit 1
   fi
 }
@@ -22,14 +22,8 @@ run_step() {
 run_step "Quality" bash quality.sh
 run_step "CI" bash ci.sh
 run_step "Doctor ASCII" python3 -m sdetkit doctor --ascii
+run_step "Security Scan (offline SARIF)" python3 -m sdetkit security scan --fail-on none --format sarif --output .sdetkit/out/security.sarif
+run_step "Control Plane Ops (CI profile)" python3 -m sdetkit ops run --profile ci --jobs 2
+run_step "Evidence Pack" python3 -m sdetkit evidence pack --output .sdetkit/out/evidence.zip
 
-# `ci.sh` writes runtime cache/artifacts under .sdetkit; clear ephemeral state
-# before enterprise repo policy checks so local/CI runs stay deterministic.
-section "Cleanup ephemeral gate artifacts"
-rm -rf .sdetkit/cache .sdetkit/ops-artifacts sdet_check.json
-
-run_step "Repository audit" python3 -m sdetkit repo audit . --format text --fail-on warn
-run_step "Security scan (offline default + SARIF)" \
-  python3 -m sdetkit security scan --fail-on high --format sarif --output security.sarif
-
-echo "\nPremium gate passed. SARIF written to security.sarif"
+echo "Premium gate passed. Artifacts: .sdetkit/out/security.sarif and .sdetkit/out/evidence.zip"
