@@ -95,7 +95,8 @@ def main(argv: list[str]) -> int:
                     for item in discover_templates(root)
                 ]
                 sys.stdout.write(
-                    json.dumps({"templates": list_payload}, ensure_ascii=True, sort_keys=True) + "\n"
+                    json.dumps({"templates": list_payload}, ensure_ascii=True, sort_keys=True)
+                    + "\n"
                 )
                 return 0
 
