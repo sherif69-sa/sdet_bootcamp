@@ -9,7 +9,8 @@ from typing import Protocol, cast
 
 
 class Provider(Protocol):
-    def complete(self, *, role: str, task: str, context: dict[str, object]) -> str: ...
+    def complete(self, *, role: str, task: str, context: dict[str, object]) -> str:
+        raise NotImplementedError
 
 
 @dataclass(frozen=True)
