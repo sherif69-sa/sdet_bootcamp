@@ -1,0 +1,23 @@
+[workflow]
+name = "audit_and_security"
+version = "1"
+
+[[workflow.steps]]
+id = "audit"
+type = "python_call"
+inputs = { action = "repo.audit", kwargs = { root = "." } }
+outputs = { findings = "audit_findings" }
+
+[[workflow.steps]]
+id = "security"
+type = "python_call"
+depends_on = ["audit"]
+inputs = { action = "security.check", kwargs = { root = "." } }
+outputs = { findings = "security_findings" }
+
+[[workflow.steps]]
+id = "report"
+type = "render_report"
+depends_on = ["security"]
+inputs = { output = "report.json", audit = "${step.audit}" }
+outputs = { report = "report" }

@@ -115,6 +115,7 @@
 | Use CLI commands effectively | [CLI guide](docs/cli.md) | Practical usage patterns and examples |
 | Diagnose repository health | [Doctor docs](docs/doctor.md) | Health checks and recommendations |
 | Run safe checks and targeted fixes | [Repo audit](docs/repo-audit.md) | Enterprise-focused guardrails |
+| Run deterministic automation workflows | [Automation OS](docs/automation-os.md) | Manager/worker workflows, replay, diff, artifacts |
 | Contribute with confidence | [Contributing guide](CONTRIBUTING.md) | Quality gates + PR expectations |
 
 ## 🎨 Visual + clickable experience map

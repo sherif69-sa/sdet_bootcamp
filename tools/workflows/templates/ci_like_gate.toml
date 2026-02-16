@@ -1,0 +1,20 @@
+[workflow]
+name = "ci_like_gate"
+version = "1"
+
+[[workflow.steps]]
+id = "doctor"
+type = "python_call"
+inputs = { action = "doctor.ascii", kwargs = { root = "." } }
+
+[[workflow.steps]]
+id = "security"
+type = "python_call"
+depends_on = ["doctor"]
+inputs = { action = "security.check", kwargs = { root = "." } }
+
+[[workflow.steps]]
+id = "audit"
+type = "python_call"
+depends_on = ["security"]
+inputs = { action = "repo.audit", kwargs = { root = "." } }
