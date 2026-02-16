@@ -1,0 +1,11 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Ignore known false positive in historical omnichannel rate limiter line"
+regexes = [
+  '''root, max_tokens=max_tokens,''',
+]
+paths = [
+  '''src/sdetkit/agent/omnichannel\.py''',
+]

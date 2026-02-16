@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from .core import run_agent
 
@@ -266,9 +266,11 @@ class AgentRouter:
     def route(self, event: InboundEvent) -> dict[str, Any]:
         allowed, rate_state = self.rate_limiter.allow(channel=event.channel, user_id=event.user_id)
         if not allowed:
-            result = {"status": "rate_limited", "rate": rate_state}
-            self.conversation_store.append(event, result, captured_at=self.rate_limiter.time_fn())
-            return result
+            limited_result: dict[str, Any] = {"status": "rate_limited", "rate": rate_state}
+            self.conversation_store.append(
+                event, limited_result, captured_at=self.rate_limiter.time_fn()
+            )
+            return limited_result
 
         task = self._wrapped_task(event)
         record = self.task_runner(
@@ -277,7 +279,7 @@ class AgentRouter:
             task=task,
             auto_approve=False,
         )
-        result = {
+        result: dict[str, Any] = {
             "status": str(record.get("status", "error")),
             "hash": str(record.get("hash", "")),
             "rate": rate_state,
@@ -334,7 +336,7 @@ class _WebhookHandler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_POST(self) -> None:  # noqa: N802
-        server = self.server
+        server = cast(AgentHTTPServer, self.server)
         router = server.router
         generic_adapter = server.generic_adapter
         telegram_adapter = server.telegram_adapter
