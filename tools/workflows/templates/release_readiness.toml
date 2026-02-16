@@ -1,0 +1,26 @@
+[workflow]
+name = "release_readiness"
+version = "1"
+
+[[workflow.steps]]
+id = "tests"
+type = "command"
+inputs = { cmd = ["python", "-m", "pytest", "-q"] }
+
+[[workflow.steps]]
+id = "quality"
+type = "command"
+depends_on = ["tests"]
+inputs = { cmd = ["bash", "quality.sh"] }
+
+[[workflow.steps]]
+id = "ci"
+type = "command"
+depends_on = ["quality"]
+inputs = { cmd = ["bash", "ci.sh", "quick"] }
+
+[[workflow.steps]]
+id = "report"
+type = "write_file"
+depends_on = ["ci"]
+inputs = { path = "release-summary.txt", text = "Release readiness complete" }
