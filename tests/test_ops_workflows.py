@@ -3,7 +3,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from sdetkit.ops import _interpolate, _load_workflow, _resolve_order, diff_runs, run_workflow
+from sdetkit.security import SecurityError
 
 
 def test_workflow_parse_toml_and_json(tmp_path: Path) -> None:
@@ -155,3 +158,24 @@ inputs = { path = "a.txt", text = "hello" }
     run_b = second["run_id"]
     diff = diff_runs(tmp_path, run_a, run_b)
     assert diff["changed_steps"] == []
+
+
+def test_load_run_rejects_invalid_id(tmp_path: Path) -> None:
+    from sdetkit.ops import load_run
+
+    with pytest.raises(ValueError):
+        load_run(tmp_path, "../bad")
+
+
+def test_run_workflow_rejects_traversal_path(tmp_path: Path) -> None:
+    bad = Path("../outside.toml")
+    with pytest.raises((ValueError, SecurityError)):
+        run_workflow(
+            bad,
+            inputs={},
+            artifacts_dir=tmp_path / "a",
+            history_dir=tmp_path / "h",
+            workers=1,
+            dry_run=False,
+            fail_fast=False,
+        )

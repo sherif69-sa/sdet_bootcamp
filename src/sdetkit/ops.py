@@ -195,6 +195,27 @@ def build_registry() -> ActionRegistry:
     return reg
 
 
+def _resolve_workflow_path(path: Path) -> Path:
+    candidate = Path(path)
+    if any(part == ".." for part in candidate.parts):
+        raise ValueError("workflow path traversal is not allowed")
+    if candidate.is_absolute():
+        resolved = candidate.resolve(strict=False)
+    else:
+        resolved = safe_path(Path.cwd(), str(candidate), allow_absolute=False)
+    if resolved.suffix.lower() not in {".toml", ".json"}:
+        raise ValueError("workflow path must end with .toml or .json")
+    if not resolved.is_file():
+        raise ValueError(f"workflow path does not exist: {resolved}")
+    return resolved
+
+
+def _validate_run_id(run_id: str) -> str:
+    if not re.fullmatch(r"[A-Za-z0-9._-]{1,128}", run_id):
+        raise ValueError("invalid run id")
+    return run_id
+
+
 def _load_workflow(path: Path) -> WorkflowDef:
     if path.suffix.lower() == ".json":
         doc = json.loads(path.read_text(encoding="utf-8"))
@@ -429,8 +450,9 @@ def run_workflow(
     registry: ActionRegistry | None = None,
 ) -> dict[str, Any]:
     registry = registry or build_registry()
-    workflow_text = workflow_path.read_text(encoding="utf-8")
-    wf = _load_workflow(workflow_path)
+    resolved_workflow_path = _resolve_workflow_path(workflow_path)
+    workflow_text = resolved_workflow_path.read_text(encoding="utf-8")
+    wf = _load_workflow(resolved_workflow_path)
     run_id = _run_id(workflow_text, inputs)
     run_root = history_dir / ".sdetkit" / "ops-history" / run_id
     run_root.mkdir(parents=True, exist_ok=True)
@@ -525,7 +547,7 @@ def run_workflow(
     run_doc = {
         "run_id": run_id,
         "workflow": dataclasses.asdict(wf),
-        "workflow_path": workflow_path.as_posix(),
+        "workflow_path": resolved_workflow_path.as_posix(),
         "inputs": inputs,
         "plan": plan_order,
         "environment": {"cwd": Path.cwd().as_posix()},
@@ -585,7 +607,9 @@ def list_runs(history_dir: Path) -> list[dict[str, Any]]:
 
 
 def load_run(history_dir: Path, run_id: str) -> tuple[dict[str, Any], dict[str, Any]]:
-    run_dir = _history_root(history_dir) / run_id
+    valid_run_id = _validate_run_id(run_id)
+    history_root = _history_root(history_dir)
+    run_dir = safe_path(history_root, valid_run_id, allow_absolute=False)
     run_doc = json.loads((run_dir / "run.json").read_text(encoding="utf-8"))
     results_doc = json.loads((run_dir / "results.json").read_text(encoding="utf-8"))
     return run_doc, results_doc
@@ -653,9 +677,10 @@ def _safe_run_id(path: str) -> str | None:
     if not path.startswith("/runs/"):
         return None
     run_id = urllib.parse.unquote(path.split("/", 2)[2])
-    if not re.fullmatch(r"[A-Za-z0-9._-]{1,128}", run_id):
+    try:
+        return _validate_run_id(run_id)
+    except ValueError:
         return None
-    return run_id
 
 
 class _OpsHandler(BaseHTTPRequestHandler):
