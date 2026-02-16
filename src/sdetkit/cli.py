@@ -8,6 +8,7 @@ from importlib import metadata
 from . import apiget, kvcli, patch, repo, report
 from .agent.cli import main as agent_main
 from .maintenance import main as maintenance_main
+from .security_gate import main as security_main
 
 
 def _tool_version() -> str:
@@ -67,6 +68,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     if argv and argv[0] == "agent":
         return agent_main(list(argv[1:]))
 
+    if argv and argv[0] == "security":
+        return security_main(list(argv[1:]))
+
     p = argparse.ArgumentParser(prog="sdetkit", add_help=True)
     p.add_argument("--version", action="version", version=_tool_version())
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -101,6 +105,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     agt = sub.add_parser("agent")
     agt.add_argument("args", nargs=argparse.REMAINDER)
 
+    sec = sub.add_parser("security")
+    sec.add_argument("args", nargs=argparse.REMAINDER)
+
     ns = p.parse_args(argv)
 
     if ns.cmd == "kv":
@@ -123,6 +130,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if ns.cmd == "agent":
         return agent_main(ns.args)
+
+    if ns.cmd == "security":
+        return security_main(ns.args)
 
     if ns.cmd == "apiget":
         raw_args = list(argv)

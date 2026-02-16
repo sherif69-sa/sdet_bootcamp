@@ -12,6 +12,7 @@ mode=${1:-quick}
 case "$mode" in
   quick)
     python -m pytest -q
+    bash security.sh
     ;;
   docker)
     docker build -t sdet-bootcamp:ci .
@@ -19,6 +20,7 @@ case "$mode" in
     ;;
   all)
     python -m pytest -q
+    bash security.sh
     docker build -t sdet-bootcamp:ci .
     docker run --rm sdet-bootcamp:ci
     ;;
