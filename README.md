@@ -228,6 +228,22 @@ This path is offline-friendly and deterministic when `provider.type=none` and in
 
 Additional references: [AgentOS cookbook](docs/agentos-cookbook.md), [Determinism contract](docs/determinism-contract.md), [Security model](docs/security-model.md).
 
+
+## 🔐 Security Gate
+
+Run the top-level security gate locally and in CI:
+
+```bash
+python -m sdetkit security check --baseline tools/security.baseline.json --format text
+python -m sdetkit security check --baseline tools/security.baseline.json --format sarif --output build/security.sarif
+python -m sdetkit security fix
+```
+
+More details:
+
+- [Security gate guide](docs/security-gate.md)
+- [Security model](docs/security-model.md)
+
 ## 🧩 Why this repository exists
 
 This project is designed for fast onboarding and high-confidence delivery:
