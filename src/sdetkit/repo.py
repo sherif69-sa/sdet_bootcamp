@@ -126,12 +126,14 @@ REPO_PRESETS: frozenset[str] = frozenset({"enterprise_python"})
 def _shannon_entropy(s: str) -> float:
     if not s:
         return 0.0
-    counts = {ch: s.count(ch) for ch in set(s)}
+    counts: dict[str, int] = {}
+    for ch in s:
+        counts[ch] = counts.get(ch, 0) + 1
     n = float(len(s))
     entropy = 0.0
     for count in counts.values():
         p = count / n
-        entropy -= p * (0 if p == 0 else math.log2(p))
+        entropy -= p * math.log2(p)
     return entropy
 
 
