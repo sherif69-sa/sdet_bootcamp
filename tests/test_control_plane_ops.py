@@ -67,3 +67,27 @@ def test_ops_plan_cli_json(tmp_path: Path, monkeypatch, capsys) -> None:
     assert ops_control.cli(["plan", "--profile", "default"]) == 0
     payload = json.loads(capsys.readouterr().out)
     assert payload["profile"] == "default"
+
+
+def test_security_scan_task_is_non_gating() -> None:
+    task = ops_control.BUILTIN_TASKS["security-scan"]
+    assert "--fail-on" in task.command
+    idx = task.command.index("--fail-on")
+    assert task.command[idx + 1] == "none"
+
+
+def test_report_build_task_uses_valid_cli_flags() -> None:
+    task = ops_control.BUILTIN_TASKS["report-build"]
+    assert task.command[:5] == ("python3", "-m", "sdetkit", "report", "build")
+    assert "--history-dir" in task.command
+    assert "--output" in task.command
+    dot_index = task.command.index(".")
+    assert task.command[dot_index - 1] == "--history-dir"
+
+
+def test_repo_audit_task_is_non_gating() -> None:
+    task = ops_control.BUILTIN_TASKS["repo-audit"]
+    assert "--fail-on" in task.command
+    idx = task.command.index("--fail-on")
+    assert task.command[idx + 1] == "none"
+    assert "--force" in task.command
