@@ -6,6 +6,14 @@ import sys
 from pathlib import Path
 
 from .core import doctor_agent, history_agent, init_agent, run_agent
+from .templates import (
+    TemplateValidationError,
+    discover_templates,
+    pack_templates,
+    parse_set_values,
+    run_template,
+    template_by_id,
+)
 
 
 def main(argv: list[str]) -> int:
@@ -27,6 +35,22 @@ def main(argv: list[str]) -> int:
 
     hist_p = sub.add_parser("history")
     hist_p.add_argument("--limit", type=int, default=10)
+
+    tpl = sub.add_parser("templates")
+    tpl_sub = tpl.add_subparsers(dest="templates_cmd", required=True)
+
+    tpl_sub.add_parser("list")
+
+    tpl_show = tpl_sub.add_parser("show")
+    tpl_show.add_argument("id")
+
+    tpl_run = tpl_sub.add_parser("run")
+    tpl_run.add_argument("id")
+    tpl_run.add_argument("--set", dest="set_values", action="append", default=[])
+    tpl_run.add_argument("--output-dir", default=".sdetkit/agent/template-runs")
+
+    tpl_pack = tpl_sub.add_parser("pack")
+    tpl_pack.add_argument("--output", default=".sdetkit/agent/templates/automation-templates.tar")
 
     ns = parser.parse_args(argv)
     root = Path.cwd()
@@ -57,5 +81,65 @@ def main(argv: list[str]) -> int:
         history_payload = history_agent(root, limit=ns.limit)
         sys.stdout.write(json.dumps(history_payload, ensure_ascii=True, sort_keys=True) + "\n")
         return 0
+
+    if ns.agent_cmd == "templates":
+        try:
+            if ns.templates_cmd == "list":
+                list_payload = [
+                    {
+                        "id": item.metadata["id"],
+                        "title": item.metadata["title"],
+                        "version": item.metadata["version"],
+                        "description": item.metadata["description"],
+                    }
+                    for item in discover_templates(root)
+                ]
+                sys.stdout.write(
+                    json.dumps({"templates": list_payload}, ensure_ascii=True, sort_keys=True)
+                    + "\n"
+                )
+                return 0
+
+            if ns.templates_cmd == "show":
+                item = template_by_id(root, ns.id)
+                show_payload = {
+                    "metadata": item.metadata,
+                    "inputs": {
+                        name: {"default": spec.default, "description": spec.description}
+                        for name, spec in item.inputs.items()
+                    },
+                    "workflow": [
+                        {"id": step.step_id, "action": step.action, "with": step.params}
+                        for step in item.workflow
+                    ],
+                    "source": item.source.relative_to(root).as_posix(),
+                }
+                sys.stdout.write(json.dumps(show_payload, ensure_ascii=True, sort_keys=True) + "\n")
+                return 0
+
+            if ns.templates_cmd == "run":
+                item = template_by_id(root, ns.id)
+                parsed_set_values = parse_set_values(list(ns.set_values))
+                output_dir = Path(ns.output_dir)
+                if output_dir == Path(".sdetkit/agent/template-runs"):
+                    output_dir = output_dir / item.metadata["id"]
+                record = run_template(
+                    root,
+                    template=item,
+                    set_values=parsed_set_values,
+                    output_dir=root / output_dir,
+                )
+                sys.stdout.write(json.dumps(record, ensure_ascii=True, sort_keys=True) + "\n")
+                return 0 if record.get("status") == "ok" else 1
+
+            if ns.templates_cmd == "pack":
+                pack_payload = pack_templates(root, output=root / ns.output)
+                sys.stdout.write(json.dumps(pack_payload, ensure_ascii=True, sort_keys=True) + "\n")
+                return 0
+        except TemplateValidationError as exc:
+            sys.stdout.write(
+                json.dumps({"error": str(exc)}, ensure_ascii=True, sort_keys=True) + "\n"
+            )
+            return 1
 
     return 2

@@ -137,3 +137,16 @@ See: reporting-and-trends.md
 - `sdetkit dev precommit install [PATH] [--profile ...] [--pack ...] [--mode changed-only|full] [--apply] [--dry-run] [--force] [--diff]`
 
 See: ide-and-precommit.md
+
+## `agent`
+
+- `sdetkit agent init [--config PATH]`
+- `sdetkit agent run <task> [--config PATH] [--approve] [--cache-dir PATH] [--no-cache]`
+- `sdetkit agent doctor [--config PATH]`
+- `sdetkit agent history [--limit N]`
+- `sdetkit agent templates list`
+- `sdetkit agent templates show <id>`
+- `sdetkit agent templates run <id> [--set key=value ...] [--output-dir DIR]`
+- `sdetkit agent templates pack [--output FILE.tar]`
+
+See: agentos-foundation.md and automation-templates-engine.md

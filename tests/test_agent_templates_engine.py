@@ -1,0 +1,105 @@
+from __future__ import annotations
+
+import json
+import tarfile
+from pathlib import Path
+
+import pytest
+
+from sdetkit.agent.templates import (
+    TemplateValidationError,
+    discover_templates,
+    interpolate_value,
+    pack_templates,
+    parse_template,
+    run_template,
+    template_by_id,
+)
+
+
+def test_template_parsing_and_validation_error(tmp_path: Path) -> None:
+    good = tmp_path / "ok.yaml"
+    good.write_text(
+        """
+metadata:
+  id: x
+  title: X
+  version: 1.0.0
+  description: desc
+inputs:
+  name:
+    default: world
+workflow:
+  - action: fs.write
+    with:
+      path: out.txt
+      content: hello
+""".strip()
+        + "\n",
+        encoding="utf-8",
+    )
+    parsed = parse_template(good)
+    assert parsed.metadata["id"] == "x"
+    assert parsed.inputs["name"].default == "world"
+
+    bad = tmp_path / "bad.yaml"
+    bad.write_text("metadata:\n  id: missing\n", encoding="utf-8")
+    with pytest.raises(TemplateValidationError):
+        parse_template(bad)
+
+
+def test_interpolation_is_safe_and_supports_nested_values() -> None:
+    context = {"inputs": {"foo": "bar", "count": 3}, "run": {"output_dir": "out"}}
+    assert interpolate_value("${{inputs.foo}}", context) == "bar"
+    assert interpolate_value("result-${{inputs.count}}", context) == "result-3"
+    with pytest.raises(TemplateValidationError):
+        interpolate_value("${{inputs.missing}}", context)
+
+
+def test_deterministic_pack_output(tmp_path: Path) -> None:
+    templates = tmp_path / "templates" / "automations"
+    templates.mkdir(parents=True)
+    (templates / "a.yaml").write_text(
+        "metadata:\n  id: a\n  title: A\n  version: 1\n  description: d\nworkflow:\n  - action: fs.write\n    with:\n      path: a\n",
+        encoding="utf-8",
+    )
+    (templates / "b.yaml").write_text(
+        "metadata:\n  id: b\n  title: B\n  version: 1\n  description: d\nworkflow:\n  - action: fs.write\n    with:\n      path: b\n",
+        encoding="utf-8",
+    )
+
+    first = pack_templates(tmp_path, output=tmp_path / "pack-1.tar")
+    second = pack_templates(tmp_path, output=tmp_path / "pack-2.tar")
+
+    assert Path(first["output"]).read_bytes() == Path(second["output"]).read_bytes()
+    with tarfile.open(first["output"], "r") as tf:
+        assert tf.getnames() == ["templates/automations/a.yaml", "templates/automations/b.yaml"]
+
+
+def test_template_run_produces_artifacts_for_two_real_templates(tmp_path: Path) -> None:
+    repo_root = Path.cwd()
+    templates = discover_templates(repo_root)
+    assert len(templates) >= 8
+
+    audit_template = template_by_id(repo_root, "repo-health-audit")
+    audit_out = tmp_path / "audit"
+    audit_record = run_template(
+        repo_root,
+        template=audit_template,
+        set_values={"profile": "default", "changed_only": "false"},
+        output_dir=audit_out,
+    )
+    assert audit_record["status"] == "ok"
+    assert (audit_out / "repo-audit.json").exists()
+    assert (audit_out / "repo-audit.sarif.json").exists()
+
+    bundle_template = template_by_id(repo_root, "ci-artifact-bundle")
+    bundle_out = tmp_path / "bundle"
+    bundle_record = run_template(
+        repo_root, template=bundle_template, set_values={}, output_dir=bundle_out
+    )
+    assert bundle_record["status"] == "ok"
+    assert (bundle_out / "artifacts.tar").exists()
+    run_record = json.loads((bundle_out / "run-record.json").read_text(encoding="utf-8"))
+    assert run_record["status"] == "ok"
+    assert "hash" in run_record
