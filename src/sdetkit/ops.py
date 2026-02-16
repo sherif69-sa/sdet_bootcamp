@@ -200,9 +200,8 @@ def _resolve_workflow_path(path: Path) -> Path:
     if any(part == ".." for part in candidate.parts):
         raise ValueError("workflow path traversal is not allowed")
     base = Path.cwd()
-    if candidate.is_absolute():
-        try:
-            # Ensure absolute paths remain within the allowed base directory
+        raise ValueError("absolute workflow paths are not allowed")
+    resolved = safe_path(Path.cwd(), str(candidate), allow_absolute=False)
             relative_candidate = candidate.relative_to(base)
         except ValueError as exc:
             raise ValueError("absolute workflow path is outside allowed base directory") from exc
