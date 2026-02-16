@@ -6,6 +6,9 @@ import sys
 from pathlib import Path
 
 from .core import doctor_agent, history_agent, init_agent, run_agent
+from .dashboard import build_dashboard as build_agent_dashboard
+from .dashboard import export_history_summary
+from .demo import run_demo
 from .omnichannel import AgentServeApp
 from .templates import (
     TemplateValidationError,
@@ -36,6 +39,26 @@ def main(argv: list[str]) -> int:
 
     hist_p = sub.add_parser("history")
     hist_p.add_argument("--limit", type=int, default=10)
+    hist_sub = hist_p.add_subparsers(dest="history_cmd")
+    hist_sub.required = False
+
+    hist_list = hist_sub.add_parser("list")
+    hist_list.add_argument("--limit", type=int, default=10)
+
+    hist_export = hist_sub.add_parser("export")
+    hist_export.add_argument("--format", choices=["csv"], default="csv")
+    hist_export.add_argument("--output", default=".sdetkit/agent/workdir/history-summary.csv")
+
+    dash_p = sub.add_parser("dashboard")
+    dash_sub = dash_p.add_subparsers(dest="dashboard_cmd", required=True)
+    dash_build = dash_sub.add_parser("build")
+    dash_build.add_argument("--history-dir", default=".sdetkit/agent/history")
+    dash_build.add_argument("--output", default=".sdetkit/agent/workdir/agent-dashboard.html")
+    dash_build.add_argument("--summary-output", default=".sdetkit/agent/workdir/agent-summary.md")
+    dash_build.add_argument("--format", choices=["json", "md", "html", "csv"], default="html")
+
+    demo_p = sub.add_parser("demo")
+    demo_p.add_argument("--scenario", choices=["repo-enterprise-audit"], required=True)
 
     serve_p = sub.add_parser("serve")
     serve_p.add_argument("--config", default=".sdetkit/agent/config.yaml")
@@ -91,8 +114,32 @@ def main(argv: list[str]) -> int:
         return 0 if doctor_payload.get("ok") else 1
 
     if ns.agent_cmd == "history":
+        history_cmd = ns.history_cmd or "list"
+        if history_cmd == "export":
+            export_payload = export_history_summary(
+                history_dir=root / ".sdetkit" / "agent" / "history",
+                output=root / ns.output,
+                fmt=ns.format,
+            )
+            sys.stdout.write(json.dumps(export_payload, ensure_ascii=True, sort_keys=True) + "\n")
+            return 0
         history_payload = history_agent(root, limit=ns.limit)
         sys.stdout.write(json.dumps(history_payload, ensure_ascii=True, sort_keys=True) + "\n")
+        return 0
+
+    if ns.agent_cmd == "dashboard":
+        dashboard_payload = build_agent_dashboard(
+            history_dir=root / ns.history_dir,
+            output=root / ns.output,
+            fmt=ns.format,
+            summary_output=root / ns.summary_output,
+        )
+        sys.stdout.write(json.dumps(dashboard_payload, ensure_ascii=True, sort_keys=True) + "\n")
+        return 0
+
+    if ns.agent_cmd == "demo":
+        demo_payload = run_demo(root=root, scenario=ns.scenario)
+        sys.stdout.write(json.dumps(demo_payload, ensure_ascii=True, sort_keys=True) + "\n")
         return 0
 
     if ns.agent_cmd == "serve":
