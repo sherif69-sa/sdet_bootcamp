@@ -674,7 +674,9 @@ def _to_json_payload(
         "version": 1,
         "counts": counts,
         "findings": [asdict(x) for x in findings],
-        "new_findings": [asdict(x) for x in (new_only or findings)],
+        "new_findings": [asdict(x) for x in findings]
+        if new_only is None
+        else [asdict(x) for x in new_only],
     }
     if sbom is not None:
         payload["sbom"] = sbom
