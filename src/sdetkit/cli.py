@@ -6,6 +6,7 @@ from collections.abc import Sequence
 from importlib import metadata
 
 from . import apiget, kvcli, patch, repo, report
+from .agent.cli import main as agent_main
 from .maintenance import main as maintenance_main
 
 
@@ -63,6 +64,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     if argv and argv[0] == "maintenance":
         return maintenance_main(list(argv[1:]))
 
+    if argv and argv[0] == "agent":
+        return agent_main(list(argv[1:]))
+
     p = argparse.ArgumentParser(prog="sdetkit", add_help=True)
     p.add_argument("--version", action="version", version=_tool_version())
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -94,6 +98,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     mnt = sub.add_parser("maintenance")
     mnt.add_argument("args", nargs=argparse.REMAINDER)
 
+    agt = sub.add_parser("agent")
+    agt.add_argument("args", nargs=argparse.REMAINDER)
+
     ns = p.parse_args(argv)
 
     if ns.cmd == "kv":
@@ -113,6 +120,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if ns.cmd == "maintenance":
         return maintenance_main(ns.args)
+
+    if ns.cmd == "agent":
+        return agent_main(ns.args)
 
     if ns.cmd == "apiget":
         raw_args = list(argv)
