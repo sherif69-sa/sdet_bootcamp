@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 from sdetkit.agent.actions import ActionRegistry
@@ -99,6 +100,35 @@ def test_approval_gating_denies_dangerous_actions_by_default(tmp_path: Path, mon
     assert record["status"] == "error"
     assert record["actions"][0]["denied"] is True
     assert "approval" in record["actions"][0]["payload"]["reason"]
+
+
+def test_shell_action_uses_shlex_parsing_for_quoted_arguments(tmp_path: Path) -> None:
+    registry = ActionRegistry(
+        root=tmp_path,
+        write_allowlist=(".sdetkit/agent/workdir",),
+        shell_allowlist=(sys.executable,),
+    )
+
+    result = registry.run(
+        "shell.run",
+        {"cmd": f'{sys.executable} -c "import sys; print(sys.argv[1])" "hello world"'},
+    )
+
+    assert result.ok is True
+    assert result.payload["stdout"].strip() == "hello world"
+
+
+def test_shell_action_rejects_invalid_shell_syntax(tmp_path: Path) -> None:
+    registry = ActionRegistry(
+        root=tmp_path,
+        write_allowlist=(".sdetkit/agent/workdir",),
+        shell_allowlist=("python",),
+    )
+
+    result = registry.run("shell.run", {"cmd": 'python -c "print(1)'})
+
+    assert result.ok is False
+    assert "invalid shell command" in str(result.payload.get("error", ""))
 
 
 def test_cached_provider_hits_after_first_call(tmp_path: Path) -> None:

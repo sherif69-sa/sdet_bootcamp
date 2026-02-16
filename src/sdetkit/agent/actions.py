@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import shlex
 import subprocess
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -99,11 +100,29 @@ class ActionRegistry:
         cmd = str(params.get("cmd", "")).strip()
         if not cmd:
             return ActionResult("shell.run", False, {"error": "cmd is required"})
-        if not any(cmd == allow or cmd.startswith(allow + " ") for allow in self.shell_allowlist):
+        try:
+            argv = shlex.split(cmd)
+        except ValueError as exc:
+            return ActionResult("shell.run", False, {"error": f"invalid shell command: {exc}"})
+        if not argv:
+            return ActionResult("shell.run", False, {"error": "cmd is required"})
+
+        allowed = False
+        for allow in self.shell_allowlist:
+            try:
+                allow_argv = shlex.split(allow)
+            except ValueError:
+                continue
+            if not allow_argv:
+                continue
+            if len(argv) >= len(allow_argv) and argv[: len(allow_argv)] == allow_argv:
+                allowed = True
+                break
+        if not allowed:
             return ActionResult(
                 "shell.run", False, {"error": "command denied by allowlist", "cmd": cmd}
             )
-        proc = subprocess.run(cmd.split(), text=True, capture_output=True, check=False)
+        proc = subprocess.run(argv, text=True, capture_output=True, check=False)
         return ActionResult(
             "shell.run",
             proc.returncode == 0,
