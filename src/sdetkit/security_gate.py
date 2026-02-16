@@ -843,32 +843,24 @@ def _fix_yaml_safe_load(path: Path) -> bool:
     return False
 
 
-def _patched_yaml_safe_load_text(text: str) -> str:
-    return re.sub(r"\byaml\.load\s*\(", "yaml.safe_load(", text)
-
-
-def _fix_requests_timeout(path: Path, timeout: int) -> bool:
-    text = path.read_text(encoding="utf-8")
-    out = _patched_requests_timeout_text(text, timeout)
-    if out != text:
-        path.write_text(out, encoding="utf-8")
-        return True
-    return False
-
-
-def _patched_requests_timeout_text(text: str, timeout: int) -> str:
+def _inject_requests_timeout(text: str, timeout: int) -> str:
     lines = text.splitlines()
-    changed = False
     for idx, line in enumerate(lines):
         if "requests." not in line or "timeout=" in line:
             continue
         if not re.search(r"requests\.(get|post|put|patch|delete|head|request)\((.*)\)", line):
             continue
         lines[idx] = line[:-1] + f", timeout={timeout})"
-        changed = True
-    if not changed:
-        return text
     return "\n".join(lines) + ("\n" if text.endswith("\n") else "")
+
+
+def _fix_requests_timeout(path: Path, timeout: int) -> bool:
+    text = path.read_text(encoding="utf-8")
+    out = _inject_requests_timeout(text, timeout)
+    if out != text:
+        path.write_text(out, encoding="utf-8")
+        return True
+    return False
 
 
 def _run_ruff_fix(root: Path) -> tuple[bool, str]:
@@ -951,8 +943,8 @@ def main(argv: list[str] | None = None) -> int:
                     _fix_requests_timeout(py_file, ns.timeout) if should_apply else False
                 ) or did_change
                 if not should_apply:
-                    candidate = _patched_yaml_safe_load_text(before)
-                    candidate = _patched_requests_timeout_text(candidate, ns.timeout)
+                    candidate = re.sub(r"\byaml\.load\s*\(", "yaml.safe_load(", before)
+                    candidate = _inject_requests_timeout(candidate, ns.timeout)
                     if candidate != before:
                         rel = py_file.relative_to(root).as_posix()
                         previews.append(
