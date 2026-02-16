@@ -383,11 +383,15 @@ def _threshold_rank(level: str) -> int:
 
 def _new_count_at_or_above(payload: dict[str, Any], threshold: str) -> int:
     rank = _threshold_rank(threshold)
-    return sum(
-        1
-        for item in payload.get("new", [])
-        if _severity_rank(str(item.get("severity", "error"))) >= rank
-    )
+    counts = payload.get("counts", {}).get("new_by_severity", {})
+    if not isinstance(counts, dict):
+        return 0
+
+    total = 0
+    for sev, count in counts.items():
+        if _severity_rank(str(sev)) >= rank:
+            total += int(count)
+    return total
 
 
 def _changed_count_crossing_threshold(payload: dict[str, Any], threshold: str) -> int:

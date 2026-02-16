@@ -411,6 +411,51 @@ def test_report_diff_fail_on_ignores_non_severity_changes(tmp_path: Path) -> Non
     assert "CHANGED: 1" in diff.stdout
 
 
+def test_report_diff_fail_on_uses_full_new_counts_when_limit_new_is_applied(tmp_path: Path) -> None:
+    runner = CliRunner()
+    a = tmp_path / "a.json"
+    b = tmp_path / "b.json"
+
+    _write_run(a, captured_at="2020-01-01T00:00:00Z", findings=[])
+    _write_run(
+        b,
+        captured_at="2020-01-02T00:00:00Z",
+        findings=[
+            {
+                "fingerprint": "new-error-1",
+                "rule_id": "r1",
+                "severity": "error",
+                "message": "one",
+                "path": "a.py",
+            },
+            {
+                "fingerprint": "new-error-2",
+                "rule_id": "r2",
+                "severity": "error",
+                "message": "two",
+                "path": "b.py",
+            },
+        ],
+    )
+
+    result = runner.invoke(
+        [
+            "report",
+            "diff",
+            "--from",
+            str(a),
+            "--to",
+            str(b),
+            "--fail-on",
+            "error",
+            "--limit-new",
+            "1",
+        ]
+    )
+    assert result.exit_code == 1
+    assert "NEW: 2" in result.stdout
+
+
 def test_report_diff_markdown_format_is_deterministic_and_honors_limit(tmp_path: Path) -> None:
     runner = CliRunner()
     a = tmp_path / "a.json"
