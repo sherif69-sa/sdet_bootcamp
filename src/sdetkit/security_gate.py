@@ -843,23 +843,10 @@ def _fix_yaml_safe_load(path: Path) -> bool:
     return False
 
 
-def _fix_requests_timeout(path: Path, timeout: int) -> bool:
-    text = path.read_text(encoding="utf-8")
-    updated = _apply_requests_timeout_transform(text, timeout)
-    if updated == text:
-        return False
-    path.write_text(updated, encoding="utf-8")
-    return True
-
-
-def _apply_requests_timeout_transform(text: str, timeout: int) -> str:
-    try:
-        tree = ast.parse(text)
-    except SyntaxError:
-        return text
-    calls_by_line: dict[int, list[int]] = {}
-    for node in ast.walk(tree):
-        if not isinstance(node, ast.Call):
+def _inject_requests_timeout(text: str, timeout: int) -> str:
+    lines = text.splitlines()
+    for idx, line in enumerate(lines):
+        if "requests." not in line or "timeout=" in line:
             continue
         name = _call_name(node)
         if name not in {
@@ -878,17 +865,17 @@ def _apply_requests_timeout_transform(text: str, timeout: int) -> str:
             continue
         if node.lineno != node.end_lineno:
             continue
-        line_calls = calls_by_line.setdefault(node.lineno - 1, [])
-        line_calls.append(node.end_col_offset - 1)
-    if not calls_by_line:
-        return text
-    lines = text.splitlines(keepends=True)
-    for line_idx, end_cols in sorted(calls_by_line.items()):
-        line = lines[line_idx]
-        for end_col in sorted(end_cols, reverse=True):
-            line = line[:end_col] + f", timeout={timeout}" + line[end_col:]
-        lines[line_idx] = line
-    return "".join(lines)
+        lines[idx] = line[:-1] + f", timeout={timeout})"
+    return "\n".join(lines) + ("\n" if text.endswith("\n") else "")
+
+
+def _fix_requests_timeout(path: Path, timeout: int) -> bool:
+    text = path.read_text(encoding="utf-8")
+    out = _inject_requests_timeout(text, timeout)
+    if out != text:
+        path.write_text(out, encoding="utf-8")
+        return True
+    return False
 
 
 def _run_ruff_fix(root: Path) -> tuple[bool, str]:
@@ -972,7 +959,7 @@ def main(argv: list[str] | None = None) -> int:
                 ) or did_change
                 if not should_apply:
                     candidate = re.sub(r"\byaml\.load\s*\(", "yaml.safe_load(", before)
-                    candidate = _apply_requests_timeout_transform(candidate, ns.timeout)
+                    candidate = _inject_requests_timeout(candidate, ns.timeout)
                     if candidate != before:
                         rel = py_file.relative_to(root).as_posix()
                         previews.append(
