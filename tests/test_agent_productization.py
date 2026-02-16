@@ -10,8 +10,18 @@ from sdetkit.agent.dashboard import build_dashboard
 
 def _seed_history(root: Path) -> None:
     init_agent(root, root / ".sdetkit/agent/config.yaml")
-    run_agent(root, config_path=root / ".sdetkit/agent/config.yaml", task="template:alpha", auto_approve=True)
-    run_agent(root, config_path=root / ".sdetkit/agent/config.yaml", task='action fs.read {"path":"missing.txt"}', auto_approve=True)
+    run_agent(
+        root,
+        config_path=root / ".sdetkit/agent/config.yaml",
+        task="template:alpha",
+        auto_approve=True,
+    )
+    run_agent(
+        root,
+        config_path=root / ".sdetkit/agent/config.yaml",
+        task='action fs.read {"path":"missing.txt"}',
+        auto_approve=True,
+    )
 
 
 def test_dashboard_build_is_deterministic(tmp_path: Path, monkeypatch) -> None:

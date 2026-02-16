@@ -97,7 +97,9 @@ def summarize_history(history_dir: Path) -> dict[str, Any]:
                 "captured_at": str(run.get("captured_at", "")),
                 "status": str(run.get("status", "")),
                 "task": str(run.get("task", "")),
-                "action_count": len(run.get("actions", [])) if isinstance(run.get("actions"), list) else 0,
+                "action_count": len(run.get("actions", []))
+                if isinstance(run.get("actions"), list)
+                else 0,
             }
             for run in runs
         ],
@@ -149,7 +151,8 @@ def render_html(summary: dict[str, Any]) -> str:
 
     def _table(rows: list[dict[str, Any]], left: str, right: str) -> str:
         body = "".join(
-            f"<tr><td>{html.escape(str(item[left]))}</td><td>{item[right]}</td></tr>" for item in rows
+            f"<tr><td>{html.escape(str(item[left]))}</td><td>{item[right]}</td></tr>"
+            for item in rows
         )
         if not body:
             body = "<tr><td colspan='2'>none</td></tr>"
@@ -251,7 +254,10 @@ def export_history_summary(*, history_dir: Path, output: Path, fmt: str) -> dict
     if fmt == "csv":
         content = render_csv(summary)
     else:
-        content = json.dumps(summary.get("records", []), ensure_ascii=True, sort_keys=True, indent=2) + "\n"
+        content = (
+            json.dumps(summary.get("records", []), ensure_ascii=True, sort_keys=True, indent=2)
+            + "\n"
+        )
     atomic_write_text(output, content)
     return {
         "status": "ok",
