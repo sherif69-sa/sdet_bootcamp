@@ -60,6 +60,13 @@ This improves deterministic behavior and repeatability for local-provider runs.
   - Validates config, provider mode, budgets, and safety allowlists
 - `sdetkit agent history`
   - Lists recent recorded runs
+- `sdetkit agent history export --format csv --output <file>`
+  - Exports deterministic run summary records as CSV
+- `sdetkit agent dashboard build --format {json,md,html,csv}`
+  - Builds deterministic dashboard artifacts from `.sdetkit/agent/history/`
+  - HTML mode also emits a PR-ready Markdown summary
+- `sdetkit agent demo --scenario repo-enterprise-audit`
+  - Runs an offline deterministic end-to-end enterprise audit scenario
 
 ## Config (`.sdetkit/agent/config.yaml`)
 
@@ -87,3 +94,8 @@ Provider modes:
 
 - `provider.type: none` — deterministic no-LLM mode (offline-first)
 - `provider.type: local` — local HTTP provider integration
+
+
+## Productization blueprint
+
+See `docs/enterprise-productization-blueprint.md` for deployment modes, governance controls, adoption plans, and packaging deliverables.
