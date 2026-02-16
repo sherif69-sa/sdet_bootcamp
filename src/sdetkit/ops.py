@@ -12,6 +12,7 @@ import subprocess
 import threading
 import time
 import tomllib
+import urllib.parse
 from collections.abc import Callable, Mapping
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -371,13 +372,21 @@ def _step_execute(
             findings.append(
                 {"type": "red_flag", "message": "shell=true command", "severity": "warn"}
             )
-        proc = subprocess.run(
-            cmd if not shell else " ".join(str(x) for x in cmd),
-            capture_output=True,
-            text=True,
-            shell=shell,
-            check=False,
-        )
+        if shell:
+            cmd_text = " ".join(str(x) for x in cmd)
+            proc = subprocess.run(
+                ["/bin/sh", "-c", cmd_text],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+        else:
+            proc = subprocess.run(
+                [str(x) for x in cmd],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
         output = {"returncode": proc.returncode, "stdout": proc.stdout, "stderr": proc.stderr}
         if proc.returncode != 0:
             status = "error"
@@ -635,6 +644,20 @@ def _templates() -> dict[str, str]:
     return out
 
 
+def _parse_http_path(raw_path: str) -> tuple[str, dict[str, list[str]]]:
+    parsed = urllib.parse.urlparse(raw_path)
+    return parsed.path, urllib.parse.parse_qs(parsed.query, keep_blank_values=True)
+
+
+def _safe_run_id(path: str) -> str | None:
+    if not path.startswith("/runs/"):
+        return None
+    run_id = urllib.parse.unquote(path.split("/", 2)[2])
+    if not re.fullmatch(r"[A-Za-z0-9._-]{1,128}", run_id):
+        return None
+    return run_id
+
+
 class _OpsHandler(BaseHTTPRequestHandler):
     registry: ActionRegistry
     history_dir: Path
@@ -648,18 +671,19 @@ class _OpsHandler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self) -> None:  # noqa: N802
-        if self.path == "/health":
+        path, _query = _parse_http_path(self.path)
+        if path == "/health":
             self._json(200, {"ok": True})
             return
-        if self.path == "/actions":
+        if path == "/actions":
             self._json(200, {"actions": self.registry.list_specs()})
             return
-        if self.path == "/runs":
+        if path == "/runs":
             self._json(200, {"runs": list_runs(self.history_dir)})
             return
-        if self.path.startswith("/runs/"):
-            run_id = self.path.split("/", 2)[2]
-            if "/" in run_id or ".." in run_id:
+        if path.startswith("/runs/"):
+            run_id = _safe_run_id(path)
+            if run_id is None:
                 self._json(400, {"error": "invalid run id"})
                 return
             try:
@@ -672,13 +696,14 @@ class _OpsHandler(BaseHTTPRequestHandler):
         self._json(404, {"error": "not found"})
 
     def do_POST(self) -> None:  # noqa: N802
+        path, _query = _parse_http_path(self.path)
         raw = self.rfile.read(int(self.headers.get("Content-Length", "0")))
         try:
             payload = json.loads(raw.decode("utf-8")) if raw else {}
         except ValueError:
             self._json(400, {"error": "invalid json"})
             return
-        if self.path == "/run-action":
+        if path == "/run-action":
             try:
                 action = self.registry.get(str(payload.get("action", "")))
                 inputs = (
@@ -692,7 +717,7 @@ class _OpsHandler(BaseHTTPRequestHandler):
                 return
             self._json(200, {"outputs": out})
             return
-        if self.path == "/run-workflow":
+        if path == "/run-workflow":
             try:
                 workflow_path = Path(str(payload.get("workflow_path", "")))
                 inputs = (
