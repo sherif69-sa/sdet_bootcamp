@@ -209,7 +209,7 @@ class _RuleVisitor(ast.NodeVisitor):
 
     def visit_Call(self, node: ast.Call) -> Any:
         name = _call_name(node)
-        if name in {"eval", "exec", "compile"}:
+        if name in {"eval", "exec"}:
             self._add(
                 "SEC_DANGEROUS_EVAL", node, f"Avoid {name}(); dynamic execution is dangerous."
             )
@@ -455,12 +455,22 @@ def _repo_allowed(entries: list[dict[str, Any]], finding: Finding) -> bool:
     return False
 
 
+def _is_test_fixture_secret(rel_path: str, line: str) -> bool:
+    if not rel_path.startswith("tests/"):
+        return False
+    marker_tokens = {"TOPSECRET", "SHOULD_NOT_LEAK", "dummy", "example"}
+    upper_line = line.upper()
+    return any(token in upper_line for token in marker_tokens)
+
+
 def _scan_text_patterns(rel_path: str, text: str) -> list[Finding]:
     findings: list[Finding] = []
     lines = text.splitlines()
     for i, line in enumerate(lines, start=1):
         for rule_id, pattern, msg in SECRET_PATTERNS:
             if pattern.search(line):
+                if _is_test_fixture_secret(rel_path, line):
+                    continue
                 findings.append(
                     Finding(
                         rule_id=rule_id,

@@ -91,3 +91,28 @@ def test_scan_online_mode_without_cmd_falls_back(tmp_path: Path, capsys) -> None
     rc = _run(["scan", "--root", str(tmp_path), "--online", "--fail-on", "none"])
     assert rc == 0
     assert "security scan" in capsys.readouterr().out
+
+
+def test_security_scan_ignores_test_fixture_secret_tokens(tmp_path: Path, capsys) -> None:
+    tests_dir = tmp_path / "tests"
+    tests_dir.mkdir()
+    (tests_dir / "test_fixture.py").write_text(
+        'token = "bearer:TOPSECRET"\nheader = "X-Api-Key:SHOULD_NOT_LEAK"\n',
+        encoding="utf-8",
+    )
+    rc = _run(["scan", "--root", str(tmp_path), "--format", "json", "--fail-on", "none"])
+    assert rc == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert not any(item["rule_id"] == "SEC_SECRET_PATTERN" for item in payload["findings"])
+
+
+def test_security_scan_does_not_flag_compile_only_usage(tmp_path: Path, capsys) -> None:
+    tools_dir = tmp_path / "tools"
+    tools_dir.mkdir()
+    (tools_dir / "triage_like.py").write_text(
+        'compiled_obj = compile("x=1", "demo", "exec")\n', encoding="utf-8"
+    )
+    rc = _run(["scan", "--root", str(tmp_path), "--format", "json", "--fail-on", "none"])
+    assert rc == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert not any(item["rule_id"] == "SEC_DANGEROUS_EVAL" for item in payload["findings"])

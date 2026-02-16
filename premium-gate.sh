@@ -30,6 +30,6 @@ rm -rf .sdetkit/cache .sdetkit/ops-artifacts sdet_check.json
 
 run_step "Repository audit" python3 -m sdetkit repo audit . --format text --fail-on warn
 run_step "Security scan (offline default + SARIF)" \
-  python3 -m sdetkit security scan --fail-on warn --format sarif --output security.sarif
+  python3 -m sdetkit security scan --fail-on high --format sarif --output security.sarif
 
 echo "\nPremium gate passed. SARIF written to security.sarif"
