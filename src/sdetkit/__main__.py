@@ -93,17 +93,10 @@ def _cassette_get(argv: list[str]) -> int:
 
 
 def main() -> int:
-    argv = sys.argv[1:]
-    if argv and argv[0] == "cassette-get":
-        try:
-            return _cassette_get(argv[1:])
-        except Exception as e:
-            print(str(e), file=sys.stderr)
-            return 2
-
     from .cli import main as cli_main
 
-    return int(cli_main() or 0)
+    argv = sys.argv[1:]
+    return int(cli_main(argv, cassette_compat_fallback=True) or 0)
 
 
 if __name__ == "__main__":

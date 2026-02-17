@@ -94,5 +94,25 @@ def test_main_cassette_get_exception_path(monkeypatch: pytest.MonkeyPatch, capsy
         sys.argv = old_argv
 
     err = capsys.readouterr().err
-    assert rc == 2
-    assert "boom" in err
+    assert rc == 1
+    assert "runtime error: boom" in err
+
+
+def test_main_legacy_cassette_get_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
+    seen: dict[str, object] = {}
+
+    def _fake(argv: list[str]) -> int:
+        seen["argv"] = argv
+        return 0
+
+    monkeypatch.setattr(mainmod, "_cassette_get", _fake)
+
+    old_argv = sys.argv[:]
+    try:
+        sys.argv = ["sdetkit", "https://example.invalid", "--timeout", "1"]
+        rc = mainmod.main()
+    finally:
+        sys.argv = old_argv
+
+    assert rc == 0
+    assert seen["argv"] == ["https://example.invalid", "--timeout", "1"]

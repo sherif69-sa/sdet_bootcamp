@@ -100,10 +100,8 @@ def test_python_m_sdetkit_version():
 def test_sdetkit_version_flag_prints_resolved_version(monkeypatch, capsys):
     monkeypatch.setattr(cli, "_tool_version", lambda: "9.9.9")
 
-    with pytest.raises(SystemExit) as excinfo:
-        cli.main(["--version"])
-
-    assert excinfo.value.code == 0
+    rc = cli.main(["--version"])
+    assert rc == 0
     out = capsys.readouterr().out
     assert out == "9.9.9\n"
 

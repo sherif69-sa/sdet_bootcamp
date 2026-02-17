@@ -2,13 +2,23 @@ from __future__ import annotations
 
 import argparse
 import os
-from collections.abc import Sequence
+import sys
+from collections.abc import Callable, Sequence
 from importlib import metadata
 
 from . import apiget, evidence, kvcli, notify, ops, patch, policy, repo, report
 from .agent.cli import main as agent_main
+from .doctor import main as doctor_main
 from .maintenance import main as maintenance_main
 from .security_gate import main as security_main
+
+RunCommand = Callable[[list[str]], int]
+
+
+class _CliParser(argparse.ArgumentParser):
+    def error(self, message: str) -> None:
+        self.print_usage(sys.stderr)
+        self.exit(2, f"{self.prog}: error: {message}\n")
 
 
 def _tool_version() -> str:
@@ -18,9 +28,9 @@ def _tool_version() -> str:
         return "0+unknown"
 
 
-def _add_apiget_args(p: argparse.ArgumentParser) -> None:
+def _run_apiget(argv: list[str]) -> int:
+    p = argparse.ArgumentParser(prog="sdetkit apiget", add_help=False)
     apiget._add_apiget_args(p)
-
     p.add_argument("--cassette", default=None, help="Cassette file path (enables record/replay).")
     p.add_argument(
         "--cassette-mode",
@@ -28,186 +38,130 @@ def _add_apiget_args(p: argparse.ArgumentParser) -> None:
         default=None,
         help="Cassette mode: auto, record, or replay.",
     )
+    ns, _ = p.parse_known_args(argv)
+    cassette = getattr(ns, "cassette", None)
+    cassette_mode = getattr(ns, "cassette_mode", None) or "auto"
+
+    clean: list[str] = []
+    it = iter(argv)
+    for item in it:
+        if item.startswith("--cassette="):
+            continue
+        if item == "--cassette":
+            next(it, None)
+            continue
+        if item.startswith("--cassette-mode="):
+            continue
+        if item == "--cassette-mode":
+            next(it, None)
+            continue
+        clean.append(item)
+
+    if not cassette:
+        return apiget.main(clean)
+
+    old_cassette = os.environ.get("SDETKIT_CASSETTE")
+    old_mode = os.environ.get("SDETKIT_CASSETTE_MODE")
+    try:
+        os.environ["SDETKIT_CASSETTE"] = str(cassette)
+        os.environ["SDETKIT_CASSETTE_MODE"] = str(cassette_mode)
+        return apiget.main(clean)
+    finally:
+        if old_cassette is None:
+            os.environ.pop("SDETKIT_CASSETTE", None)
+        else:
+            os.environ["SDETKIT_CASSETTE"] = old_cassette
+        if old_mode is None:
+            os.environ.pop("SDETKIT_CASSETTE_MODE", None)
+        else:
+            os.environ["SDETKIT_CASSETTE_MODE"] = old_mode
 
 
-def main(argv: Sequence[str] | None = None) -> int:
-    import sys
+def _run_cassette_get(argv: list[str]) -> int:
+    from .__main__ import _cassette_get
 
+    return _cassette_get(argv)
+
+
+def _command_registry() -> dict[str, RunCommand]:
+    return {
+        "kv": kvcli.main,
+        "apiget": _run_apiget,
+        "doctor": doctor_main,
+        "patch": patch.main,
+        "cassette-get": _run_cassette_get,
+        "repo": repo.main,
+        "dev": lambda argv: repo.main(["dev", *argv]),
+        "report": report.main,
+        "maintenance": maintenance_main,
+        "agent": agent_main,
+        "security": security_main,
+        "ops": ops.main,
+        "notify": notify.main,
+        "policy": policy.main,
+        "evidence": evidence.main,
+    }
+
+
+def _build_parser() -> tuple[_CliParser, dict[str, RunCommand]]:
+    registry = _command_registry()
+    parser = _CliParser(prog="sdetkit", add_help=True)
+    parser.add_argument("--version", action="version", version=_tool_version())
+    sub = parser.add_subparsers(dest="cmd")
+
+    for name in registry:
+        sub.add_parser(name, help=f"Run the {name} command")
+
+    return parser, registry
+
+
+def main(
+    argv: Sequence[str] | None = None,
+    *,
+    cassette_compat_fallback: bool = False,
+) -> int:
     if argv is None:
         argv = sys.argv[1:]
+    raw = list(argv)
+    parser, registry = _build_parser()
+    known = set(registry)
 
-    if argv and argv[0] == "cassette-get":
-        from .__main__ import _cassette_get
-
+    if cassette_compat_fallback and raw and raw[0] not in known and not raw[0].startswith("-"):
         try:
-            return _cassette_get(argv[1:])
-        except Exception as e:
-            print(str(e), file=sys.stderr)
+            return _run_cassette_get(raw)
+        except Exception as exc:
+            print(str(exc), file=sys.stderr)
             return 2
 
-    if argv and argv[0] == "doctor":
-        from .doctor import main as _doctor_main
+    try:
+        ns, rest = parser.parse_known_args(raw)
+    except SystemExit as exc:
+        if isinstance(exc.code, int):
+            return exc.code
+        return 2
 
-        return _doctor_main(argv[1:])
+    cmd = getattr(ns, "cmd", None)
+    if not cmd:
+        if rest:
+            print(f"sdetkit: error: unrecognized arguments: {' '.join(rest)}", file=sys.stderr)
+            return 2
+        parser.print_help(sys.stdout)
+        return 0
 
-    if argv and argv[0] == "patch":
-        return patch.main(list(argv[1:]))
+    handler = registry.get(cmd)
+    if handler is None:
+        print(f"sdetkit: error: unknown command: {cmd}", file=sys.stderr)
+        return 2
 
-    if argv and argv[0] == "repo":
-        return repo.main(list(argv[1:]))
-
-    if argv and argv[0] == "dev":
-        return repo.main(["dev", *list(argv[1:])])
-
-    if argv and argv[0] == "report":
-        return report.main(list(argv[1:]))
-
-    if argv and argv[0] == "maintenance":
-        return maintenance_main(list(argv[1:]))
-
-    if argv and argv[0] == "agent":
-        return agent_main(list(argv[1:]))
-
-    if argv and argv[0] == "security":
-        return security_main(list(argv[1:]))
-
-    if argv and argv[0] == "ops":
-        return ops.main(list(argv[1:]))
-
-    if argv and argv[0] == "notify":
-        return notify.main(list(argv[1:]))
-
-    if argv and argv[0] == "policy":
-        return policy.main(list(argv[1:]))
-
-    if argv and argv[0] == "evidence":
-        return evidence.main(list(argv[1:]))
-
-    p = argparse.ArgumentParser(prog="sdetkit", add_help=True)
-    p.add_argument("--version", action="version", version=_tool_version())
-    sub = p.add_subparsers(dest="cmd", required=True)
-
-    kv = sub.add_parser("kv")
-    kv.add_argument("args", nargs=argparse.REMAINDER)
-
-    ag = sub.add_parser("apiget")
-    _add_apiget_args(ag)
-
-    doc = sub.add_parser("doctor")
-    doc.add_argument("args", nargs=argparse.REMAINDER)
-
-    pg = sub.add_parser("patch")
-    pg.add_argument("args", nargs=argparse.REMAINDER)
-
-    cg = sub.add_parser("cassette-get")
-    cg.add_argument("args", nargs=argparse.REMAINDER)
-
-    rp = sub.add_parser("repo")
-    rp.add_argument("args", nargs=argparse.REMAINDER)
-
-    dv = sub.add_parser("dev")
-    dv.add_argument("args", nargs=argparse.REMAINDER)
-
-    rpt = sub.add_parser("report")
-    rpt.add_argument("args", nargs=argparse.REMAINDER)
-
-    mnt = sub.add_parser("maintenance")
-    mnt.add_argument("args", nargs=argparse.REMAINDER)
-
-    agt = sub.add_parser("agent")
-    agt.add_argument("args", nargs=argparse.REMAINDER)
-
-    sec = sub.add_parser("security")
-    sec.add_argument("args", nargs=argparse.REMAINDER)
-
-    osp = sub.add_parser("ops")
-    osp.add_argument("args", nargs=argparse.REMAINDER)
-
-    ntf = sub.add_parser("notify")
-    ntf.add_argument("args", nargs=argparse.REMAINDER)
-
-    plc = sub.add_parser("policy")
-    plc.add_argument("args", nargs=argparse.REMAINDER)
-
-    evd = sub.add_parser("evidence")
-    evd.add_argument("args", nargs=argparse.REMAINDER)
-
-    ns = p.parse_args(argv)
-
-    if ns.cmd == "kv":
-        return kvcli.main(ns.args)
-
-    if ns.cmd == "patch":
-        return patch.main(ns.args)
-
-    if ns.cmd == "repo":
-        return repo.main(ns.args)
-
-    if ns.cmd == "dev":
-        return repo.main(["dev", *ns.args])
-
-    if ns.cmd == "report":
-        return report.main(ns.args)
-
-    if ns.cmd == "maintenance":
-        return maintenance_main(ns.args)
-
-    if ns.cmd == "agent":
-        return agent_main(ns.args)
-
-    if ns.cmd == "security":
-        return security_main(ns.args)
-
-    if ns.cmd == "ops":
-        return ops.main(ns.args)
-
-    if ns.cmd == "notify":
-        return notify.main(ns.args)
-
-    if ns.cmd == "policy":
-        return policy.main(ns.args)
-
-    if ns.cmd == "evidence":
-        return evidence.main(ns.args)
-
-    if ns.cmd == "apiget":
-        raw_args = list(argv)
-        rest = raw_args[1:]
-        cassette = getattr(ns, "cassette", None)
-        cassette_mode = getattr(ns, "cassette_mode", None) or "auto"
-        clean: list[str] = []
-        it = iter(rest)
-        for a in it:
-            if a.startswith("--cassette="):
-                continue
-            if a == "--cassette":
-                next(it, None)
-                continue
-            if a.startswith("--cassette-mode="):
-                continue
-            if a == "--cassette-mode":
-                next(it, None)
-                continue
-            clean.append(a)
-        rest = clean
-        if not cassette:
-            return apiget.main(rest)
-        old_cassette = os.environ.get("SDETKIT_CASSETTE")
-        old_mode = os.environ.get("SDETKIT_CASSETTE_MODE")
-        try:
-            os.environ["SDETKIT_CASSETTE"] = str(cassette)
-            os.environ["SDETKIT_CASSETTE_MODE"] = str(cassette_mode)
-            return apiget.main(rest)
-        finally:
-            if old_cassette is None:
-                os.environ.pop("SDETKIT_CASSETTE", None)
-            else:
-                os.environ["SDETKIT_CASSETTE"] = old_cassette
-            if old_mode is None:
-                os.environ.pop("SDETKIT_CASSETTE_MODE", None)
-            else:
-                os.environ["SDETKIT_CASSETTE_MODE"] = old_mode
-    raise SystemExit(2)
+    try:
+        return int(handler(rest) or 0)
+    except SystemExit as exc:
+        if isinstance(exc.code, int):
+            return exc.code
+        return 2
+    except Exception as exc:
+        print(f"runtime error: {exc}", file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":
