@@ -8,7 +8,7 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, TypedDict
 
 from .atomicio import atomic_write_text, canonical_json_bytes, canonical_json_dumps
 from .security import SecurityError, safe_path
@@ -644,9 +644,15 @@ def _severity_weight(level: str) -> int:
     return {"info": 1, "warn": 3, "error": 5}.get(level, 5)
 
 
+class RiskHotspotRow(TypedDict):
+    name: str
+    count: int
+    risk_score: int
+
+
 def _top_risk_hotspots(
     findings: list[dict[str, Any]], key: str, *, limit: int = 5, min_occurrences: int = 1
-) -> list[dict[str, Any]]:
+) -> list[RiskHotspotRow]:
     stats: dict[str, dict[str, int]] = {}
     for finding in findings:
         entity = str(finding.get(key, "unknown"))
@@ -655,7 +661,7 @@ def _top_risk_hotspots(
         slot["count"] += 1
         slot["risk_score"] += _severity_weight(severity)
 
-    rows = [
+    rows: list[RiskHotspotRow] = [
         {"name": entity, "count": values["count"], "risk_score": values["risk_score"]}
         for entity, values in stats.items()
         if values["count"] >= max(min_occurrences, 1)
@@ -698,7 +704,7 @@ def suggest_optimizations(
     top_paths = _top_recurring(all_findings, "path", limit=limit)
     severity_series = []
     for run in runs:
-        counts = ((run.get("aggregates") or {}).get("counts_by_severity") or {})
+        counts = (run.get("aggregates") or {}).get("counts_by_severity") or {}
         error_count = int(counts.get("error", 0)) if isinstance(counts, dict) else 0
         warn_count = int(counts.get("warn", 0)) if isinstance(counts, dict) else 0
         severity_series.append(error_count + warn_count)

@@ -803,7 +803,10 @@ def test_report_recommend_supports_since_window_and_weighted_hotspots(tmp_path: 
     )
 
     for path in (run1, run2, run3):
-        assert runner.invoke(["report", "ingest", str(path), "--history-dir", str(history)]).exit_code == 0
+        assert (
+            runner.invoke(["report", "ingest", str(path), "--history-dir", str(history)]).exit_code
+            == 0
+        )
 
     result = runner.invoke(
         [
