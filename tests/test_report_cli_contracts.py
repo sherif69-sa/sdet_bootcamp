@@ -938,7 +938,8 @@ def test_report_build_supports_timestamp_window_and_validation(tmp_path: Path) -
             ],
         )
         assert (
-            runner.invoke(["report", "ingest", str(run), "--history-dir", str(history)]).exit_code == 0
+            runner.invoke(["report", "ingest", str(run), "--history-dir", str(history)]).exit_code
+            == 0
         )
 
     out = tmp_path / "report.md"
