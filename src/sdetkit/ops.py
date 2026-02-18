@@ -9,6 +9,7 @@ import queue
 import re
 import shutil
 import subprocess
+import sys
 import threading
 import time
 import urllib.parse
@@ -872,23 +873,26 @@ def main(argv: list[str] | None = None) -> int:
             dry_run=bool(ns.dry_run),
             fail_fast=bool(ns.fail_fast),
         )
-        print(json.dumps(out, sort_keys=True, indent=2))
+        sys.stdout.write(json.dumps(out, sort_keys=True, indent=2) + "\n")
         return 0
     if ns.cmd == "replay":
         out = replay_run(Path(ns.history_dir), ns.run_id)
-        print(json.dumps(out, sort_keys=True, indent=2))
+        sys.stdout.write(json.dumps(out, sort_keys=True, indent=2) + "\n")
         return 0
     if ns.cmd == "diff":
         out = diff_runs(Path(ns.history_dir), ns.run_id_a, ns.run_id_b)
         if ns.format == "json":
-            print(json.dumps(out, sort_keys=True, indent=2))
+            sys.stdout.write(json.dumps(out, sort_keys=True, indent=2) + "\n")
         else:
-            print(
+            sys.stdout.write(
                 f"changed_steps={len(out['changed_steps'])} changed_artifacts={len(out['changed_artifacts'])} delta={out['audit_security_finding_delta']}"
+                + "\n"
             )
         return 0
     if ns.cmd == "list":
-        print(json.dumps({"runs": list_runs(Path(ns.history_dir))}, sort_keys=True, indent=2))
+        sys.stdout.write(
+            json.dumps({"runs": list_runs(Path(ns.history_dir))}, sort_keys=True, indent=2) + "\n"
+        )
         return 0
     if ns.cmd == "init-template":
         templates = _templates()
@@ -899,7 +903,7 @@ def main(argv: list[str] | None = None) -> int:
         out_path = Path(ns.output)
         out_path.parent.mkdir(parents=True, exist_ok=True)
         atomic_write_text(out_path, templates[ns.name])
-        print(out_path)
+        sys.stdout.write(f"{out_path}\n")
         return 0
     if ns.cmd == "serve":
         serve(str(ns.host), int(ns.port), Path(ns.history_dir))

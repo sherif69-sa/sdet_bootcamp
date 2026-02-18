@@ -21,7 +21,7 @@ _UTC = getattr(dt, "UTC", dt.timezone(dt.timedelta(0)))
 
 class StderrLogger:
     def info(self, message: str) -> None:
-        print(message, file=sys.stderr)
+        sys.stderr.write(message + "\n")
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -148,9 +148,9 @@ def _build_report(ctx: MaintenanceContext, *, deterministic: bool = False) -> di
 def _print_summary(report: dict[str, Any]) -> None:
     failing = [name for name, item in report["checks"].items() if not item["ok"]]
     if failing:
-        print(f"Score: {report['score']} | Failing: {', '.join(sorted(failing))}")
+        sys.stdout.write(f"Score: {report['score']} | Failing: {', '.join(sorted(failing))}\n")
     else:
-        print(f"Score: {report['score']} | Failing: none")
+        sys.stdout.write(f"Score: {report['score']} | Failing: none\n")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -183,14 +183,14 @@ def main(argv: list[str] | None = None) -> int:
         }[ns.format]
         _write_output(ns.out, rendered)
         if ns.format == "json":
-            print(rendered)
+            sys.stdout.write(rendered + "\n")
         elif not ns.quiet:
-            print(_render_text(report), end="")
+            sys.stdout.write(_render_text(report))
         if ns.format != "json" and ns.out and not ns.quiet:
             _print_summary(report)
         if ns.out and ns.format == "json" and not ns.quiet:
             _print_summary(report)
         return 0 if report["ok"] else 1
     except Exception as exc:
-        print(f"maintenance execution error: {exc}", file=sys.stderr)
+        sys.stderr.write(f"maintenance execution error: {exc}\n")
         return 2

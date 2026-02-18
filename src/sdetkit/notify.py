@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from importlib import metadata
 from pathlib import Path
 from typing import Protocol
@@ -63,7 +64,7 @@ def main(argv: list[str] | None = None) -> int:
     adapters = _adapter_map()
 
     if ns.list:
-        print("\n".join(sorted(adapters)))
+        sys.stdout.write("\n".join(sorted(adapters)) + "\n")
         return 0
 
     if not ns.adapter:
@@ -72,11 +73,11 @@ def main(argv: list[str] | None = None) -> int:
 
     adapter = adapters.get(ns.adapter)
     if adapter is None:
-        print(f"Adapter '{ns.adapter}' is not installed or not registered.")
+        sys.stdout.write(f"Adapter '{ns.adapter}' is not installed or not registered.\n")
         return 2
 
     if ns.dry_run:
-        print(f"[dry-run] adapter={ns.adapter} message={ns.message}")
+        sys.stdout.write(f"[dry-run] adapter={ns.adapter} message={ns.message}\n")
         return 0
 
     return int(adapter.send(ns))

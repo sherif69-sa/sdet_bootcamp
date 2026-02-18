@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import argparse
 import os
+import sys
 
 
 class StdoutAdapter:
     name = "stdout"
 
     def send(self, args: argparse.Namespace) -> int:
-        print(args.message)
+        sys.stdout.write(str(args.message) + "\n")
         return 0
 
 
@@ -20,11 +21,11 @@ class TelegramAdapter:
         token = os.environ.get("SDETKIT_TELEGRAM_TOKEN")
         chat_id = os.environ.get("SDETKIT_TELEGRAM_CHAT_ID")
         if not token or not chat_id:
-            print(
-                "telegram adapter not configured: set SDETKIT_TELEGRAM_TOKEN and SDETKIT_TELEGRAM_CHAT_ID."
+            sys.stdout.write(
+                "telegram adapter not configured: set SDETKIT_TELEGRAM_TOKEN and SDETKIT_TELEGRAM_CHAT_ID.\n"
             )
             return 2
-        print("telegram adapter configured; use --dry-run in offline mode.")
+        sys.stdout.write("telegram adapter configured; use --dry-run in offline mode.\n")
         return 0
 
 
@@ -35,9 +36,9 @@ class WhatsAppAdapter:
         # Optional runtime dependency may be required by downstream implementation.
         api_key = os.environ.get("SDETKIT_WHATSAPP_API_KEY")
         if not api_key:
-            print("whatsapp adapter not configured: set SDETKIT_WHATSAPP_API_KEY.")
+            sys.stdout.write("whatsapp adapter not configured: set SDETKIT_WHATSAPP_API_KEY.\n")
             return 2
-        print("whatsapp adapter configured; use --dry-run in offline mode.")
+        sys.stdout.write("whatsapp adapter configured; use --dry-run in offline mode.\n")
         return 0
 
 

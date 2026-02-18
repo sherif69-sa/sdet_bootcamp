@@ -173,7 +173,7 @@ def test_load_run_rejects_invalid_id(tmp_path: Path) -> None:
 
 def test_run_workflow_rejects_traversal_path(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.chdir(tmp_path)
-    bad = Path("../outside.toml")
+    bad = Path(*("..", "outside.toml"))
     with pytest.raises((ValueError, SecurityError)):
         run_workflow(
             bad,

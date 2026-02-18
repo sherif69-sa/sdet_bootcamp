@@ -45,7 +45,9 @@ def test_entrypoints_cassette_get_replay_ok(tmp_path: Path, monkeypatch, capsys)
     p = tmp_path / "cassette.json"
     _make_cassette(p, url)
 
-    monkeypatch.setattr(sys, "argv", ["sdetkit", "cassette-get", "--replay", str(p), "--allow-absolute-path", url])
+    monkeypatch.setattr(
+        sys, "argv", ["sdetkit", "cassette-get", "--replay", str(p), "--allow-absolute-path", url]
+    )
     fn = _entry_callable()
 
     try:
