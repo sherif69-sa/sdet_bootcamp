@@ -12,6 +12,7 @@ from typing import Any
 
 from . import _toml
 from .import_hazards import find_stdlib_shadowing
+from .security import SecurityError, safe_path
 
 SEVERITY_ORDER = {"low": 1, "medium": 2, "high": 3}
 SUPPORTED_POLICY_CHECKS = {
@@ -381,8 +382,17 @@ def _format_doctor_markdown(data: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _resolve_policy_path(root: Path, policy_path: str | None) -> Path:
+    if policy_path:
+        return safe_path(root, policy_path, allow_absolute=True)
+    return root / "sdetkit.policy.toml"
+
+
 def _load_policy(root: Path, policy_path: str | None) -> dict[str, Any]:
-    path = Path(policy_path) if policy_path else root / "sdetkit.policy.toml"
+    try:
+        path = _resolve_policy_path(root, policy_path)
+    except SecurityError as exc:
+        return {"_error": f"policy path rejected: {exc}", "_path": str(policy_path or "")}
     if not path.exists():
         return {}
     try:
@@ -719,8 +729,14 @@ def main(argv: list[str] | None = None) -> int:
     threshold = _resolve_threshold(ns, policy)
     gate_ok, failed_checks = _evaluate_gate(data["checks"], threshold)
 
+    try:
+        policy_resolved = _resolve_policy_path(root, ns.policy)
+        policy_path_text = str(policy_resolved)
+    except SecurityError:
+        policy_path_text = str(ns.policy) if ns.policy else str(root / "sdetkit.policy.toml")
+
     data["policy"] = {
-        "path": str(Path(ns.policy) if ns.policy else root / "sdetkit.policy.toml"),
+        "path": policy_path_text,
         "strict": bool(ns.strict),
         "fail_on": threshold,
     }
