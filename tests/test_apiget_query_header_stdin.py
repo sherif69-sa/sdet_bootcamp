@@ -45,6 +45,7 @@ def test_apiget_header_at_file(monkeypatch, capsys, tmp_path: Path):
         "X-Test: 1\nX-Other: two\n\n# ignored\n",
         encoding="utf-8",
     )
+    monkeypatch.chdir(tmp_path)
 
     def handler(request: httpx.Request) -> httpx.Response:
         assert request.headers.get("x-test") == "1"
@@ -53,7 +54,7 @@ def test_apiget_header_at_file(monkeypatch, capsys, tmp_path: Path):
 
     monkeypatch.setattr(apiget.httpx, "Client", _client_factory(handler))
 
-    rc = cli.main(["apiget", url, "--header", f"@{hf}", "--expect", "dict"])
+    rc = cli.main(["apiget", url, "--header", "@headers.txt", "--expect", "dict"])
     out = capsys.readouterr()
     assert rc == 0
     assert json.loads(out.out) == {"ok": True}
