@@ -129,7 +129,8 @@ def _load_config() -> dict[str, Any]:
     cfg = _sdetkit_dir() / "config.toml"
     if not cfg.is_file():
         return {}
-    return _toml.loads(cfg.read_text(encoding="utf-8"))
+    payload = _toml.loads(cfg.read_text(encoding="utf-8"))
+    return payload if isinstance(payload, dict) else {}
 
 
 def _task_catalog() -> dict[str, TaskDef]:

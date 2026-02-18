@@ -16,6 +16,7 @@ from .types import CheckResult, MaintenanceContext
 
 SCHEMA_VERSION = "1.0"
 DETERMINISTIC_GENERATED_AT = "1970-01-01T00:00:00+00:00"
+_UTC = getattr(dt, "UTC", dt.timezone(dt.timedelta(0)))
 
 
 class StderrLogger:
@@ -95,9 +96,7 @@ def _deterministic_generated_at(env: dict[str, str]) -> str:
     if epoch is None:
         return DETERMINISTIC_GENERATED_AT
     try:
-        return dt.datetime.fromtimestamp(
-            int(epoch), getattr(dt, "UTC", dt.timezone.utc)
-        ).isoformat()  # noqa: UP017
+        return dt.datetime.fromtimestamp(int(epoch), _UTC).isoformat()
     except (TypeError, ValueError, OSError, OverflowError):
         return DETERMINISTIC_GENERATED_AT
 
@@ -135,7 +134,7 @@ def _build_report(ctx: MaintenanceContext, *, deterministic: bool = False) -> di
             "schema_version": SCHEMA_VERSION,
             "generated_at": _deterministic_generated_at(ctx.env)
             if deterministic
-            else dt.datetime.now(getattr(dt, "UTC", dt.timezone.utc)).isoformat(),  # noqa: UP017
+            else dt.datetime.now(_UTC).isoformat(),
             "mode": ctx.mode,
             "fix": ctx.fix,
             "python": ctx.python_exe,

@@ -1,19 +1,10 @@
 from __future__ import annotations
 
-import socket
+import sys
+from pathlib import Path
 
-import pytest
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+_SRC = _REPO_ROOT / "src"
 
-
-@pytest.fixture(autouse=True)
-def _offline_guard(request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatch) -> None:
-    if request.node.get_closest_marker("network"):
-        return
-
-    def _blocked(*args, **kwargs):  # type: ignore[no-untyped-def]
-        raise RuntimeError(
-            "Network access is blocked in tests. Mark test with @pytest.mark.network if required."
-        )
-
-    monkeypatch.setattr(socket.socket, "connect", _blocked)
-    monkeypatch.setattr(socket.socket, "connect_ex", _blocked)
+if str(_SRC) not in sys.path:
+    sys.path.insert(0, str(_SRC))

@@ -386,9 +386,10 @@ def _load_policy(root: Path, policy_path: str | None) -> dict[str, Any]:
     if not path.exists():
         return {}
     try:
-        return _toml.loads(path.read_text(encoding="utf-8"))
+        payload = _toml.loads(path.read_text(encoding="utf-8"))
     except Exception as exc:
         return {"_error": f"policy parse failed: {exc}", "_path": str(path)}
+    return payload if isinstance(payload, dict) else {}
 
 
 def _apply_policy(

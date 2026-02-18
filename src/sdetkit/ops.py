@@ -219,10 +219,11 @@ def _validate_run_id(run_id: str) -> str:
 
 
 def _load_workflow(path: Path) -> WorkflowDef:
-    if path.suffix.lower() == ".json":
-        doc = json.loads(path.read_text(encoding="utf-8"))
+    resolved_path = _resolve_workflow_path(path)
+    if resolved_path.suffix.lower() == ".json":
+        doc = json.loads(resolved_path.read_text(encoding="utf-8"))
     else:
-        doc = _toml.loads(path.read_text(encoding="utf-8"))
+        doc = _toml.loads(resolved_path.read_text(encoding="utf-8"))
     if not isinstance(doc, dict) or not isinstance(doc.get("workflow"), dict):
         raise ValueError("workflow document must include [workflow]")
     w = dict(doc["workflow"])
