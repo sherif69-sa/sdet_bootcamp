@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -85,12 +86,12 @@ def main(argv: list[str] | None = None) -> int:
         out = Path(ns.output)
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps(payload, sort_keys=True, indent=2) + "\n", encoding="utf-8")
-        print(out.as_posix())
+        sys.stdout.write(out.as_posix() + "\n")
         return 0
 
     baseline = Path(ns.baseline)
     if not baseline.is_file():
-        print(f"baseline not found: {baseline}")
+        sys.stdout.write(f"baseline not found: {baseline}\n")
         return 2
     base = json.loads(baseline.read_text(encoding="utf-8"))
     cur = _snapshot(root)
@@ -98,15 +99,15 @@ def main(argv: list[str] | None = None) -> int:
 
     if ns.cmd == "check":
         for item in regressions:
-            print(json.dumps(item, sort_keys=True))
+            sys.stdout.write(json.dumps(item, sort_keys=True) + "\n")
         return 1 if regressions else 0
 
     payload = {"baseline": baseline.as_posix(), "regressions": regressions}
     if ns.format == "json":
-        print(json.dumps(payload, sort_keys=True, indent=2))
+        sys.stdout.write(json.dumps(payload, sort_keys=True, indent=2) + "\n")
     elif ns.format == "sarif":
-        print(json.dumps(_as_sarif(regressions), sort_keys=True, indent=2))
+        sys.stdout.write(json.dumps(_as_sarif(regressions), sort_keys=True, indent=2) + "\n")
     else:
         for item in regressions:
-            print(f"RED-FLAG {item['type']}: {json.dumps(item, sort_keys=True)}")
+            sys.stdout.write(f"RED-FLAG {item['type']}: {json.dumps(item, sort_keys=True)}\n")
     return 0

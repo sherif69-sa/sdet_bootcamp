@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 import subprocess
+import sys
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from dataclasses import dataclass
 from pathlib import Path
@@ -306,9 +307,11 @@ def run(
         atomic_write_text(out_dir / f"{name}.log", outputs.get(name, ""))
 
     for name in ordered:
-        print(f"[{statuses.get(name, 'SKIPPED')}] {name}")
+        sys.stdout.write(f"[{statuses.get(name, 'SKIPPED')}] {name}\n")
         if statuses.get(name) == "FAIL":
-            print(f"  next: inspect .sdetkit/out/{name}.log and run task command locally")
+            sys.stdout.write(
+                f"  next: inspect .sdetkit/out/{name}.log and run task command locally\n"
+            )
     return 1 if failed else 0
 
 
@@ -337,7 +340,9 @@ def cli(argv: list[str] | None = None) -> int:
     if ns.cmd == "plan":
         init_layout(force=False)
         payload = plan(ns.profile, apply=bool(ns.apply), no_cache=bool(ns.no_cache))
-        print(json.dumps({"profile": ns.profile, "plan": payload}, sort_keys=True, indent=2))
+        sys.stdout.write(
+            json.dumps({"profile": ns.profile, "plan": payload}, sort_keys=True, indent=2) + "\n"
+        )
         return 0
     init_layout(force=False)
     apply = bool(ns.apply) and not bool(ns.dry_run)

@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import subprocess
+import sys
 import zipfile
 from pathlib import Path
 
@@ -141,5 +142,5 @@ def main(argv: list[str] | None = None) -> int:
     files.append(out_dir / "manifest.json")
 
     _zip_deterministic(Path(ns.output), files, out_dir)
-    print(ns.output)
+    sys.stdout.write(f"{ns.output}\n")
     return 0

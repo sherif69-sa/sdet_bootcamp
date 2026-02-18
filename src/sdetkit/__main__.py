@@ -35,10 +35,10 @@ def _cassette_get(argv: list[str]) -> int:
     try:
         ensure_allowed_scheme(ns.url, allowed=allowed)
     except SecurityError as exc:
-        print(str(exc), file=sys.stderr)
+        sys.stderr.write(str(exc) + "\n")
         return 2
     if ns.insecure:
-        print("warning: TLS verification disabled (--insecure)", file=sys.stderr)
+        sys.stderr.write("warning: TLS verification disabled (--insecure)\n")
 
     client_opts = {
         "timeout": default_http_timeout(ns.timeout),
@@ -48,10 +48,15 @@ def _cassette_get(argv: list[str]) -> int:
 
     if ns.replay:
         try:
-            replay_path = safe_path(Path.cwd(), ns.replay, allow_absolute=True)
-            cass = Cassette.load(replay_path)
+            replay_path = safe_path(
+                Path.cwd(), ns.replay, allow_absolute=bool(ns.allow_absolute_path)
+            )
+            if ns.allow_absolute_path:
+                cass = Cassette.load(replay_path, allow_absolute=True)
+            else:
+                cass = Cassette.load(replay_path)
         except (SecurityError, ValueError, OSError) as exc:
-            print(str(exc), file=sys.stderr)
+            sys.stderr.write(str(exc) + "\n")
             return 2
         transport = CassetteReplayTransport(cass)
         with httpx.Client(transport=transport, **client_opts) as client:
@@ -69,10 +74,10 @@ def _cassette_get(argv: list[str]) -> int:
                 Path.cwd(), ns.record, allow_absolute=bool(ns.allow_absolute_path)
             )
             if record_path.exists() and not ns.force:
-                print("refusing to overwrite existing cassette (use --force)", file=sys.stderr)
+                sys.stderr.write("refusing to overwrite existing cassette (use --force)\n")
                 return 2
         except SecurityError as exc:
-            print(str(exc), file=sys.stderr)
+            sys.stderr.write(str(exc) + "\n")
             return 2
         cass = Cassette()
         inner = httpx.HTTPTransport()
@@ -98,7 +103,7 @@ def main() -> int:
         try:
             return _cassette_get(argv[1:])
         except Exception as e:
-            print(str(e), file=sys.stderr)
+            sys.stderr.write(str(e) + "\n")
             return 2
 
     from .cli import main as cli_main

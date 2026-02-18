@@ -532,7 +532,7 @@ def main(argv: list[str] | None = None) -> int:
             meta={"shadow": shadow},
         )
         data["checks"]["stdlib_shadowing"]["shadow"] = shadow
-        print("[WARN] stdlib-shadow: " + ", ".join(shadow), file=sys.stderr)
+        sys.stderr.write("[WARN] stdlib-shadow: " + ", ".join(shadow) + "\n")
     else:
         data["checks"]["stdlib_shadowing"] = _make_check(
             ok=True,
@@ -710,7 +710,7 @@ def main(argv: list[str] | None = None) -> int:
 
     policy = _load_policy(root, ns.policy)
     if policy.get("_error"):
-        print(policy["_error"], file=sys.stderr)
+        sys.stderr.write(str(policy["_error"]) + "\n")
     unknown_policy_checks, strict_error = _apply_policy(data["checks"], policy, strict=ns.strict)
     if strict_error:
         data["checks"]["policy_strict"] = _make_check(
@@ -721,9 +721,8 @@ def main(argv: list[str] | None = None) -> int:
             fix=["Remove unknown check ids from policy file or disable --strict."],
         )
     if unknown_policy_checks:
-        print(
-            f"[WARN] unknown policy checks ignored: {', '.join(unknown_policy_checks)}",
-            file=sys.stderr,
+        sys.stderr.write(
+            f"[WARN] unknown policy checks ignored: {', '.join(unknown_policy_checks)}\n"
         )
 
     threshold = _resolve_threshold(ns, policy)

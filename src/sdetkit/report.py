@@ -512,10 +512,7 @@ def _history_runs(history_dir: Path) -> list[dict[str, Any]]:
     try:
         data = json.loads(index_path.read_text(encoding="utf-8"))
     except (OSError, ValueError) as exc:
-        print(
-            f"warning: ignoring unreadable history index {index_path.name}: {exc}",
-            file=sys.stderr,
-        )
+        sys.stderr.write(f"warning: ignoring unreadable history index {index_path.name}: {exc}\n")
         return []
     if not isinstance(data, dict):
         return []
@@ -619,10 +616,7 @@ def _load_history_run_records(history_dir: Path) -> list[dict[str, Any]]:
         try:
             loaded = load_run_record(run_path)
         except (OSError, ValueError) as exc:
-            print(
-                f"warning: skipping unreadable history run {file_name}: {exc}",
-                file=sys.stderr,
-            )
+            sys.stderr.write(f"warning: skipping unreadable history run {file_name}: {exc}\n")
             continue
         run: dict[str, Any] | None = None
         if isinstance(loaded, dict) and isinstance(loaded.get("run_record"), dict):
@@ -1096,5 +1090,5 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     except (ValueError, OSError, SecurityError) as exc:
         message = str(exc).replace("\n", " ")
-        print(f"report error: {message}", file=sys.stderr)
+        sys.stderr.write(f"report error: {message}\n")
         return 2
