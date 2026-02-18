@@ -197,13 +197,13 @@ def build_registry() -> ActionRegistry:
 
 def _resolve_workflow_path(path: Path) -> Path:
     candidate = Path(path)
+    if candidate.is_absolute():
+        raise ValueError("workflow path must be relative to the current working directory")
     if any(part == ".." for part in candidate.parts):
         raise ValueError("workflow path traversal is not allowed")
 
     base = Path.cwd()
-    # Workflows may be provided via temporary absolute paths (for tests/automation).
-    # `safe_path` still enforces traversal and NUL protections.
-    resolved = safe_path(base, str(candidate), allow_absolute=True)
+    resolved = safe_path(base, str(candidate), allow_absolute=False)
 
     if resolved.suffix.lower() not in {".toml", ".json"}:
         raise ValueError("workflow path must end with .toml or .json")
@@ -455,7 +455,7 @@ def run_workflow(
     registry = registry or build_registry()
     resolved_workflow_path = _resolve_workflow_path(workflow_path)
     workflow_text = resolved_workflow_path.read_text(encoding="utf-8")
-    wf = _load_workflow(resolved_workflow_path)
+    wf = _load_workflow(workflow_path)
     run_id = _run_id(workflow_text, inputs)
     run_root = history_dir / ".sdetkit" / "ops-history" / run_id
     run_root.mkdir(parents=True, exist_ok=True)
