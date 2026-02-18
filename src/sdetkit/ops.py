@@ -29,6 +29,26 @@ from .security_gate import scan_repo
 _UTC = getattr(dt, "UTC", dt.timezone.utc)  # noqa: UP017
 _VAR_RE = re.compile(r"\$\{([^}]+)\}")
 
+_WORKFLOW_FILE_RE = re.compile(r"[A-Za-z0-9._-]+\.(?:toml|json)", re.IGNORECASE)
+
+
+def _sanitize_workflow_filename(path: Path) -> str:
+    raw = str(path)
+    if "\x00" in raw:
+        raise ValueError("workflow path contains NUL byte")
+    candidate = Path(raw)
+    if candidate.is_absolute():
+        raise ValueError("workflow path must be relative to the current working directory")
+    if candidate.parent != Path("."):
+        raise ValueError("workflow path must be a filename without directories")
+    if candidate.name != raw:
+        raise ValueError("workflow path must be a filename without directories")
+    if not _WORKFLOW_FILE_RE.fullmatch(raw):
+        raise ValueError("workflow filename must match [A-Za-z0-9._-]+.(toml|json)")
+    return raw
+
+
+
 
 @dataclasses.dataclass(frozen=True)
 class Policy:
@@ -203,6 +223,8 @@ def _resolve_workflow_path(path: Path) -> Path:
     candidate = Path(raw)
     if candidate.is_absolute():
         raise ValueError("workflow path must be relative to the current working directory")
+    if candidate.parent != Path("."):
+        raise ValueError("workflow path must be a filename without directories")
     if any(part == ".." for part in candidate.parts):
         raise ValueError("workflow path traversal is not allowed")
 

@@ -210,3 +210,21 @@ inputs = { path = "a.txt", text = "ok" }
             dry_run=False,
             fail_fast=False,
         )
+
+
+def test_run_workflow_rejects_nested_path(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "nested").mkdir()
+    (tmp_path / "nested" / "wf.toml").write_text(
+        "[workflow]\nname=\"x\"\nversion=\"1\"\n", encoding="utf-8"
+    )
+    with pytest.raises((ValueError, SecurityError)):
+        run_workflow(
+            Path("nested/wf.toml"),
+            inputs={},
+            artifacts_dir=Path("a"),
+            history_dir=Path("h"),
+            workers=1,
+            dry_run=False,
+            fail_fast=False,
+        )
