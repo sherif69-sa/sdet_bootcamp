@@ -25,7 +25,9 @@ def _supports_allow_comments(parser: Callable[..., dict[str, str]]) -> bool:
     return False
 
 
-def _build_comment_aware_parser(parser: Callable[..., dict[str, str]]) -> Callable[[str], dict[str, str]]:
+def _build_comment_aware_parser(
+    parser: Callable[..., dict[str, str]],
+) -> Callable[[str], dict[str, str]]:
     if _supports_allow_comments(parser):
         return lambda line: parser(line, allow_comments=True)
     return parser

@@ -8,9 +8,10 @@ import re
 import sqlite3
 import subprocess
 import urllib.parse
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 SEVERITY_WEIGHT = {
     "critical": 20,
@@ -165,14 +166,23 @@ def _parse_doctor(payload: dict[str, Any]) -> SourceResult:
             if not isinstance(item, dict) or item.get("ok", True):
                 continue
             warnings.append(
-                _make_signal("doctor", _safe_text(name) or "check", _safe_text(item.get("severity", "unknown")), _safe_text(item.get("message", "failed check")))
+                _make_signal(
+                    "doctor",
+                    _safe_text(name) or "check",
+                    _safe_text(item.get("severity", "unknown")),
+                    _safe_text(item.get("message", "failed check")),
+                )
             )
 
     for rec in payload.get("recommendations", []):
         recommendations.append(_make_signal("doctor", "recommendation", "info", _safe_text(rec)))
 
     if isinstance(payload.get("score"), int) and payload["score"] < 70:
-        checks.append(_make_signal("doctor", "score-threshold", "warn", f"doctor score low: {payload['score']}%"))
+        checks.append(
+            _make_signal(
+                "doctor", "score-threshold", "warn", f"doctor score low: {payload['score']}%"
+            )
+        )
 
     return SourceResult("doctor", warnings, recommendations, checks)
 
@@ -186,14 +196,28 @@ def _parse_maintenance(payload: dict[str, Any]) -> SourceResult:
         if not isinstance(item, dict) or item.get("ok", True):
             continue
         warnings.append(
-            _make_signal("maintenance", _safe_text(item.get("name", "unknown")), _safe_text(item.get("severity", "unknown")), _safe_text(item.get("summary", "failed check")))
+            _make_signal(
+                "maintenance",
+                _safe_text(item.get("name", "unknown")),
+                _safe_text(item.get("severity", "unknown")),
+                _safe_text(item.get("summary", "failed check")),
+            )
         )
 
     for rec in payload.get("recommendations", []):
-        recommendations.append(_make_signal("maintenance", "recommendation", "info", _safe_text(rec)))
+        recommendations.append(
+            _make_signal("maintenance", "recommendation", "info", _safe_text(rec))
+        )
 
     if isinstance(payload.get("score"), int) and payload["score"] < 70:
-        checks.append(_make_signal("maintenance", "score-threshold", "warn", f"maintenance score low: {payload['score']}%"))
+        checks.append(
+            _make_signal(
+                "maintenance",
+                "score-threshold",
+                "warn",
+                f"maintenance score low: {payload['score']}%",
+            )
+        )
 
     return SourceResult("maintenance", warnings, recommendations, checks)
 
@@ -209,14 +233,27 @@ def _parse_security(payload: dict[str, Any]) -> SourceResult:
         path = _safe_text(item.get("path"))
         line = _safe_text(item.get("line"))
         msg = " ".join(x for x in [rule, path, f"line={line}" if line else ""] if x)
-        warnings.append(_make_signal("security", rule, _safe_text(item.get("severity", "unknown")), msg))
+        warnings.append(
+            _make_signal("security", rule, _safe_text(item.get("severity", "unknown")), msg)
+        )
 
     totals = payload.get("totals")
     if isinstance(totals, dict):
         if int(totals.get("critical", 0)) > 0:
-            checks.append(_make_signal("security", "critical-findings", "critical", f"critical findings: {totals.get('critical', 0)}"))
+            checks.append(
+                _make_signal(
+                    "security",
+                    "critical-findings",
+                    "critical",
+                    f"critical findings: {totals.get('critical', 0)}",
+                )
+            )
         if int(totals.get("high", 0)) > 0:
-            checks.append(_make_signal("security", "high-findings", "high", f"high findings: {totals.get('high', 0)}"))
+            checks.append(
+                _make_signal(
+                    "security", "high-findings", "high", f"high findings: {totals.get('high', 0)}"
+                )
+            )
 
     return SourceResult("security", warnings, [], checks)
 
@@ -228,8 +265,20 @@ def _scan_step_logs(out_dir: Path) -> list[StepStatus]:
         low = text.lower()
         failed = "error: step failed" in low or "traceback" in low
         wc = low.count("warning") + low.count("⚠️")
-        details = "failure markers found in log" if failed else (f"contains warning output ({wc})" if wc > 0 else "ok")
-        statuses.append(StepStatus(log.name.removeprefix("premium-gate.").removesuffix(".log"), not failed, str(log), details, wc))
+        details = (
+            "failure markers found in log"
+            if failed
+            else (f"contains warning output ({wc})" if wc > 0 else "ok")
+        )
+        statuses.append(
+            StepStatus(
+                log.name.removeprefix("premium-gate.").removesuffix(".log"),
+                not failed,
+                str(log),
+                details,
+                wc,
+            )
+        )
     return statuses
 
 
@@ -245,11 +294,15 @@ def _dedupe(signals: list[Signal]) -> list[Signal]:
 
 
 def _rank(signals: list[Signal]) -> list[Signal]:
-    return sorted(signals, key=lambda s: (-SEVERITY_RANK.get(s.severity, 0), s.source, s.category, s.message))
+    return sorted(
+        signals, key=lambda s: (-SEVERITY_RANK.get(s.severity, 0), s.source, s.category, s.message)
+    )
 
 
 def _score(warnings: list[Signal], checks: list[Signal], steps: list[StepStatus]) -> int:
-    penalty = sum(SEVERITY_WEIGHT.get(s.severity, SEVERITY_WEIGHT["unknown"]) for s in [*warnings, *checks])
+    penalty = sum(
+        SEVERITY_WEIGHT.get(s.severity, SEVERITY_WEIGHT["unknown"]) for s in [*warnings, *checks]
+    )
     penalty += sum(14 for st in steps if not st.ok)
     penalty += sum(2 for st in steps if st.ok and st.warnings_count > 0)
     return max(0, 100 - min(99, penalty))
@@ -270,13 +323,19 @@ def _source_digest(out_dir: Path) -> str:
     chunks: list[str] = []
     for name in REQUIRED_ARTIFACTS:
         p = out_dir / name
-        chunks.append(f"{name}:{hashlib.sha256(p.read_bytes()).hexdigest()}" if p.exists() else f"{name}:missing")
+        chunks.append(
+            f"{name}:{hashlib.sha256(p.read_bytes()).hexdigest()}"
+            if p.exists()
+            else f"{name}:missing"
+        )
     for log in sorted(out_dir.glob("premium-gate.*.log")):
         chunks.append(f"{log.name}:{hashlib.sha256(log.read_bytes()).hexdigest()}")
     return hashlib.sha256("|".join(chunks).encode("utf-8")).hexdigest()
 
 
-def _knowledge_recommendations(warnings: list[Signal], checks: list[Signal], steps: list[StepStatus]) -> list[Signal]:
+def _knowledge_recommendations(
+    warnings: list[Signal], checks: list[Signal], steps: list[StepStatus]
+) -> list[Signal]:
     recs: list[Signal] = []
     for s in [*warnings, *checks]:
         key = f"{s.source}:{s.category}"
@@ -294,7 +353,9 @@ def _knowledge_recommendations(warnings: list[Signal], checks: list[Signal], ste
         a, b = RECOMMENDATION_CATALOG["engine:artifact-integrity"]
         recs.append(_make_signal("engine", "artifact-integrity", "high", f"{a} {b}"))
 
-    high_sec = [w for w in warnings if w.source == "security" and w.severity in {"high", "critical"}]
+    high_sec = [
+        w for w in warnings if w.source == "security" and w.severity in {"high", "critical"}
+    ]
     if high_sec:
         a, b = RECOMMENDATION_CATALOG["security"]
         recs.append(_make_signal("engine", "security-priority", "high", f"{a} {b}"))
@@ -380,7 +441,9 @@ def _build_fix_plan_item(result: AutoFixResult) -> FixPlanItem:
     else:
         edit = "Follow engine playbook recommendation for this rule and create a focused patch with tests."
         priority = "medium"
-    return FixPlanItem(rule_id=rule, path=result.path, priority=priority, reason=base_reason, suggested_edit=edit)
+    return FixPlanItem(
+        rule_id=rule, path=result.path, priority=priority, reason=base_reason, suggested_edit=edit
+    )
 
 
 def _init_db(db_path: Path) -> None:
@@ -462,10 +525,12 @@ def persist_insights(payload: dict[str, Any], db_path: Path, commit_sha: str | N
                 json.dumps(payload, sort_keys=True),
             ),
         )
-        return int(cur.lastrowid)
+        return int(cur.lastrowid or 0)
 
 
-def add_guideline(db_path: Path, title: str, body: str, tags: list[str], source: str = "manual") -> int:
+def add_guideline(
+    db_path: Path, title: str, body: str, tags: list[str], source: str = "manual"
+) -> int:
     _init_db(db_path)
     clean_tags = ",".join(sorted({_safe_text(tag) for tag in tags if _safe_text(tag)}))
     with sqlite3.connect(db_path) as conn:
@@ -473,10 +538,12 @@ def add_guideline(db_path: Path, title: str, body: str, tags: list[str], source:
             "INSERT INTO guidelines (title, body, tags, source) VALUES (?, ?, ?, ?)",
             (_safe_text(title), _safe_text(body), clean_tags, _safe_text(source) or "manual"),
         )
-        return int(cur.lastrowid)
+        return int(cur.lastrowid or 0)
 
 
-def update_guideline(db_path: Path, guideline_id: int, title: str, body: str, tags: list[str], active: bool = True) -> bool:
+def update_guideline(
+    db_path: Path, guideline_id: int, title: str, body: str, tags: list[str], active: bool = True
+) -> bool:
     _init_db(db_path)
     clean_tags = ",".join(sorted({_safe_text(tag) for tag in tags if _safe_text(tag)}))
     with sqlite3.connect(db_path) as conn:
@@ -491,7 +558,9 @@ def update_guideline(db_path: Path, guideline_id: int, title: str, body: str, ta
         return cur.rowcount > 0
 
 
-def list_guidelines(db_path: Path, active_only: bool = True, limit: int = 100) -> list[dict[str, Any]]:
+def list_guidelines(
+    db_path: Path, active_only: bool = True, limit: int = 100
+) -> list[dict[str, Any]]:
     _init_db(db_path)
     query = "SELECT id, created_at, updated_at, title, body, tags, source, active FROM guidelines"
     params: tuple[Any, ...] = ()
@@ -516,7 +585,9 @@ def list_guidelines(db_path: Path, active_only: bool = True, limit: int = 100) -
     ]
 
 
-def record_commit_learning(db_path: Path, commit_sha: str, message: str, changed_files: list[str], summary: str = "") -> int:
+def record_commit_learning(
+    db_path: Path, commit_sha: str, message: str, changed_files: list[str], summary: str = ""
+) -> int:
     _init_db(db_path)
     with sqlite3.connect(db_path) as conn:
         cur = conn.execute(
@@ -531,19 +602,23 @@ def record_commit_learning(db_path: Path, commit_sha: str, message: str, changed
                 _safe_text(summary),
             ),
         )
-        return int(cur.lastrowid)
+        return int(cur.lastrowid or 0)
 
 
 def _autolearn_from_payload(db_path: Path, payload: dict[str, Any]) -> list[int]:
     ids: list[int] = []
-    for rec in payload.get("recommendations", [])[:25]:
+    for rec in payload.get("recommendations", []):
         if not isinstance(rec, dict):
             continue
         title = f"{_safe_text(rec.get('source'))}:{_safe_text(rec.get('category'))}"
         body = _safe_text(rec.get("message"))
         if not title or not body:
             continue
-        ids.append(add_guideline(db_path, title, body, ["auto", _safe_text(rec.get("severity"))], source="engine"))
+        ids.append(
+            add_guideline(
+                db_path, title, body, ["auto", _safe_text(rec.get("severity"))], source="engine"
+            )
+        )
     return ids
 
 
@@ -579,7 +654,9 @@ class _InsightsHandler(http.server.BaseHTTPRequestHandler):
             q = urllib.parse.parse_qs(parsed.query)
             active = q.get("active", ["1"])[0] != "0"
             limit = int(q.get("limit", ["100"])[0])
-            self._json(200, {"guidelines": list_guidelines(self.db_path, active_only=active, limit=limit)})
+            self._json(
+                200, {"guidelines": list_guidelines(self.db_path, active_only=active, limit=limit)}
+            )
             return
         if parsed.path == "/analyze":
             payload = collect_signals(self.out_dir)
@@ -606,7 +683,9 @@ class _InsightsHandler(http.server.BaseHTTPRequestHandler):
                 self.db_path,
                 _safe_text(body.get("commit_sha")) or _git_commit_sha(),
                 _safe_text(body.get("message")),
-                body.get("changed_files", []) if isinstance(body.get("changed_files"), list) else [],
+                body.get("changed_files", [])
+                if isinstance(body.get("changed_files"), list)
+                else [],
                 summary=_safe_text(body.get("summary")),
             )
             self._json(201, {"id": learning_id})
@@ -665,7 +744,11 @@ def collect_signals(out_dir: Path) -> dict[str, Any]:
     for source, (path, parser) in sources.items():
         payload = _load_json(path)
         if payload is None:
-            checks.append(_make_signal("engine", f"{source}_artifact", "warn", f"{path.name} missing or invalid"))
+            checks.append(
+                _make_signal(
+                    "engine", f"{source}_artifact", "warn", f"{path.name} missing or invalid"
+                )
+            )
             continue
         parsed = parser(payload)
         warnings.extend(parsed.warnings)
@@ -715,12 +798,89 @@ def collect_signals(out_dir: Path) -> dict[str, Any]:
     }
 
 
+def _apply_learned_guideline_actions(payload: dict[str, Any], db_path: Path) -> dict[str, Any]:
+    if not db_path.exists():
+        return payload
+
+    guidelines = list_guidelines(db_path, active_only=True, limit=10000)
+    if not guidelines:
+        return payload
+
+    warnings = payload.get("warnings", [])
+    rec_signals: list[Signal] = []
+    for item in payload.get("recommendations", []):
+        if not isinstance(item, dict):
+            continue
+        rec_signals.append(
+            _make_signal(
+                _safe_text(item.get("source")) or "engine",
+                _safe_text(item.get("category")) or "recommendation",
+                _safe_text(item.get("severity")) or "info",
+                _safe_text(item.get("message")),
+            )
+        )
+
+    action_plan = list(payload.get("manual_fix_plan", []))
+
+    for warning in warnings:
+        if not isinstance(warning, dict):
+            continue
+        key = f"{_safe_text(warning.get('source'))}:{_safe_text(warning.get('category'))}"
+        severity = _safe_text(warning.get("severity")) or "warn"
+        for guideline in guidelines:
+            title = _safe_text(guideline.get("title"))
+            tags = (
+                set(guideline.get("tags", [])) if isinstance(guideline.get("tags"), list) else set()
+            )
+            if title != key and key not in tags and severity not in tags:
+                continue
+            body = _safe_text(guideline.get("body"))
+            if not body:
+                continue
+            rec_signals.append(
+                _make_signal(
+                    "engine",
+                    "learned-guideline",
+                    severity,
+                    f"Apply learned guideline '{title}': {body}",
+                )
+            )
+            action_plan.append(
+                {
+                    "rule_id": key or "LEARNED",
+                    "path": _safe_text(warning.get("message")),
+                    "priority": severity,
+                    "reason": "Learned guideline match",
+                    "suggested_edit": body,
+                }
+            )
+
+    out = dict(payload)
+    deduped = _rank(_dedupe(rec_signals))
+    out["recommendations"] = [asdict(s) for s in deduped]
+    if action_plan:
+        out["manual_fix_plan"] = action_plan
+    out["counts"] = {**out.get("counts", {}), "recommendations": len(out["recommendations"])}
+    return out
+
+
 def _apply_double_check(payload: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
-    if payload["counts"] == second["counts"] and payload.get("source_digest") == second.get("source_digest"):
+    if payload["counts"] == second["counts"] and payload.get("source_digest") == second.get(
+        "source_digest"
+    ):
         return payload
     out = dict(payload)
     checks = list(out["engine_checks"])
-    checks.append(asdict(_make_signal("engine", "determinism", "warn", "non-deterministic signal counts or digest between two reads")))
+    checks.append(
+        asdict(
+            _make_signal(
+                "engine",
+                "determinism",
+                "warn",
+                "non-deterministic signal counts or digest between two reads",
+            )
+        )
+    )
     out["engine_checks"] = checks
     out["counts"] = {**out["counts"], "engine_checks": len(checks)}
     out["ok"] = False
@@ -755,17 +915,23 @@ def render_text(payload: dict[str, Any]) -> str:
     if payload["warnings"]:
         lines.append("active warnings:")
         for item in payload["warnings"][:30]:
-            lines.append(f"- ⚠️ {item['source']}:{item['category']} [{item['severity']}] {item['message']}")
+            lines.append(
+                f"- ⚠️ {item['source']}:{item['category']} [{item['severity']}] {item['message']}"
+            )
 
     if payload["recommendations"]:
         lines.append("top recommendations:")
         for item in payload["recommendations"][:30]:
-            lines.append(f"- 💡 {item['source']}:{item['category']} [{item['severity']}] {item['message']}")
+            lines.append(
+                f"- 💡 {item['source']}:{item['category']} [{item['severity']}] {item['message']}"
+            )
 
     if payload.get("manual_fix_plan"):
         lines.append("manual follow-up plan:")
         for item in payload["manual_fix_plan"][:20]:
-            lines.append(f"- 🔧 {item['priority']} {item['rule_id']} {item['path']}: {item['suggested_edit']}")
+            lines.append(
+                f"- 🔧 {item['priority']} {item['rule_id']} {item['path']}: {item['suggested_edit']}"
+            )
 
     return "\n".join(lines)
 
@@ -784,14 +950,18 @@ def render_markdown(payload: dict[str, Any]) -> str:
     lines.append("## warnings")
     if payload.get("warnings"):
         for item in payload["warnings"][:30]:
-            lines.append(f"- ⚠️ `{item['source']}:{item['category']}` ({item['severity']}): {item['message']}")
+            lines.append(
+                f"- ⚠️ `{item['source']}:{item['category']}` ({item['severity']}): {item['message']}"
+            )
     else:
         lines.append("- none")
     lines.append("")
     lines.append("## recommendations")
     if payload.get("recommendations"):
         for item in payload["recommendations"][:30]:
-            lines.append(f"- 💡 `{item['source']}:{item['category']}` ({item['severity']}): {item['message']}")
+            lines.append(
+                f"- 💡 `{item['source']}:{item['category']}` ({item['severity']}): {item['message']}"
+            )
     else:
         lines.append("- none")
     if payload.get("manual_fix_plan"):
@@ -829,6 +999,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     payload = collect_signals(out_dir)
+    payload = _apply_learned_guideline_actions(payload, db_path)
 
     if ns.double_check:
         payload = _apply_double_check(payload, collect_signals(out_dir))
@@ -857,7 +1028,9 @@ def main(argv: list[str] | None = None) -> int:
             )
 
     if ns.json_output:
-        Path(ns.json_output).write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        Path(ns.json_output).write_text(
+            json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
 
     if ns.learn_db:
         persist_insights(payload, db_path)
@@ -868,13 +1041,22 @@ def main(argv: list[str] | None = None) -> int:
         commit_message = ""
         changed_files: list[str] = []
         try:
-            msg = subprocess.run(["git", "log", "-1", "--pretty=%s"], check=True, capture_output=True, text=True)
+            msg = subprocess.run(
+                ["git", "log", "-1", "--pretty=%s"], check=True, capture_output=True, text=True
+            )
             commit_message = msg.stdout.strip()
-            files = subprocess.run(["git", "show", "--name-only", "--pretty=", "HEAD"], check=True, capture_output=True, text=True)
+            files = subprocess.run(
+                ["git", "show", "--name-only", "--pretty=", "HEAD"],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
             changed_files = [line.strip() for line in files.stdout.splitlines() if line.strip()]
         except Exception:
             commit_message = "unknown"
-        record_commit_learning(db_path, sha, commit_message, changed_files, summary=f"score={payload.get('score', 0)}")
+        record_commit_learning(
+            db_path, sha, commit_message, changed_files, summary=f"score={payload.get('score', 0)}"
+        )
 
     if ns.format == "json":
         print(json.dumps(payload, indent=2, sort_keys=True))

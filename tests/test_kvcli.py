@@ -137,8 +137,6 @@ def test_kvcli_text_and_stdin_produce_identical_output():
     assert p1.stdout == p2.stdout
 
 
-
-
 def test_kvcli_supports_hash_comments_in_input():
     p = run_kvcli(input_text="# leading comment\na=1 b=2 # trailing\n")
     assert p.returncode == 0
@@ -160,7 +158,6 @@ def test_kvcli_strict_accepts_comments_and_valid_lines_only():
     assert json.loads(p.stdout) == {"a": "1", "b": "2"}
 
 
-
 def test_kvcli_strict_error_mentions_line_number_for_invalid_line():
     p = run_kvcli("--strict", input_text="ok=1\nnotkv\n")
     assert p.returncode == 2
@@ -179,6 +176,7 @@ def test_build_comment_aware_parser_enables_comments_for_modern_parser():
 
     parser = kvcli._build_comment_aware_parser(kvcli.parse_kv_line)
     assert parser("a=1 # trailing") == {"a": "1"}
+
 
 def test_kvcli_runner_supports_timeout(tmp_path):
     p = run_kvcli("--text", "a=1", timeout=0.2)

@@ -6,7 +6,9 @@ from pathlib import Path
 from sdetkit import premium_gate_engine as eng
 
 
-def test_collect_signals_reads_artifacts_and_extracts_warnings_and_recommendations(tmp_path: Path) -> None:
+def test_collect_signals_reads_artifacts_and_extracts_warnings_and_recommendations(
+    tmp_path: Path,
+) -> None:
     out = tmp_path
     (out / "doctor.json").write_text(
         json.dumps(
@@ -22,7 +24,9 @@ def test_collect_signals_reads_artifacts_and_extracts_warnings_and_recommendatio
         json.dumps(
             {
                 "score": 60,
-                "checks": [{"name": "tests", "ok": False, "severity": "medium", "summary": "tests failed"}],
+                "checks": [
+                    {"name": "tests", "ok": False, "severity": "medium", "summary": "tests failed"}
+                ],
                 "recommendations": ["stabilize flaky tests"],
             }
         ),
@@ -63,7 +67,9 @@ def test_collect_signals_reads_step_logs_and_marks_failures(tmp_path: Path) -> N
 
 def test_main_writes_json_output_and_double_check(tmp_path: Path, capsys) -> None:
     out = tmp_path
-    (out / "doctor.json").write_text(json.dumps({"checks": {}, "recommendations": []}), encoding="utf-8")
+    (out / "doctor.json").write_text(
+        json.dumps({"checks": {}, "recommendations": []}), encoding="utf-8"
+    )
     (out / "maintenance.json").write_text(
         json.dumps({"checks": [], "recommendations": ["all good"]}), encoding="utf-8"
     )
@@ -93,7 +99,9 @@ def test_main_min_score_gate_can_fail(tmp_path: Path) -> None:
         json.dumps({"checks": {"x": {"ok": False, "severity": "critical", "message": "boom"}}}),
         encoding="utf-8",
     )
-    (tmp_path / "maintenance.json").write_text(json.dumps({"checks": [], "recommendations": []}), encoding="utf-8")
+    (tmp_path / "maintenance.json").write_text(
+        json.dumps({"checks": [], "recommendations": []}), encoding="utf-8"
+    )
     (tmp_path / "security-check.json").write_text(json.dumps({"findings": []}), encoding="utf-8")
     (tmp_path / "premium-gate.Quality.log").write_text("ok\n", encoding="utf-8")
     rc = eng.main(["--out-dir", str(tmp_path), "--min-score", "95", "--format", "json"])
@@ -134,15 +142,21 @@ def test_auto_fix_applies_supported_security_rules(tmp_path: Path) -> None:
 
 
 def test_main_auto_fix_adds_manual_followup_recommendation(tmp_path: Path, capsys) -> None:
-    (tmp_path / "doctor.json").write_text(json.dumps({"checks": {}, "recommendations": []}), encoding="utf-8")
-    (tmp_path / "maintenance.json").write_text(json.dumps({"checks": [], "recommendations": []}), encoding="utf-8")
+    (tmp_path / "doctor.json").write_text(
+        json.dumps({"checks": {}, "recommendations": []}), encoding="utf-8"
+    )
+    (tmp_path / "maintenance.json").write_text(
+        json.dumps({"checks": [], "recommendations": []}), encoding="utf-8"
+    )
     (tmp_path / "security-check.json").write_text(
         json.dumps({"findings": [{"rule_id": "SEC_UNKNOWN", "path": "src/missing.py"}]}),
         encoding="utf-8",
     )
     (tmp_path / "premium-gate.Quality.log").write_text("ok\n", encoding="utf-8")
 
-    rc = eng.main(["--out-dir", str(tmp_path), "--auto-fix", "--fix-root", str(tmp_path), "--format", "json"])
+    rc = eng.main(
+        ["--out-dir", str(tmp_path), "--auto-fix", "--fix-root", str(tmp_path), "--format", "json"]
+    )
     assert rc == 0
     payload = json.loads(capsys.readouterr().out)
     assert any(item["status"] in {"manual", "skipped"} for item in payload["auto_fix_results"])
@@ -152,22 +166,28 @@ def test_main_auto_fix_adds_manual_followup_recommendation(tmp_path: Path, capsy
 
 
 def test_main_markdown_format_includes_five_heads_and_plan(tmp_path: Path, capsys) -> None:
-    (tmp_path / "doctor.json").write_text(json.dumps({"checks": {}, "recommendations": []}), encoding="utf-8")
-    (tmp_path / "maintenance.json").write_text(json.dumps({"checks": [], "recommendations": []}), encoding="utf-8")
+    (tmp_path / "doctor.json").write_text(
+        json.dumps({"checks": {}, "recommendations": []}), encoding="utf-8"
+    )
+    (tmp_path / "maintenance.json").write_text(
+        json.dumps({"checks": [], "recommendations": []}), encoding="utf-8"
+    )
     (tmp_path / "security-check.json").write_text(
         json.dumps({"findings": [{"rule_id": "SEC_UNKNOWN", "path": "src/missing.py"}]}),
         encoding="utf-8",
     )
     (tmp_path / "premium-gate.Quality.log").write_text("ok\n", encoding="utf-8")
-    rc = eng.main([
-        "--out-dir",
-        str(tmp_path),
-        "--auto-fix",
-        "--fix-root",
-        str(tmp_path),
-        "--format",
-        "markdown",
-    ])
+    rc = eng.main(
+        [
+            "--out-dir",
+            str(tmp_path),
+            "--auto-fix",
+            "--fix-root",
+            str(tmp_path),
+            "--format",
+            "markdown",
+        ]
+    )
     assert rc == 0
     out = capsys.readouterr().out
     assert "# premium gate brain report" in out
@@ -193,22 +213,28 @@ def test_guideline_store_is_editable(tmp_path: Path) -> None:
 
 
 def test_main_learn_db_and_commit_persists_records(tmp_path: Path) -> None:
-    (tmp_path / "doctor.json").write_text(json.dumps({"checks": {}, "recommendations": []}), encoding="utf-8")
-    (tmp_path / "maintenance.json").write_text(json.dumps({"checks": [], "recommendations": []}), encoding="utf-8")
+    (tmp_path / "doctor.json").write_text(
+        json.dumps({"checks": {}, "recommendations": []}), encoding="utf-8"
+    )
+    (tmp_path / "maintenance.json").write_text(
+        json.dumps({"checks": [], "recommendations": []}), encoding="utf-8"
+    )
     (tmp_path / "security-check.json").write_text(json.dumps({"findings": []}), encoding="utf-8")
     (tmp_path / "premium-gate.Quality.log").write_text("ok\n", encoding="utf-8")
     db = tmp_path / "premium-insights.db"
 
-    rc = eng.main([
-        "--out-dir",
-        str(tmp_path),
-        "--db-path",
-        str(db),
-        "--learn-db",
-        "--learn-commit",
-        "--format",
-        "json",
-    ])
+    rc = eng.main(
+        [
+            "--out-dir",
+            str(tmp_path),
+            "--db-path",
+            str(db),
+            "--learn-db",
+            "--learn-commit",
+            "--format",
+            "json",
+        ]
+    )
     assert rc == 0
 
     import sqlite3
@@ -218,3 +244,44 @@ def test_main_learn_db_and_commit_persists_records(tmp_path: Path) -> None:
         commits = conn.execute("SELECT COUNT(*) FROM commit_learning").fetchone()[0]
     assert runs >= 1
     assert commits >= 1
+
+
+def test_main_applies_learned_guidelines_to_recommendations(tmp_path: Path, capsys) -> None:
+    (tmp_path / "doctor.json").write_text(
+        json.dumps(
+            {
+                "checks": {"policy": {"ok": False, "severity": "high", "message": "policy drift"}},
+                "recommendations": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+    (tmp_path / "maintenance.json").write_text(
+        json.dumps({"checks": [], "recommendations": []}), encoding="utf-8"
+    )
+    (tmp_path / "security-check.json").write_text(json.dumps({"findings": []}), encoding="utf-8")
+    (tmp_path / "premium-gate.Quality.log").write_text("ok\n", encoding="utf-8")
+    db = tmp_path / "premium-insights.db"
+
+    eng.add_guideline(
+        db,
+        "doctor:policy",
+        "enforce policy baseline in CI and regenerate policy snapshots.",
+        ["doctor:policy", "high"],
+        source="manual",
+    )
+
+    rc = eng.main(
+        [
+            "--out-dir",
+            str(tmp_path),
+            "--db-path",
+            str(db),
+            "--format",
+            "json",
+        ]
+    )
+    assert rc == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert any(item["category"] == "learned-guideline" for item in payload["recommendations"])
+    assert payload.get("manual_fix_plan")

@@ -54,7 +54,7 @@ runtime_recommendation() {
 run_step() {
   local title="$1"
   shift
-  local step_log="$OUT_DIR/premium-gate.$(echo "$title" | tr ' /()' '_____' | tr -cd '[:alnum:]_-.').log"
+  local step_log="$OUT_DIR/premium-gate.$(echo "$title" | tr ' /()' '_____' | tr -cd '[:alnum:]_.-').log"
   section "$title"
   local started
   started="$(date +%s)"
