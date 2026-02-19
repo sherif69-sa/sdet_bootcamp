@@ -258,14 +258,10 @@ def _resolve_workflow_path(path: Path) -> Path:
 def _safe_read_text(path: Path) -> str:
     root = Path.cwd().resolve(strict=True)
     raw = path.as_posix()
-    root_text = root.as_posix()
-    if raw == root_text:
-        rel = "."
-    elif raw.startswith(root_text + "/"):
-        rel = raw[len(root_text) + 1 :]
-    else:
-        rel = raw
-    safe_resolved = safe_path(root, rel, allow_absolute=False)
+    # Delegate all validation and normalization to safe_path to ensure that
+    # the target remains within the current working directory and that no
+    # traversal or absolute paths are allowed.
+    safe_resolved = safe_path(root, raw, allow_absolute=False)
     with safe_resolved.open("r", encoding="utf-8") as handle:
         return handle.read()
 
