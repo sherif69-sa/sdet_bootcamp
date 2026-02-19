@@ -102,6 +102,69 @@ Track progress with a simple monthly score (0-5 each):
 
 A score of **28+/35 for 3 consecutive months** indicates strong category leadership momentum.
 
+## Day 1: Full-Boost execution plan (start now)
+
+If we want strong momentum immediately, run this **single-day sprint** and ship visible outcomes before the day ends.
+
+### 1) Conversion upgrade (README + docs)
+
+- Add a clear "Who should use sdetkit" section for:
+  - SDET lead,
+  - Platform/DevEx engineer,
+  - Security/compliance owner.
+- Add a copy-paste **60-second demo** with expected output snippets.
+- Add a concise comparison panel: "sdetkit vs ad-hoc scripts."
+
+**Definition of done:** a first-time visitor can decide fit and run one meaningful command in under 3 minutes.
+
+### 2) Social proof package
+
+- Capture 3 demo artifacts (GIF or screenshots):
+  - `sdetkit doctor`
+  - `sdetkit repo audit`
+  - `sdetkit security check`
+- Publish one short release note with "before/after" value.
+
+**Definition of done:** README/docs show concrete proof, not only claims.
+
+### 3) Contributor funnel activation
+
+- Open and label 10 curated starter issues (`good first issue`, `help wanted`).
+- Add issue templates for bug report, feature request, and integration recipe.
+- Add "first contribution path" checklist in contributing docs.
+
+**Definition of done:** external contributor can pick a task in <5 minutes.
+
+### 4) Distribution and announcement
+
+- Publish a Day-1 update post (LinkedIn/X/Dev.to) with:
+  - one problem statement,
+  - one CLI demo,
+  - one CTA to docs.
+- Share in relevant communities (QA automation, DevOps, Python tooling).
+
+**Definition of done:** measurable referral traffic to README/docs within 24 hours.
+
+### Day-1 KPI target (aggressive but realistic)
+
+- +50 to +150 stars (depending on distribution reach).
+- 3+ new discussions/issues from external users.
+- 1+ external PR or integration question.
+- README click-through to docs above current baseline.
+
+### Day-1 command checklist (operator runbook)
+
+```bash
+python3 -m venv .venv
+./.venv/bin/python -m pip install -r requirements-test.txt -r requirements-docs.txt -e .
+./.venv/bin/sdetkit --help
+./.venv/bin/sdetkit doctor --help
+./.venv/bin/sdetkit repo --help
+bash scripts/check.sh all
+```
+
+Use command outputs/screenshots as same-day proof artifacts for release notes and social launch posts.
+
 ## Immediate next 7 actions
 
 1. Pin this strategy in docs navigation and link it from README.
