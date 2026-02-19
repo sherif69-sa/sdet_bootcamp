@@ -161,8 +161,17 @@ def safe_path(root: Path, user_path: str, *, allow_absolute: bool = False) -> Pa
     for part in segments:
         target = target / part
     resolved_target = target.resolve(strict=False)
-    if resolved_target != resolved_root and resolved_root not in resolved_target.parents:
-        raise SecurityError("unsafe path rejected: escapes root")
+    if resolved_target == resolved_root:
+        return resolved_target
+    # Ensure the resolved target is strictly within the resolved_root directory
+    if hasattr(resolved_target, "is_relative_to"):
+        if not resolved_target.is_relative_to(resolved_root):
+            raise SecurityError("unsafe path rejected: escapes root")
+    else:
+        try:
+            resolved_target.relative_to(resolved_root)
+        except ValueError:
+            raise SecurityError("unsafe path rejected: escapes root")
     return resolved_target
 
 
