@@ -299,7 +299,11 @@ class _RuleVisitor(ast.NodeVisitor):
                     "Write to absolute path detected.",
                     suggestion="Restrict writes to workspace or explicit allowlist.",
                 )
-        if self.rel_path.startswith("src/") and name == "print" and not self._allow_print_for_module():
+        if (
+            self.rel_path.startswith("src/")
+            and name == "print"
+            and not self._allow_print_for_module()
+        ):
             self._add("SEC_DEBUG_PRINT", node, "print(...) found in src/.")
         self.generic_visit(node)
 

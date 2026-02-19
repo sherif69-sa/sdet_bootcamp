@@ -235,7 +235,10 @@ def _maven_project_name(pom_xml: Path) -> str | None:
                 tag = str(child.tag).rsplit("}", 1)[-1]
                 if tag != "artifactId" or child.text is None:
                     continue
-                stripped = child.text.strip()
+                text = child.text
+                if not isinstance(text, str):
+                    continue
+                stripped = text.strip()
                 if stripped:
                     return stripped
         except Exception:
@@ -282,7 +285,10 @@ def _csproj_project_name(csproj: Path) -> str | None:
                 tag = str(element.tag).rsplit("}", 1)[-1]
                 if tag != "AssemblyName" or element.text is None:
                     continue
-                stripped = element.text.strip()
+                text = element.text
+                if not isinstance(text, str):
+                    continue
+                stripped = text.strip()
                 if stripped:
                     return stripped
         except Exception:
