@@ -136,11 +136,14 @@ Examples:
 
 - `sdetkit triage-templates --format text --strict`
 - `sdetkit triage-templates --format json`
+- `sdetkit triage-templates --write-defaults --format json --strict`
 - `sdetkit triage-templates --format markdown --output docs/artifacts/day9-triage-templates-sample.md`
 
-Useful flags: `--format`, `--output`, `--strict`.
+Useful flags: `--root`, `--format`, `--output`, `--strict`, `--write-defaults`.
 
-`--strict` returns non-zero if required Day 9 triage tokens are missing from bug/feature/PR templates.
+`--strict` returns non-zero if required Day 9 triage checks are missing from bug/feature/PR templates or `.github/ISSUE_TEMPLATE/config.yml`.
+
+`--write-defaults` writes a hardened baseline for bug/feature/PR/config templates, then re-runs validation in the same command.
 
 See: day-9-ultra-upgrade-report.md
 

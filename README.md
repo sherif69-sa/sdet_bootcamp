@@ -524,10 +524,11 @@ python -m sdetkit contributor-funnel --format json --strict
 
 ## 🧩 Day 9 ultra: contribution templates
 
-Day 9 upgrades issue and PR templates for faster triage with explicit severity, acceptance criteria, risk, and rollback prompts.
+Day 9 upgrades issue + PR templates and issue-template config for faster triage with explicit severity, acceptance criteria, risk, rollback, and recovery automation.
 
 ```bash
 python -m sdetkit triage-templates --format text --strict
+python -m sdetkit triage-templates --write-defaults --format json --strict
 ```
 
 Export a markdown artifact for maintainer handoff:

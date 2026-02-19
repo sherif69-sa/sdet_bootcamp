@@ -123,7 +123,8 @@ A practical, production-ready toolkit for SDET workflows — with clean CLI ergo
 ## Day 9 ultra upgrades (contribution templates)
 
 - Read the implementation report: [Day 9 ultra upgrade report](day-9-ultra-upgrade-report.md).
-- Run `sdetkit triage-templates --format text --strict` to validate issue/PR templates for fast triage fields.
+- Run `sdetkit triage-templates --format text --strict` to validate issue/PR/config templates for fast triage fields.
+- Auto-write hardened defaults when bootstrapping: `sdetkit triage-templates --write-defaults --format json --strict`.
 - Export markdown template-health artifact: `sdetkit triage-templates --format markdown --output docs/artifacts/day9-triage-templates-sample.md`.
 - Review the generated artifact: [day9 triage templates sample](artifacts/day9-triage-templates-sample.md).
 

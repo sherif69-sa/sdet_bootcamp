@@ -1,12 +1,20 @@
 # Day 9 contribution templates health
 
-- Score: **100.0** (17/17)
+- Score: **100.0** (21/21)
 
-| Template | Coverage | Path |
-| --- | --- | --- |
-| `bug` | 6/6 | `.github/ISSUE_TEMPLATE/bug_report.yml` |
-| `feature` | 5/5 | `.github/ISSUE_TEMPLATE/feature_request.yml` |
-| `pr` | 6/6 | `.github/PULL_REQUEST_TEMPLATE.md` |
+| Template | Coverage | Status | Path |
+| --- | --- | --- | --- |
+| `bug` | 6/6 | `ok` | `.github/ISSUE_TEMPLATE/bug_report.yml` |
+| `feature` | 5/5 | `ok` | `.github/ISSUE_TEMPLATE/feature_request.yml` |
+| `pr` | 6/6 | `ok` | `.github/PULL_REQUEST_TEMPLATE.md` |
+| `config` | 4/4 | `ok` | `.github/ISSUE_TEMPLATE/config.yml` |
+
+## Missing checks
+
+- `bug`: none
+- `feature`: none
+- `pr`: none
+- `config`: none
 
 ## Triage SLA targets
 
@@ -14,8 +22,7 @@
 - `bug_repro_confirmation`: < 48h
 - `first_pr_review`: < 48h
 
-## Missing token checks
+## Recovery actions
 
-- `bug`: none
-- `feature`: none
-- `pr`: none
+- `sdetkit triage-templates --write-defaults`
+- `sdetkit triage-templates --format json --strict`
