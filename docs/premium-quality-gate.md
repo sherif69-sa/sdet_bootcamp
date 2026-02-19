@@ -57,37 +57,6 @@ Use `bash premium-gate.sh` locally and in CI. It runs quality, explicit ruff che
 The script now also emits **real-time step recommendations**, writes per-step logs under `.sdetkit/out/`, and runs a top-level connector intelligence engine (`python3 -m sdetkit.premium_gate_engine --double-check --min-score 70 --auto-fix --fix-root .`) that unifies step logs, doctor, maintenance, and security triage artifacts into one scored control-plane summary with warnings, hotspot ranking, and prioritized recommendations.
 
 
-## Premium operating visualization
-
-<div align="center">
-  <p><strong>From checks → learning DB → applied remediation</strong></p>
-</div>
-
-<table>
-  <tr>
-    <td><strong>Step</strong></td>
-    <td><strong>Input</strong></td>
-    <td><strong>Output</strong></td>
-  </tr>
-  <tr>
-    <td>Analyze</td>
-    <td>doctor / maintenance / security artifacts + step logs</td>
-    <td>warnings, recommendations, score, hotspots</td>
-  </tr>
-  <tr>
-    <td>Learn</td>
-    <td>recommendations + commit metadata</td>
-    <td><code>premium-insights.db</code> history and guideline rows</td>
-  </tr>
-  <tr>
-    <td>Apply</td>
-    <td>current warnings + active guidelines</td>
-    <td>learned-guideline recommendations + manual fix plan actions</td>
-  </tr>
-</table>
-
-Live visualization reference: <a href="https://sherif69-sa.github.io/DevS69-sdetkit/">https://sherif69-sa.github.io/DevS69-sdetkit/</a>
-
 ## Local insights API (editable guideline reference + commit learning)
 
 The premium engine can now run a local API that stores guideline knowledge and per-commit learning in a SQLite database:
