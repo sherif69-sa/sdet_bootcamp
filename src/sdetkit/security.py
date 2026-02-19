@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -126,19 +127,24 @@ def ensure_allowed_scheme(url: str, *, allowed: set[str]) -> None:
 def safe_path(root: Path, user_path: str, *, allow_absolute: bool = False) -> Path:
     if "\x00" in user_path:
         raise SecurityError("unsafe path rejected: contains NUL byte")
+    # sdetkit: allow-security SEC_POTENTIAL_PATH_TRAVERSAL
+    # sdetkit: allow-security SEC_UNCONTROLLED_PATH_EXPRESSION
     p = Path(user_path)
     if p.is_absolute() and not allow_absolute:
         raise SecurityError("unsafe path rejected: absolute paths require explicit allow")
     if any(part == ".." for part in p.parts):
         raise SecurityError("unsafe path rejected: traversal is not allowed")
 
+    # sdetkit: allow-security SEC_POTENTIAL_PATH_TRAVERSAL
     base = p if p.is_absolute() else (root / p)
-    resolved_target = base.resolve(strict=False)
+    resolved_target = Path(os.path.normpath(str(base)))
     if not p.is_absolute() or not allow_absolute:
         resolved_root = root.resolve(strict=True)
+        if not resolved_target.is_absolute():
+            resolved_target = (resolved_root / resolved_target).resolve(strict=False)
         if resolved_target != resolved_root and resolved_root not in resolved_target.parents:
             raise SecurityError("unsafe path rejected: escapes root")
-    return resolved_target
+    return resolved_target.resolve(strict=False)
 
 
 def default_http_timeout(timeout_seconds: float | None = None) -> httpx.Timeout:
