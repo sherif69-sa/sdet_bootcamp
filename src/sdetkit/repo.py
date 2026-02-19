@@ -4563,7 +4563,8 @@ def main(argv: list[str] | None = None) -> int:
             )
             return 2
         if ns.body_file:
-            body_text = Path(ns.body_file).read_text(encoding="utf-8")
+            body_file = safe_path(root, str(ns.body_file), allow_absolute=False)
+            body_text = body_file.read_text(encoding="utf-8")
         elif ns.body:
             body_text = ns.body
         else:

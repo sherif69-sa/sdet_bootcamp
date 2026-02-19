@@ -16,6 +16,19 @@ class Issue:
     message: str = ""
 
 
+def _safe_user_path(root: Path, value: str) -> Path:
+    if "\x00" in value:
+        raise ValueError("path contains NUL byte")
+    raw = Path(value)
+    if any(part == ".." for part in raw.parts):
+        raise ValueError("path traversal is not allowed")
+    candidate = raw.resolve(strict=False) if raw.is_absolute() else (root / raw).resolve(strict=False)
+    resolved_root = root.resolve(strict=True)
+    if candidate != resolved_root and resolved_root not in candidate.parents:
+        raise ValueError("path must stay under --path root")
+    return candidate
+
+
 def _iter_py_files(root: Path, targets: list[str]) -> list[Path]:
     out: list[Path] = []
     for t in targets:
@@ -328,8 +341,9 @@ def _run_security_check(args: argparse.Namespace, root: Path) -> tuple[int, str]
     out = proc.stdout or ""
     if args.tee:
         try:
-            Path(args.tee).write_text(out, encoding="utf-8")
-        except OSError as exc:
+            tee_path = _safe_user_path(root, str(args.tee))
+            tee_path.write_text(out, encoding="utf-8")
+        except (OSError, ValueError) as exc:
             print(f"triage: failed to write tee output to {args.tee!r}: {exc}", file=sys.stderr)
     return int(proc.returncode), out
 
@@ -348,8 +362,9 @@ def _run_pytest(args: argparse.Namespace, root: Path) -> tuple[int, str]:
     out = proc.stdout or ""
     if args.tee:
         try:
-            Path(args.tee).write_text(out, encoding="utf-8")
-        except OSError as exc:
+            tee_path = _safe_user_path(root, str(args.tee))
+            tee_path.write_text(out, encoding="utf-8")
+        except (OSError, ValueError) as exc:
             # Best-effort: failing to tee output should not be fatal, but log for visibility.
             print(f"triage: failed to write tee output to {args.tee!r}: {exc}", file=sys.stderr)
     return int(proc.returncode), out
@@ -395,7 +410,11 @@ def main(argv: list[str] | None = None) -> int:
             return rc_compile
 
     if args.parse_security_log:
-        logp = Path(args.parse_security_log)
+        try:
+            logp = _safe_user_path(root, str(args.parse_security_log))
+        except ValueError as exc:
+            print(f"triage: invalid security log path: {exc}")
+            return 2
         try:
             text = logp.read_text(encoding="utf-8", errors="replace")
         except OSError:
@@ -410,7 +429,11 @@ def main(argv: list[str] | None = None) -> int:
         text = ""
 
         if args.parse_pytest_log:
-            logp = Path(args.parse_pytest_log)
+            try:
+                logp = _safe_user_path(root, str(args.parse_pytest_log))
+            except ValueError as exc:
+                print(f"triage: invalid pytest log path: {exc}")
+                return 2
             try:
                 text = logp.read_text(encoding="utf-8", errors="replace")
             except OSError:
