@@ -30,7 +30,7 @@ These strengths are the right base for growth; the next step is packaging, disco
 
 ## 90-day execution plan
 
-## Day 1–90 execution contract: real upgrades only
+## Day 1–90 execution contract: real upgrades only (mandatory for all phases)
 
 To enforce your requirement, every day in this plan is now governed by a **non-trivial delivery contract**.
 
@@ -94,6 +94,14 @@ Use this run protocol when you say "start day X":
 
 This phase now runs as a **day-by-day operating plan**. When we say "work Day 1," we execute that day’s checklist in full and publish the artifacts before moving on.
 
+
+#### Phase-1 non-trivial enforcement gates
+
+- Every day must ship a production-grade capability upgrade, not messaging-only updates.
+- Minimum daily change target stays **+2000 to +5000 diff**, including code, tests, docs, and automation updates.
+- At least one of the day’s outputs must be directly runnable by users in real workflows.
+- Days that fail this gate are reopened and replaced with larger scoped upgrades before moving forward.
+
 #### Day 1–30 sprint plan
 
 - **Day 1 — Core positioning refresh:** finalize one-line value proposition, role-based audience block, and top CTA in README.
@@ -147,6 +155,14 @@ This phase now runs as a **day-by-day operating plan**. When we say "work Day 1,
 
 Phase 2 converts early traction into repeatable growth loops. Each day ships one concrete asset that increases discoverability, trust, or reuse.
 
+
+#### Phase-2 non-trivial enforcement gates
+
+- Every day must strengthen a real adoption loop (release, distribution, integration, trust proof), not cosmetic updates.
+- Minimum daily change target stays **+2000 to +5000 diff** with functional and validation coverage.
+- Each day must produce measurable external impact (traffic, adoption, discussions, integrations, or downstream reuse).
+- If external-impact evidence is missing, the day is not accepted as complete.
+
 #### Day 31–60 sprint plan
 
 - **Day 31 — Phase-2 kickoff:** set baseline metrics from end of Phase 1 and define weekly growth targets.
@@ -199,6 +215,14 @@ Phase 2 converts early traction into repeatable growth loops. Each day ships one
 ### Phase 3 (Days 61-90): Ecosystem + trust (daily execution)
 
 Phase 3 turns growth into durable ecosystem trust: stronger community rituals, deeper integrations, and proof-backed outcomes.
+
+
+#### Phase-3 non-trivial enforcement gates
+
+- Every day must deliver durable ecosystem or governance value (integration depth, trust artifacts, community outcomes).
+- Minimum daily change target stays **+2000 to +5000 diff** with explicit reliability/security validation.
+- Each day must include real-world proof (case data, adoption signal, governance artifact, or integration usage evidence).
+- Any day without durable proof is treated as incomplete and must be expanded before progression.
 
 #### Day 61–90 sprint plan
 
