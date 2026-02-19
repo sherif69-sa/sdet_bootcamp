@@ -208,3 +208,34 @@ def test_run_pytest_failure_emits_targeted_grep_hits(tmp_path: Path) -> None:
     assert rc == 1
     assert "triage: grep hits" in out
     assert "tests/test_x.py:2" in out
+
+
+def test_parse_security_log_json_summarizes_findings(tmp_path: Path) -> None:
+    log = tmp_path / "security.json"
+    log.write_text(
+        '{"findings":[{"rule_id":"SEC_OS_SYSTEM","severity":"error","path":"src/a.py","line":10,"message":"x"}]}'
+        + "\n",
+        encoding="utf-8",
+    )
+
+    triage = _load_triage()
+    rc, out = _run(triage, ["--parse-security-log", str(log)], tmp_path)
+    assert rc == 1
+    assert "triage: security summary" in out
+    assert "SEC_OS_SYSTEM" in out
+
+
+def test_parse_security_log_text_summarizes_findings(tmp_path: Path) -> None:
+    log = tmp_path / "security.txt"
+    log.write_text(
+        "security scan: total=1 error=0 warn=1 info=0\n"
+        "top findings:\n"
+        "- [warn] SEC_WEAK_HASH src/a.py:7 Weak hash usage\n",
+        encoding="utf-8",
+    )
+
+    triage = _load_triage()
+    rc, out = _run(triage, ["--parse-security-log", str(log)], tmp_path)
+    assert rc == 1
+    assert "triage: security summary" in out
+    assert "SEC_WEAK_HASH" in out
