@@ -52,4 +52,6 @@ Use these commands to quickly diagnose PR quality issues and unblock reviews.
 
 ## One-command premium gate
 
-Use `bash premium-gate.sh` locally and in CI. It runs quality, explicit ruff checks, CI, doctor, full maintenance checks, baseline-aware security triage, security SARIF export, control-plane ops, and evidence pack generation.
+Use `bash premium-gate.sh` locally and in CI. It runs quality, explicit ruff checks, CI, doctor (ASCII + JSON), full maintenance checks, baseline-aware security triage, security SARIF export, control-plane ops, and evidence pack generation.
+
+The script now also emits **real-time step recommendations**, writes per-step logs under `.sdetkit/out/`, and runs a top-level connector intelligence engine (`python3 -m sdetkit.premium_gate_engine --double-check --min-score 70 --auto-fix --fix-root .`) that unifies step logs, doctor, maintenance, and security triage artifacts into one scored control-plane summary with warnings, hotspot ranking, and prioritized recommendations.
