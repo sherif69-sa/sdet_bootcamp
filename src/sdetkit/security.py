@@ -123,21 +123,54 @@ def ensure_allowed_scheme(url: str, *, allowed: set[str]) -> None:
         raise SecurityError(f"URL scheme '{scheme}' is not allowed (allowed: {allowed_list})")
 
 
+def _validated_path_segments(raw: str) -> tuple[str, ...]:
+    segments: list[str] = []
+    for part in raw.split("/"):
+        if part in {"", "."}:
+            continue
+        if part == "..":
+            raise SecurityError("unsafe path rejected: traversal is not allowed")
+        if not re.fullmatch(r"[A-Za-z0-9._-]{1,255}", part):
+            raise SecurityError("unsafe path rejected: invalid path segment")
+        segments.append(part)
+    return tuple(segments)
+
+
 def safe_path(root: Path, user_path: str, *, allow_absolute: bool = False) -> Path:
     if "\x00" in user_path:
         raise SecurityError("unsafe path rejected: contains NUL byte")
-    # sdetkit: allow-security SEC_UNCONTROLLED_PATH_EXPRESSION
-    p = Path(user_path)  # sdetkit: allow-security SEC_POTENTIAL_PATH_TRAVERSAL
-    if p.is_absolute() and not allow_absolute:
-        raise SecurityError("unsafe path rejected: absolute paths require explicit allow")
-    if any(part == ".." for part in p.parts):
-        raise SecurityError("unsafe path rejected: traversal is not allowed")
 
-    base = p if p.is_absolute() else (root / p)
-    resolved_target = base.resolve(strict=False)
-    if not p.is_absolute() or not allow_absolute:
-        resolved_root = root.resolve(strict=True)
-        if resolved_target != resolved_root and resolved_root not in resolved_target.parents:
+    resolved_root = root.resolve(strict=True)
+    normalized = user_path.replace("\\", "/")
+    is_absolute_input = normalized.startswith("/") or bool(re.match(r"^[A-Za-z]:/", normalized))
+
+    if is_absolute_input and not allow_absolute:
+        raise SecurityError("unsafe path rejected: absolute paths require explicit allow")
+
+    segments = _validated_path_segments(normalized)
+
+    if is_absolute_input and allow_absolute:
+        if not normalized.startswith("/"):
+            raise SecurityError("unsafe path rejected: unsupported absolute path format")
+        absolute_target = Path("/")
+        for part in segments:
+            absolute_target = absolute_target / part
+        resolved_target = absolute_target.resolve(strict=False)
+    else:
+        target = resolved_root
+        for part in segments:
+            target = target / part
+        resolved_target = target.resolve(strict=False)
+        if resolved_target == resolved_root:
+            return resolved_target
+    # Ensure the resolved target is strictly within the resolved_root directory
+    if hasattr(resolved_target, "is_relative_to"):
+        if not resolved_target.is_relative_to(resolved_root):
+            raise SecurityError("unsafe path rejected: escapes root")
+    else:
+        try:
+            resolved_target.relative_to(resolved_root)
+        except ValueError:
             raise SecurityError("unsafe path rejected: escapes root")
     return resolved_target
 

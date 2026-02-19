@@ -255,6 +255,17 @@ def _resolve_workflow_path(path: Path) -> Path:
     return resolved
 
 
+def _safe_read_text(path: Path) -> str:
+    root = Path.cwd().resolve(strict=True)
+    raw = path.as_posix()
+    # Delegate all validation and normalization to safe_path to ensure that
+    # the target remains within the current working directory and that no
+    # traversal or absolute paths are allowed.
+    safe_resolved = safe_path(root, raw, allow_absolute=False)
+    with safe_resolved.open("r", encoding="utf-8") as handle:
+        return handle.read()
+
+
 def _validate_run_id(run_id: str) -> str:
     if not re.fullmatch(r"[A-Za-z0-9._-]{1,128}", run_id):
         raise ValueError("invalid run id")
@@ -267,9 +278,9 @@ def _load_workflow(path: Path) -> WorkflowDef:
 
 def _load_workflow_resolved(resolved_path: Path) -> WorkflowDef:
     if resolved_path.suffix.lower() == ".json":
-        doc = json.loads(resolved_path.read_text(encoding="utf-8"))
+        doc = json.loads(_safe_read_text(resolved_path))
     else:
-        doc = _toml.loads(resolved_path.read_text(encoding="utf-8"))
+        doc = _toml.loads(_safe_read_text(resolved_path))
     if not isinstance(doc, dict) or not isinstance(doc.get("workflow"), dict):
         raise ValueError("workflow document must include [workflow]")
     w = dict(doc["workflow"])
@@ -500,7 +511,7 @@ def run_workflow(
 ) -> dict[str, Any]:
     registry = registry or build_registry()
     resolved_workflow_path = _resolve_workflow_path(workflow_path)
-    workflow_text = resolved_workflow_path.read_text(encoding="utf-8")
+    workflow_text = _safe_read_text(resolved_workflow_path)
     wf = _load_workflow_resolved(resolved_workflow_path)
     run_id = _run_id(workflow_text, inputs)
     run_root = history_dir / ".sdetkit" / "ops-history" / run_id
@@ -644,7 +655,7 @@ def list_runs(history_dir: Path) -> list[dict[str, Any]]:
         results_path = run_dir / "results.json"
         if not results_path.exists():
             continue
-        doc = json.loads(results_path.read_text(encoding="utf-8"))
+        doc = json.loads(_safe_read_text(results_path))
         out.append(
             {
                 "run_id": run_dir.name,
@@ -661,14 +672,17 @@ def load_run(history_dir: Path, run_id: str) -> tuple[dict[str, Any], dict[str, 
     run_dir = safe_path(history_root, valid_run_id, allow_absolute=False)
     run_doc_path = safe_path(run_dir, "run.json", allow_absolute=False)
     results_doc_path = safe_path(run_dir, "results.json", allow_absolute=False)
-    run_doc = json.loads(run_doc_path.read_text(encoding="utf-8"))
-    results_doc = json.loads(results_doc_path.read_text(encoding="utf-8"))
+    run_doc = json.loads(_safe_read_text(run_doc_path))
+    results_doc = json.loads(_safe_read_text(results_doc_path))
     return run_doc, results_doc
 
 
 def replay_run(history_dir: Path, run_id: str, workers: int = 1) -> dict[str, Any]:
     run_doc, _ = load_run(history_dir, run_id)
-    path = Path(str(run_doc["workflow_path"]))
+    workflow_raw = str(run_doc.get("workflow_path", "")).strip()
+    if not workflow_raw:
+        raise ValueError("run document missing workflow_path")
+    path = _resolve_workflow_path(Path(workflow_raw))
     return run_workflow(
         path,
         inputs=dict(run_doc.get("inputs", {})),
