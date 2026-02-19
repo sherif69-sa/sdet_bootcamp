@@ -136,19 +136,58 @@ Phase 2 converts early traction into repeatable growth loops. Each day ships one
 - Higher discussion volume from real users and integrators.
 - Reuse signals from templates/playbooks in downstream workflows.
 
-### Phase 3 (Days 61-90): Ecosystem + trust
+### Phase 3 (Days 61-90): Ecosystem + trust (daily execution)
 
-- Introduce community office hours (monthly) and roadmap voting issues.
-- Add integration examples with common CI providers and automation tools.
-- Publish benchmark-style case studies:
-  - reduced flaky checks,
-  - faster incident triage,
-  - tighter policy compliance.
-- Add contributor recognition board and release credits.
+Phase 3 turns growth into durable ecosystem trust: stronger community rituals, deeper integrations, and proof-backed outcomes.
 
-**Target metrics:**
-- Sustained star growth and external PR ratio.
-- Re-usage of templates in downstream repos.
+#### Day 61–90 sprint plan
+
+- **Day 61 — Phase-3 kickoff:** set Phase-3 baseline and define ecosystem/trust KPIs.
+- **Day 62 — Community program setup:** publish office-hours cadence and participation rules.
+- **Day 63 — Roadmap voting launch:** open ranked voting thread for next-priority capabilities.
+- **Day 64 — Integration expansion #1:** add advanced GitHub Actions reference workflow.
+- **Day 65 — Weekly review #9:** report baseline movement and community signal quality.
+
+- **Day 66 — Integration expansion #2:** publish advanced GitLab CI implementation path.
+- **Day 67 — Integration expansion #3:** publish advanced Jenkins implementation path.
+- **Day 68 — Integration expansion #4:** add one more ecosystem example (self-hosted/enterprise variant).
+- **Day 69 — Case-study prep #1:** gather measurable before/after data for reliability outcome.
+- **Day 70 — Case-study prep #2:** gather measurable before/after data for triage-speed outcome.
+- **Day 71 — Weekly review #10:** assess integration adoption and feedback quality.
+
+- **Day 72 — Case study #1 publish:** reduced flaky checks with reproducible workflow evidence.
+- **Day 73 — Case study #2 publish:** faster incident triage with concrete artifact trail.
+- **Day 74 — Case study #3 publish:** tighter policy compliance with governance checks.
+- **Day 75 — Trust assets refresh:** improve security/governance trust section with proof links.
+- **Day 76 — Contributor recognition board:** publish contributor spotlight and release credits model.
+- **Day 77 — Community touchpoint #1:** run first office-hours session and summarize outcomes.
+- **Day 78 — Weekly review #11:** capture what improved trust and what still blocks adoption.
+
+- **Day 79 — Enterprise onboarding path:** publish role-based enterprise adoption checklist.
+- **Day 80 — Ecosystem partner outreach:** identify and contact maintainers of adjacent tooling.
+- **Day 81 — Integration feedback loop:** fold field feedback into docs/templates.
+- **Day 82 — Community touchpoint #2:** run second office-hours/community Q&A session.
+- **Day 83 — Trust FAQ expansion:** answer top compliance/security objections from real users.
+- **Day 84 — Weekly review #12:** compare Phase-3 week-over-week ecosystem metrics.
+
+- **Day 85 — KPI deep audit:** validate full 90-day trends vs original baseline.
+- **Day 86 — Reputation hardening:** clean up top public surfaces (README/docs/release highlights).
+- **Day 87 — Governance handoff prep:** map long-term ownership for community and roadmap loops.
+- **Day 88 — Next-cycle planning:** draft next 90-day strategy from validated learnings.
+- **Day 89 — Final review:** package wins, misses, and corrective actions.
+- **Day 90 — Phase-3 wrap + publication:** ship final 90-day report and publish next-cycle roadmap.
+
+#### Phase-3 weekly deliverables (must ship)
+
+- 1 ecosystem asset (integration/case study/community report).
+- 1 trust-building artifact (security/governance/proof update).
+- 1 community action (office hours, voting, or contributor spotlight).
+- 1 KPI snapshot with explicit next-step decisions.
+
+**Phase-3 target metrics:**
+- Sustained star growth with higher external contributor retention.
+- Increased adoption depth via advanced integration usage.
+- Clear trust gains measured by case-study engagement and governance confidence signals.
 
 ## Prioritized backlog (highest impact first)
 
