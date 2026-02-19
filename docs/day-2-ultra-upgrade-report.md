@@ -1,51 +1,58 @@
-# Day 2 Ultra Upgrade Report — 60-Second Demo Path
+# Day 2 Ultra Upgrade Report — 60-Second Demo Path Closeout
 
 ## Upgrade title
 
-**Day 2 ultra: runnable 60-second demo flow with expected output snippets**
+**Day 2 closeout: executable 60-second demo with pass/fail validation and operator hints**
 
 ## Problem statement
 
-Day 1 onboarding improved role-based entry points, but operators still needed a single command to drive a short live demonstration with deterministic expectations.
+The initial Day 2 implementation provided a static walkthrough, but operators still needed to manually run commands and infer whether output matched expected snippets.
 
-Without a scripted Day 2 flow, first demos were inconsistent and harder to reuse in README walkthroughs, docs handoff, and team onboarding sessions.
+For day-closeout quality, the demo path needed to be executable, self-validating, and packaged with practical hints that improve consistency in live demos and handoffs.
 
 ## Implementation scope
 
 ### Files changed
 
 - `src/sdetkit/demo.py`
-  - Added `sdetkit demo` command that prints a 3-step copy/paste walkthrough (`doctor`, `repo audit`, `security`).
-  - Added text/markdown/json rendering options plus optional file output artifact export.
-- `src/sdetkit/cli.py`
-  - Registered `demo` as a top-level CLI command and dispatch target.
+  - Added `--execute` mode to run each Day 2 command and validate required output snippets.
+  - Added execution controls: `--timeout-seconds` and `--fail-fast`.
+  - Added execution result rendering across text/markdown/json formats.
+  - Added closeout hints in command output for better operator guidance.
 - `tests/test_demo_cli.py`
-  - Added coverage for default text output, markdown output, JSON structure, CLI dispatch, and `--output` file behavior.
+  - Added coverage for execute-success, fail-fast, and extended output contract checks.
 - `README.md`
-  - Added Day 2 ultra section with copy/paste command flow and expected snippets.
+  - Updated Day 2 section to use executable walkthrough commands and added closeout hint bullets.
 - `docs/index.md`
-  - Added Day 2 report to quick navigation.
-  - Added Day 2 ultra upgrade section with runnable commands and artifact link.
+  - Updated Day 2 upgrade bullets to recommend executable demo mode.
+- `docs/cli.md`
+  - Updated demo examples and documented execute-related flags.
 - `docs/artifacts/day2-demo-sample.md`
-  - Added generated sample artifact from `python -m sdetkit demo --format markdown --output docs/artifacts/day2-demo-sample.md`.
+  - Refreshed artifact to include execution summary + closeout hints.
 - `docs/day-2-ultra-upgrade-report.md`
-  - Added Day 2 implementation record and validation log.
+  - Recorded closeout implementation and validation details.
 
 ## Validation checklist
 
-- `python -m sdetkit demo --format markdown --output docs/artifacts/day2-demo-sample.md`
+- `python -m sdetkit demo --execute --format markdown --output docs/artifacts/day2-demo-sample.md`
 - `python -m pytest -q tests/test_demo_cli.py tests/test_onboarding_cli.py`
+
+## Day 2 operator hints
+
+1. Use `sdetkit demo --execute --fail-fast --format text` in live walkthroughs to stop immediately on blockers.
+2. Use `--timeout-seconds 30` in slower CI or constrained development environments.
+3. Attach the markdown artifact to PRs or release notes for reproducible evidence.
 
 ## Artifact
 
-This document is the Day 2 artifact for traceability and operational handoff.
+This document is the Day 2 closeout artifact for traceability and operational handoff.
 
 ## Rollback plan
 
-If the Day 2 demo path needs to be reverted:
+If the closeout behavior needs to be reverted:
 
-1. Revert `sdetkit demo` registration from `src/sdetkit/cli.py`.
-2. Remove `src/sdetkit/demo.py` and `tests/test_demo_cli.py`.
-3. Remove Day 2 sections from README/docs index and delete Day 2 artifacts.
+1. Remove execute controls from `src/sdetkit/demo.py` and restore static rendering only.
+2. Revert updated docs examples and hints.
+3. Regenerate `docs/artifacts/day2-demo-sample.md` from static output mode.
 
-Rollback risk is low: the new flow is additive and isolated from existing command behavior.
+Rollback risk remains low and isolated to the additive `demo` command surface.

@@ -40,9 +40,11 @@ Renders a Day 2 copy/paste walkthrough for fast product demos.
 
 Examples:
 
-- `sdetkit demo --format text`
-- `sdetkit demo --format markdown --output docs/artifacts/day2-demo-sample.md`
+- `sdetkit demo --execute --format text`
+- `sdetkit demo --execute --format markdown --output docs/artifacts/day2-demo-sample.md`
 - `sdetkit demo --format json`
+
+Useful flags: `--execute`, `--timeout-seconds`, `--fail-fast`.
 
 See: day-2-ultra-upgrade-report.md
 

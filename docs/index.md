@@ -68,8 +68,8 @@ A practical, production-ready toolkit for SDET workflows — with clean CLI ergo
 ## Day 2 ultra upgrades (60-second demo path)
 
 - Read the implementation report: [Day 2 ultra upgrade report](day-2-ultra-upgrade-report.md).
-- Run `sdetkit demo --format text` for a copy-paste 3-step live walkthrough with expected output snippets.
-- Generate a shareable markdown artifact: `sdetkit demo --format markdown --output docs/artifacts/day2-demo-sample.md`.
+- Run `sdetkit demo --execute --format text` for a copy-paste 3-step live walkthrough with expected output snippets and pass/fail checks.
+- Generate a shareable markdown artifact: `sdetkit demo --execute --format markdown --output docs/artifacts/day2-demo-sample.md`.
 - Review the generated artifact: [day2 demo sample](artifacts/day2-demo-sample.md).
 - Track this workstream in the [Top-10 strategy day-by-day plan](top-10-github-strategy.md#day-1-30-sprint-plan).
 
