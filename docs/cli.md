@@ -48,6 +48,21 @@ Useful flags: `--execute`, `--timeout-seconds`, `--fail-fast`, `--target-seconds
 
 See: day-2-ultra-upgrade-report.md
 
+
+## proof
+
+Renders a Day 3 proof pack for doctor, repo audit, and security evidence capture.
+
+Examples:
+
+- `sdetkit proof --format text`
+- `sdetkit proof --execute --strict --format text`
+- `sdetkit proof --execute --strict --format markdown --output docs/artifacts/day3-proof-sample.md`
+
+Useful flags: `--execute`, `--timeout-seconds`, `--strict`.
+
+See: day-3-ultra-upgrade-report.md
+
 ## patch
 
 Deterministic, spec-driven file edits (official CLI command).

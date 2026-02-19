@@ -377,6 +377,23 @@ Day 2 closeout hints:
 - Use `--fail-fast` during live demos to stop on first blocker.
 - Use `--timeout-seconds 30` on slower CI machines.
 - Use `--target-seconds 60` to enforce a strict Day 2 demo SLA.
+
+## 📸 Day 3 ultra: proof pack
+
+Day 3 focuses on evidence you can share in PRs, release notes, and stakeholder updates.
+
+```bash
+python -m sdetkit proof --execute --strict --format text
+```
+
+Generate a markdown artifact for handoffs:
+
+```bash
+python -m sdetkit proof --execute --strict --format markdown --output docs/artifacts/day3-proof-sample.md
+```
+
+See implementation details: [Day 3 ultra upgrade report](docs/day-3-ultra-upgrade-report.md).
+
 - Keep generated markdown artifacts under `docs/artifacts/` for traceability.
 
 ## ⚡ Quick start
