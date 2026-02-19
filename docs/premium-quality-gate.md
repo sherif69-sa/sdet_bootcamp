@@ -52,4 +52,29 @@ Use these commands to quickly diagnose PR quality issues and unblock reviews.
 
 ## One-command premium gate
 
-Use `bash premium-gate.sh` locally and in CI. It runs quality, explicit ruff checks, CI, doctor, full maintenance checks, baseline-aware security triage, security SARIF export, control-plane ops, and evidence pack generation.
+Use `bash premium-gate.sh` locally and in CI. It runs quality, explicit ruff checks, CI, doctor (ASCII + JSON), full maintenance checks, baseline-aware security triage, security SARIF export, control-plane ops, and evidence pack generation.
+
+The script now also emits **real-time step recommendations**, writes per-step logs under `.sdetkit/out/`, and runs a top-level connector intelligence engine (`python3 -m sdetkit.premium_gate_engine --double-check --min-score 70 --auto-fix --fix-root .`) that unifies step logs, doctor, maintenance, and security triage artifacts into one scored control-plane summary with warnings, hotspot ranking, and prioritized recommendations.
+
+
+## Local insights API (editable guideline reference + commit learning)
+
+The premium engine can now run a local API that stores guideline knowledge and per-commit learning in a SQLite database:
+
+```bash
+python3 -m sdetkit.premium_gate_engine \
+  --out-dir .sdetkit/out \
+  --db-path .sdetkit/out/premium-insights.db \
+  --serve-api --host 127.0.0.1 --port 8799
+```
+
+Key endpoints:
+
+- `GET /health`
+- `GET /guidelines?active=1&limit=100`
+- `POST /guidelines` (add/editable guideline references)
+- `PUT /guidelines/{id}` (update guideline content)
+- `GET /analyze` (collect current gate signals + persist a run snapshot)
+- `POST /learn-commit` (record commit metadata for self-learning history)
+
+For non-server runs, pass `--learn-db --learn-commit` so every premium gate execution appends the current run and commit context to the insights database.
