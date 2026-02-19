@@ -12,6 +12,11 @@ try:
 except Exception:  # pragma: no cover
     import tomli as _tomllib  # type: ignore
 
+try:
+    from defusedxml import ElementTree as _safe_et
+except Exception:  # pragma: no cover
+    _safe_et = None
+
 
 class ProjectsConfigError(ValueError):
     pass
@@ -223,10 +228,20 @@ def _maven_project_name(pom_xml: Path) -> str | None:
     except Exception:
         return None
 
-    # Prefer the direct child artifactId of <project> and ignore parent/dependency blocks.
-    project_block = re.search(r"<project(?:\s[^>]*)?>(.*?)</project>", content, re.DOTALL)
-    scope = project_block.group(1) if project_block else content
-    match = re.search(r"<artifactId>\s*([^<]+?)\s*</artifactId>", scope)
+    if _safe_et is not None:
+        try:
+            root = _safe_et.fromstring(content)
+            for child in list(root):
+                tag = str(child.tag).rsplit("}", 1)[-1]
+                if tag != "artifactId" or child.text is None:
+                    continue
+                stripped = child.text.strip()
+                if stripped:
+                    return stripped
+        except Exception:
+            pass
+
+    match = re.search(r"<artifactId>\s*([^<]+?)\s*</artifactId>", content)
     if match:
         stripped = match.group(1).strip()
         if stripped:
@@ -259,6 +274,19 @@ def _csproj_project_name(csproj: Path) -> str | None:
         content = csproj.read_text(encoding="utf-8")
     except Exception:
         return csproj.stem or None
+
+    if _safe_et is not None:
+        try:
+            root = _safe_et.fromstring(content)
+            for element in root.iter():
+                tag = str(element.tag).rsplit("}", 1)[-1]
+                if tag != "AssemblyName" or element.text is None:
+                    continue
+                stripped = element.text.strip()
+                if stripped:
+                    return stripped
+        except Exception:
+            pass
 
     match = re.search(r"<AssemblyName>\s*([^<]+?)\s*</AssemblyName>", content)
     if match:
