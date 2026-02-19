@@ -173,3 +173,48 @@ def test_main_markdown_format_includes_five_heads_and_plan(tmp_path: Path, capsy
     assert "# premium gate brain report" in out
     assert "## five heads" in out
     assert "## manual fix plan" in out
+
+
+def test_guideline_store_is_editable(tmp_path: Path) -> None:
+    db_path = tmp_path / "insights.db"
+    gid = eng.add_guideline(db_path, "secure-subprocess", "avoid shell", ["security", "high"])
+    assert gid > 0
+    updated = eng.update_guideline(
+        db_path,
+        gid,
+        "secure-subprocess-v2",
+        "replace shell=True with args list",
+        ["security", "critical"],
+    )
+    assert updated is True
+    guidelines = eng.list_guidelines(db_path)
+    assert guidelines[0]["title"] == "secure-subprocess-v2"
+    assert "critical" in guidelines[0]["tags"]
+
+
+def test_main_learn_db_and_commit_persists_records(tmp_path: Path) -> None:
+    (tmp_path / "doctor.json").write_text(json.dumps({"checks": {}, "recommendations": []}), encoding="utf-8")
+    (tmp_path / "maintenance.json").write_text(json.dumps({"checks": [], "recommendations": []}), encoding="utf-8")
+    (tmp_path / "security-check.json").write_text(json.dumps({"findings": []}), encoding="utf-8")
+    (tmp_path / "premium-gate.Quality.log").write_text("ok\n", encoding="utf-8")
+    db = tmp_path / "premium-insights.db"
+
+    rc = eng.main([
+        "--out-dir",
+        str(tmp_path),
+        "--db-path",
+        str(db),
+        "--learn-db",
+        "--learn-commit",
+        "--format",
+        "json",
+    ])
+    assert rc == 0
+
+    import sqlite3
+
+    with sqlite3.connect(db) as conn:
+        runs = conn.execute("SELECT COUNT(*) FROM insights_runs").fetchone()[0]
+        commits = conn.execute("SELECT COUNT(*) FROM commit_learning").fetchone()[0]
+    assert runs >= 1
+    assert commits >= 1

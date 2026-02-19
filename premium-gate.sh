@@ -83,6 +83,6 @@ run_step "Control Plane Ops (CI profile)" python3 -m sdetkit ops run --profile c
 run_step "Evidence Pack" python3 -m sdetkit evidence pack --output "$OUT_DIR/evidence.zip"
 
 section "Real-time warnings and recommendations summary"
-run_step "Premium Gate Engine" python3 -m sdetkit.premium_gate_engine --out-dir "$OUT_DIR" --double-check --min-score 70 --auto-fix --fix-root "$ROOT_DIR" --format text --json-output "$OUT_DIR/premium-summary.json"
+run_step "Premium Gate Engine" python3 -m sdetkit.premium_gate_engine --out-dir "$OUT_DIR" --double-check --min-score 70 --auto-fix --fix-root "$ROOT_DIR" --learn-db --learn-commit --db-path "$OUT_DIR/premium-insights.db" --format text --json-output "$OUT_DIR/premium-summary.json"
 
 echo "Premium gate passed. Artifacts: $OUT_DIR/doctor.json, $OUT_DIR/maintenance.json, $OUT_DIR/security.sarif, $OUT_DIR/security-check.json, $OUT_DIR/premium-summary.json, $OUT_DIR/evidence.zip"

@@ -2,8 +2,12 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import http.server
 import json
 import re
+import sqlite3
+import subprocess
+import urllib.parse
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -379,6 +383,262 @@ def _build_fix_plan_item(result: AutoFixResult) -> FixPlanItem:
     return FixPlanItem(rule_id=rule, path=result.path, priority=priority, reason=base_reason, suggested_edit=edit)
 
 
+def _init_db(db_path: Path) -> None:
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    with sqlite3.connect(db_path) as conn:
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS insights_runs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                commit_sha TEXT,
+                score INTEGER NOT NULL,
+                warnings_count INTEGER NOT NULL,
+                recommendations_count INTEGER NOT NULL,
+                checks_count INTEGER NOT NULL,
+                source_digest TEXT,
+                payload_json TEXT NOT NULL
+            )
+            """
+        )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS guidelines (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                title TEXT NOT NULL,
+                body TEXT NOT NULL,
+                tags TEXT NOT NULL DEFAULT '',
+                source TEXT NOT NULL DEFAULT 'manual',
+                active INTEGER NOT NULL DEFAULT 1
+            )
+            """
+        )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS commit_learning (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                commit_sha TEXT NOT NULL,
+                message TEXT NOT NULL,
+                changed_files_json TEXT NOT NULL,
+                summary TEXT NOT NULL DEFAULT ''
+            )
+            """
+        )
+
+
+def _git_commit_sha() -> str:
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except Exception:
+        return "unknown"
+    return result.stdout.strip() or "unknown"
+
+
+def persist_insights(payload: dict[str, Any], db_path: Path, commit_sha: str | None = None) -> int:
+    _init_db(db_path)
+    resolved_sha = _safe_text(commit_sha) or _git_commit_sha()
+    with sqlite3.connect(db_path) as conn:
+        cur = conn.execute(
+            """
+            INSERT INTO insights_runs (
+                commit_sha, score, warnings_count, recommendations_count, checks_count, source_digest, payload_json
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                resolved_sha,
+                int(payload.get("score", 0)),
+                int(payload.get("counts", {}).get("warnings", 0)),
+                int(payload.get("counts", {}).get("recommendations", 0)),
+                int(payload.get("counts", {}).get("engine_checks", 0)),
+                _safe_text(payload.get("source_digest")),
+                json.dumps(payload, sort_keys=True),
+            ),
+        )
+        return int(cur.lastrowid)
+
+
+def add_guideline(db_path: Path, title: str, body: str, tags: list[str], source: str = "manual") -> int:
+    _init_db(db_path)
+    clean_tags = ",".join(sorted({_safe_text(tag) for tag in tags if _safe_text(tag)}))
+    with sqlite3.connect(db_path) as conn:
+        cur = conn.execute(
+            "INSERT INTO guidelines (title, body, tags, source) VALUES (?, ?, ?, ?)",
+            (_safe_text(title), _safe_text(body), clean_tags, _safe_text(source) or "manual"),
+        )
+        return int(cur.lastrowid)
+
+
+def update_guideline(db_path: Path, guideline_id: int, title: str, body: str, tags: list[str], active: bool = True) -> bool:
+    _init_db(db_path)
+    clean_tags = ",".join(sorted({_safe_text(tag) for tag in tags if _safe_text(tag)}))
+    with sqlite3.connect(db_path) as conn:
+        cur = conn.execute(
+            """
+            UPDATE guidelines
+            SET title = ?, body = ?, tags = ?, active = ?, updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+            """,
+            (_safe_text(title), _safe_text(body), clean_tags, 1 if active else 0, guideline_id),
+        )
+        return cur.rowcount > 0
+
+
+def list_guidelines(db_path: Path, active_only: bool = True, limit: int = 100) -> list[dict[str, Any]]:
+    _init_db(db_path)
+    query = "SELECT id, created_at, updated_at, title, body, tags, source, active FROM guidelines"
+    params: tuple[Any, ...] = ()
+    if active_only:
+        query += " WHERE active = 1"
+    query += " ORDER BY updated_at DESC, id DESC LIMIT ?"
+    params = (max(1, min(limit, 500)),)
+    with sqlite3.connect(db_path) as conn:
+        rows = conn.execute(query, params).fetchall()
+    return [
+        {
+            "id": int(row[0]),
+            "created_at": row[1],
+            "updated_at": row[2],
+            "title": row[3],
+            "body": row[4],
+            "tags": [x for x in _safe_text(row[5]).split(",") if x],
+            "source": row[6],
+            "active": bool(row[7]),
+        }
+        for row in rows
+    ]
+
+
+def record_commit_learning(db_path: Path, commit_sha: str, message: str, changed_files: list[str], summary: str = "") -> int:
+    _init_db(db_path)
+    with sqlite3.connect(db_path) as conn:
+        cur = conn.execute(
+            """
+            INSERT INTO commit_learning (commit_sha, message, changed_files_json, summary)
+            VALUES (?, ?, ?, ?)
+            """,
+            (
+                _safe_text(commit_sha) or "unknown",
+                _safe_text(message) or "no message",
+                json.dumps(sorted({_safe_text(x) for x in changed_files if _safe_text(x)})),
+                _safe_text(summary),
+            ),
+        )
+        return int(cur.lastrowid)
+
+
+def _autolearn_from_payload(db_path: Path, payload: dict[str, Any]) -> list[int]:
+    ids: list[int] = []
+    for rec in payload.get("recommendations", [])[:25]:
+        if not isinstance(rec, dict):
+            continue
+        title = f"{_safe_text(rec.get('source'))}:{_safe_text(rec.get('category'))}"
+        body = _safe_text(rec.get("message"))
+        if not title or not body:
+            continue
+        ids.append(add_guideline(db_path, title, body, ["auto", _safe_text(rec.get("severity"))], source="engine"))
+    return ids
+
+
+class _InsightsHandler(http.server.BaseHTTPRequestHandler):
+    db_path: Path
+    out_dir: Path
+    server_version = "sdetkit-premium-insights/1.0"
+
+    def _json(self, code: int, payload: dict[str, Any]) -> None:
+        raw = json.dumps(payload, sort_keys=True).encode("utf-8")
+        self.send_response(code)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(raw)))
+        self.end_headers()
+        self.wfile.write(raw)
+
+    def _read_payload(self) -> dict[str, Any]:
+        raw = self.rfile.read(int(self.headers.get("Content-Length", "0")))
+        if not raw:
+            return {}
+        try:
+            data = json.loads(raw.decode("utf-8"))
+        except ValueError:
+            return {}
+        return data if isinstance(data, dict) else {}
+
+    def do_GET(self) -> None:  # noqa: N802
+        parsed = urllib.parse.urlparse(self.path)
+        if parsed.path == "/health":
+            self._json(200, {"ok": True})
+            return
+        if parsed.path == "/guidelines":
+            q = urllib.parse.parse_qs(parsed.query)
+            active = q.get("active", ["1"])[0] != "0"
+            limit = int(q.get("limit", ["100"])[0])
+            self._json(200, {"guidelines": list_guidelines(self.db_path, active_only=active, limit=limit)})
+            return
+        if parsed.path == "/analyze":
+            payload = collect_signals(self.out_dir)
+            run_id = persist_insights(payload, self.db_path)
+            self._json(200, {"run_id": run_id, "payload": payload})
+            return
+        self._json(404, {"error": "not found"})
+
+    def do_POST(self) -> None:  # noqa: N802
+        parsed = urllib.parse.urlparse(self.path)
+        body = self._read_payload()
+        if parsed.path == "/guidelines":
+            guideline_id = add_guideline(
+                self.db_path,
+                _safe_text(body.get("title")),
+                _safe_text(body.get("body")),
+                body.get("tags", []) if isinstance(body.get("tags"), list) else [],
+                source=_safe_text(body.get("source")) or "manual",
+            )
+            self._json(201, {"id": guideline_id})
+            return
+        if parsed.path == "/learn-commit":
+            learning_id = record_commit_learning(
+                self.db_path,
+                _safe_text(body.get("commit_sha")) or _git_commit_sha(),
+                _safe_text(body.get("message")),
+                body.get("changed_files", []) if isinstance(body.get("changed_files"), list) else [],
+                summary=_safe_text(body.get("summary")),
+            )
+            self._json(201, {"id": learning_id})
+            return
+        self._json(404, {"error": "not found"})
+
+    def do_PUT(self) -> None:  # noqa: N802
+        parsed = urllib.parse.urlparse(self.path)
+        parts = [p for p in parsed.path.split("/") if p]
+        if len(parts) == 2 and parts[0] == "guidelines" and parts[1].isdigit():
+            body = self._read_payload()
+            ok = update_guideline(
+                self.db_path,
+                int(parts[1]),
+                _safe_text(body.get("title")),
+                _safe_text(body.get("body")),
+                body.get("tags", []) if isinstance(body.get("tags"), list) else [],
+                active=bool(body.get("active", True)),
+            )
+            self._json(200 if ok else 404, {"ok": ok})
+            return
+        self._json(404, {"error": "not found"})
+
+
+def serve_insights_api(host: str, port: int, out_dir: Path, db_path: Path) -> None:
+    _InsightsHandler.db_path = db_path
+    _InsightsHandler.out_dir = out_dir
+    _init_db(db_path)
+    server = http.server.ThreadingHTTPServer((host, port), _InsightsHandler)
+    server.serve_forever()
+
+
 def run_autofix(out_dir: Path, fix_root: Path) -> list[AutoFixResult]:
     security_payload = _load_json(out_dir / "security-check.json")
     if not security_payload:
@@ -547,15 +807,27 @@ def render_markdown(payload: dict[str, Any]) -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="sdetkit-premium-gate-engine")
     parser.add_argument("--out-dir", default=".sdetkit/out")
+    parser.add_argument("--db-path", default=".sdetkit/out/premium-insights.db")
     parser.add_argument("--format", choices=["text", "json", "markdown"], default="text")
     parser.add_argument("--json-output", default=None)
     parser.add_argument("--double-check", action="store_true")
     parser.add_argument("--min-score", type=int, default=None)
     parser.add_argument("--auto-fix", action="store_true")
     parser.add_argument("--fix-root", default=".")
+    parser.add_argument("--learn-db", action="store_true")
+    parser.add_argument("--learn-commit", action="store_true")
+    parser.add_argument("--serve-api", action="store_true")
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=8799)
     ns = parser.parse_args(argv)
 
     out_dir = Path(ns.out_dir)
+    db_path = Path(ns.db_path)
+
+    if ns.serve_api:
+        serve_insights_api(str(ns.host), int(ns.port), out_dir, db_path)
+        return 0
+
     payload = collect_signals(out_dir)
 
     if ns.double_check:
@@ -586,6 +858,23 @@ def main(argv: list[str] | None = None) -> int:
 
     if ns.json_output:
         Path(ns.json_output).write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+    if ns.learn_db:
+        persist_insights(payload, db_path)
+        _autolearn_from_payload(db_path, payload)
+
+    if ns.learn_commit:
+        sha = _git_commit_sha()
+        commit_message = ""
+        changed_files: list[str] = []
+        try:
+            msg = subprocess.run(["git", "log", "-1", "--pretty=%s"], check=True, capture_output=True, text=True)
+            commit_message = msg.stdout.strip()
+            files = subprocess.run(["git", "show", "--name-only", "--pretty=", "HEAD"], check=True, capture_output=True, text=True)
+            changed_files = [line.strip() for line in files.stdout.splitlines() if line.strip()]
+        except Exception:
+            commit_message = "unknown"
+        record_commit_learning(db_path, sha, commit_message, changed_files, summary=f"score={payload.get('score', 0)}")
 
     if ns.format == "json":
         print(json.dumps(payload, indent=2, sort_keys=True))
