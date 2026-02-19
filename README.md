@@ -12,12 +12,20 @@
 
   <h1 style="margin: 14px 0 6px; text-align: center;">DevS69 (sdetkit)</h1>
 
+  <p style="max-width: 920px; margin: 0 auto 8px; font-size: 17px; line-height: 1.5;">
+    <strong>One-line value proposition:</strong> DevS69 turns SDET quality, API reliability, and repository governance into one repeatable CLI workflow your team can run locally or in CI.
+  </p>
+
   <p style="max-width: 920px; margin: 0 auto 10px; font-size: 16px; line-height: 1.55;">
     <strong>Production-ready SDET toolkit</strong> for API reliability, repository quality,
     and enterprise-grade engineering workflows — tightly aligned with the live portal experience.
   </p>
 
+  <p style="margin: 6px 0 8px;"><strong>Built for:</strong> SDETs · QA Leads · Platform Engineers · Security Champions · Engineering Managers</p>
+
   <p style="margin: 10px 0 16px;">
+    <a href="#quick-start"><strong>⚡ Start in 60 seconds</strong></a>
+    ·
     <a href="https://sherif69-sa.github.io/DevS69-sdetkit/"><strong>🌐 Live Experience Portal</strong></a>
     ·
     <a href="docs/index.md"><strong>📚 Documentation</strong></a>
@@ -101,6 +109,19 @@
 </div>
 
 ---
+
+## 👥 Who this toolkit is for
+
+| Role | Typical pain | What DevS69 helps you do |
+|---|---|---|
+| **SDET / QA Engineer** | Flaky checks and fragmented scripts | Run deterministic health, API, and policy checks from one CLI. |
+| **Platform / DevOps Engineer** | Inconsistent repo standards across teams | Apply repeatable quality and security guardrails in CI/CD. |
+| **Security / Compliance lead** | Weak evidence trail for controls and policy checks | Produce auditable reports and enforce baseline rules. |
+| **Engineering Manager / Tech Lead** | Slow onboarding and unclear operational standards | Give teams a documented, role-based workflow with fast adoption paths. |
+
+## 🟢 Top call to action
+
+**Start with the fastest path:** follow the [Quick start](#quick-start) and run your first `doctor` + `repo audit` flow today.
 
 ## ✨ Platform spotlight
 
