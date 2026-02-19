@@ -403,28 +403,33 @@ python scripts/check_day3_proof_contract.py
 
 - Keep generated markdown artifacts under `docs/artifacts/` for traceability.
 
+## 🧠 Day 4 ultra: skills expansion
 
-## 🖥️ Day 5 ultra: platform onboarding boost
-
-Day 5 adds copy/paste setup snippets for Linux, macOS, and Windows so teams can standardize onboarding across mixed environments.
-
-```bash
-python -m sdetkit onboarding --format text --platform all
-```
-
-Generate a shareable onboarding artifact:
+Day 4 focuses on automation skill coverage: discover every built-in AgentOS template (skill), run all skills in one command, and keep deterministic artifacts per skill.
 
 ```bash
-python -m sdetkit onboarding --format markdown --platform all --output docs/artifacts/day5-platform-onboarding-sample.md
+python -m sdetkit agent templates list
+python -m sdetkit agent templates run-all --output-dir .sdetkit/agent/template-runs
 ```
 
-See implementation details: [Day 5 ultra upgrade report](docs/day-5-ultra-upgrade-report.md).
-
-Day 5 closeout gate:
+Inspect a specific skill/template contract:
 
 ```bash
-python scripts/check_day5_platform_contract.py
+python -m sdetkit agent templates show repo-health-audit
 ```
+
+See implementation details: [Day 4 ultra upgrade report](docs/day-4-ultra-upgrade-report.md).
+
+Review sample artifact: [Day 4 skills sample](docs/artifacts/day4-skills-sample.md).
+
+Day 4 closeout checks:
+
+```bash
+python -m pytest -q tests/test_agent_templates_cli.py
+python scripts/check_day4_skills_contract.py
+```
+
+- Keep generated markdown artifacts under `docs/artifacts/` for traceability.
 
 ## ⚡ Quick start
 

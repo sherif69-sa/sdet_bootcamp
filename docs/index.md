@@ -8,7 +8,7 @@ A practical, production-ready toolkit for SDET workflows — with clean CLI ergo
 
 <div class="quick-jump" markdown>
 
-[⚡ Fast start](#fast-start) · [🚀 Phase-1 daily plan](top-10-github-strategy.md#phase-1-days-1-30-positioning--conversion-daily-execution) · [🧪 Day 1 ultra report](day-1-ultra-upgrade-report.md) · [⚡ Day 2 ultra report](day-2-ultra-upgrade-report.md) · [📸 Day 3 ultra report](day-3-ultra-upgrade-report.md) · [🖥️ Day 5 ultra report](day-5-ultra-upgrade-report.md) · [🧭 Repo tour](repo-tour.md) · [📈 Top-10 strategy](top-10-github-strategy.md) · [🤖 AgentOS](agentos-foundation.md) · [🍳 Cookbook](agentos-cookbook.md) · [🛠 CLI commands](cli.md) · [🩺 Doctor checks](doctor.md) · [🤝 Contribute](contributing.md)
+[⚡ Fast start](#fast-start) · [🚀 Phase-1 daily plan](top-10-github-strategy.md#phase-1-days-1-30-positioning--conversion-daily-execution) · [🧪 Day 1 ultra report](day-1-ultra-upgrade-report.md) · [⚡ Day 2 ultra report](day-2-ultra-upgrade-report.md) · [📸 Day 3 ultra report](day-3-ultra-upgrade-report.md) · [🧠 Day 4 ultra report](day-4-ultra-upgrade-report.md) · [🧭 Repo tour](repo-tour.md) · [📈 Top-10 strategy](top-10-github-strategy.md) · [🤖 AgentOS](agentos-foundation.md) · [🍳 Cookbook](agentos-cookbook.md) · [🛠 CLI commands](cli.md) · [🩺 Doctor checks](doctor.md) · [🤝 Contribute](contributing.md)
 
 </div>
 
@@ -81,12 +81,13 @@ A practical, production-ready toolkit for SDET workflows — with clean CLI ergo
 - Generate shareable markdown output: `sdetkit proof --execute --strict --format markdown --output docs/artifacts/day3-proof-sample.md`.
 - Review the generated artifact: [day3 proof sample](artifacts/day3-proof-sample.md).
 
-## Day 5 ultra upgrades (platform onboarding + boost)
 
-- Read the implementation report: [Day 5 ultra upgrade report](day-5-ultra-upgrade-report.md).
-- Run `sdetkit onboarding --format text --platform all` to print Linux, macOS, and Windows setup snippets in one pass.
-- Generate a shareable markdown artifact: `sdetkit onboarding --format markdown --platform all --output docs/artifacts/day5-platform-onboarding-sample.md`.
-- Review the generated artifact: [day5 platform onboarding sample](artifacts/day5-platform-onboarding-sample.md).
+## Day 4 ultra upgrades (skills + automation templates)
+
+- Read the implementation report: [Day 4 ultra upgrade report](day-4-ultra-upgrade-report.md).
+- Run `sdetkit agent templates list` to discover all built-in skills/templates.
+- Run `sdetkit agent templates run-all --output-dir .sdetkit/agent/template-runs` to execute all skills in one pass and persist deterministic artifacts per template id.
+- Review the generated artifact: [day4 skills sample](artifacts/day4-skills-sample.md).
 
 ## Fast start
 
