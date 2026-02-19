@@ -123,6 +123,27 @@
 
 **Start with the fastest path:** follow the [Quick start](#quick-start) and run your first `doctor` + `repo audit` flow today.
 
+
+## 🔥 Day 1 ultra upgrade pack
+
+### Start by role (copy/paste entry points)
+
+| I am a... | First command | Next action |
+|---|---|---|
+| **SDET / QA engineer** | `sdetkit doctor --format markdown` | Run [`repo audit`](docs/repo-audit.md) to convert warnings into fixable tasks. |
+| **Platform / DevOps engineer** | `sdetkit repo audit --format markdown` | Wire checks into CI with the [GitHub Action guide](docs/github-action.md). |
+| **Security / compliance lead** | `sdetkit security --format markdown` | Enforce policies from [security docs](docs/security.md) and [policy baselines](docs/policy-and-baselines.md). |
+| **Engineering manager / tech lead** | `sdetkit doctor --format markdown` | Use [Automation OS docs](docs/automation-os.md) to standardize team-wide operating flow. |
+
+### Day 1 success criteria
+
+- ✅ Clear value proposition in the hero section.
+- ✅ Explicit audience segmentation by engineering role.
+- ✅ Top-of-page CTA that routes users to first successful command run.
+- ✅ Role-specific entry table with immediate command-level next steps.
+
+See the full implementation and validation report in [`docs/day-1-ultra-upgrade-report.md`](docs/day-1-ultra-upgrade-report.md).
+
 ## ✨ Platform spotlight
 
 > **Big visual boost + aligned UX:** every major surface (hero, cards, quick links, launch map) now points clearly to the same experience center — **[sherif69-sa.github.io/DevS69-sdetkit](https://sherif69-sa.github.io/DevS69-sdetkit/)**.
