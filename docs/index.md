@@ -115,8 +115,9 @@ A practical, production-ready toolkit for SDET workflows — with clean CLI ergo
 ## Day 8 ultra upgrades (contributor funnel start)
 
 - Read the implementation report: [Day 8 ultra upgrade report](day-8-ultra-upgrade-report.md).
-- Run `sdetkit contributor-funnel --format text` to print 10 curated good-first-issue tasks with acceptance criteria.
+- Run `sdetkit contributor-funnel --format text --strict` to print and validate 10 curated good-first-issue tasks with acceptance criteria.
 - Export markdown backlog artifact: `sdetkit contributor-funnel --format markdown --output docs/artifacts/day8-good-first-issues-sample.md`.
+- Export one-file-per-issue handoff pack: `sdetkit contributor-funnel --area docs --issue-pack-dir docs/artifacts/day8-issue-pack`.
 - Review the generated artifact: [day8 good-first-issues sample](artifacts/day8-good-first-issues-sample.md).
 
 ## Fast start

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections import Counter
 from collections.abc import Sequence
 from pathlib import Path
 
@@ -119,6 +120,24 @@ _DAY8_ISSUES = [
 ]
 
 
+def build_backlog(area: str = "all") -> list[dict[str, object]]:
+    if area == "all":
+        return list(_DAY8_ISSUES)
+    return [item for item in _DAY8_ISSUES if item["area"] == area]
+
+
+def validate_backlog(backlog: list[dict[str, object]]) -> list[str]:
+    errors: list[str] = []
+    if len(backlog) != 10:
+        errors.append(f"expected 10 issues, got {len(backlog)}")
+
+    for issue in backlog:
+        criteria = issue.get("acceptance", [])
+        if not isinstance(criteria, list) or len(criteria) < 3:
+            errors.append(f"{issue.get('id', '<unknown>')} has fewer than 3 acceptance criteria")
+    return errors
+
+
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="sdetkit contributor-funnel",
@@ -126,12 +145,28 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p.add_argument("--format", choices=["text", "markdown", "json"], default="text")
     p.add_argument("--output", default="", help="Optional output file path.")
+    p.add_argument(
+        "--area",
+        choices=["all", "docs", "tests"],
+        default="all",
+        help="Filter issues by area for focused triage.",
+    )
+    p.add_argument(
+        "--issue-pack-dir",
+        default="",
+        help="Optional directory to export one markdown file per issue.",
+    )
+    p.add_argument(
+        "--strict",
+        action="store_true",
+        help="Return non-zero when backlog validation fails (full list expected).",
+    )
     return p
 
 
-def _render_text() -> str:
+def _render_text(backlog: list[dict[str, object]]) -> str:
     lines = ["Day 8 contributor funnel backlog", ""]
-    for issue in _DAY8_ISSUES:
+    for issue in backlog:
         lines.append(f"[{issue['id']}] {issue['title']}")
         lines.append(f"  area: {issue['area']} | estimate: {issue['estimate']}")
         lines.append("  acceptance:")
@@ -141,14 +176,14 @@ def _render_text() -> str:
     return "\n".join(lines)
 
 
-def _render_markdown() -> str:
+def _render_markdown(backlog: list[dict[str, object]]) -> str:
     lines = [
         "# Day 8 contributor funnel backlog",
         "",
         "| ID | Title | Area | Estimate | Acceptance criteria |",
         "| --- | --- | --- | --- | --- |",
     ]
-    for issue in _DAY8_ISSUES:
+    for issue in backlog:
         acceptance = "<br>".join(f"- {item}" for item in issue["acceptance"])
         lines.append(
             f"| `{issue['id']}` | {issue['title']} | {issue['area']} | {issue['estimate']} | {acceptance} |"
@@ -167,35 +202,68 @@ def _render_markdown() -> str:
     return "\n".join(lines)
 
 
-def _render_json() -> str:
+def _render_json(backlog: list[dict[str, object]]) -> str:
+    area_counts = Counter(str(i["area"]) for i in backlog)
     payload = {
         "name": "day8-contributor-funnel",
-        "issues": _DAY8_ISSUES,
+        "issues": backlog,
         "kpis": {
-            "issue_count": len(_DAY8_ISSUES),
-            "docs_items": sum(1 for i in _DAY8_ISSUES if i["area"] == "docs"),
-            "tests_items": sum(1 for i in _DAY8_ISSUES if i["area"] == "tests"),
+            "issue_count": len(backlog),
+            "docs_items": area_counts.get("docs", 0),
+            "tests_items": area_counts.get("tests", 0),
         },
     }
     return json.dumps(payload, indent=2) + "\n"
 
 
+def _write_issue_pack(backlog: list[dict[str, object]], issue_pack_dir: str) -> None:
+    out_dir = Path(issue_pack_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for issue in backlog:
+        issue_lines = [
+            f"# {issue['id']}: {issue['title']}",
+            "",
+            f"- Area: `{issue['area']}`",
+            f"- Estimate: `{issue['estimate']}`",
+            "- Labels: `good first issue`, `help wanted`",
+            "",
+            "## Acceptance criteria",
+            "",
+        ]
+        for idx, criterion in enumerate(issue["acceptance"], start=1):
+            issue_lines.append(f"{idx}. {criterion}")
+        issue_lines.append("")
+        (out_dir / f"{issue['id'].lower()}.md").write_text("\n".join(issue_lines), encoding="utf-8")
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = _build_parser().parse_args(list(argv) if argv is not None else None)
 
+    full_backlog = build_backlog()
+    errors = validate_backlog(full_backlog)
+    backlog = build_backlog(args.area)
+
     if args.format == "markdown":
-        rendered = _render_markdown()
+        rendered = _render_markdown(backlog)
     elif args.format == "json":
-        rendered = _render_json()
+        rendered = _render_json(backlog)
     else:
-        rendered = _render_text()
+        rendered = _render_text(backlog)
 
     if args.output:
         out_path = Path(args.output)
         out_path.parent.mkdir(parents=True, exist_ok=True)
         out_path.write_text(rendered, encoding="utf-8")
 
+    if args.issue_pack_dir:
+        _write_issue_pack(backlog, args.issue_pack_dir)
+
     print(rendered, end="")
+
+    if errors and args.strict:
+        for err in errors:
+            print(f"[day8-validation] {err}")
+        return 1
     return 0
 
 

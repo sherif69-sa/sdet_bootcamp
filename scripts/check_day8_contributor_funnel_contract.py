@@ -8,18 +8,20 @@ README = Path('README.md')
 DOCS_INDEX = Path('docs/index.md')
 DAY8_REPORT = Path('docs/day-8-ultra-upgrade-report.md')
 DAY8_ARTIFACT = Path('docs/artifacts/day8-good-first-issues-sample.md')
+DAY8_ISSUE_PACK = Path('docs/artifacts/day8-issue-pack')
 DAY8_MODULE = Path('src/sdetkit/contributor_funnel.py')
 
 REQUIRED_README_SNIPPETS = [
     '## 🧲 Day 8 ultra: contributor funnel backlog',
-    'python -m sdetkit contributor-funnel --format text',
-    'python -m sdetkit contributor-funnel --format markdown --output docs/artifacts/day8-good-first-issues-sample.md',
+    'python -m sdetkit contributor-funnel --format text --strict',
+    'python -m sdetkit contributor-funnel --area docs --issue-pack-dir docs/artifacts/day8-issue-pack',
     'docs/day-8-ultra-upgrade-report.md',
 ]
 
 REQUIRED_INDEX_SNIPPETS = [
     'Day 8 ultra upgrade report',
-    'sdetkit contributor-funnel --format text',
+    'sdetkit contributor-funnel --format text --strict',
+    'sdetkit contributor-funnel --area docs --issue-pack-dir docs/artifacts/day8-issue-pack',
 ]
 
 REQUIRED_REPORT_SNIPPETS = [
@@ -58,6 +60,10 @@ def main() -> int:
     for p in [DAY8_REPORT, DAY8_ARTIFACT, DAY8_MODULE]:
         if not p.exists():
             errors.append(f'missing required file: {p}')
+
+    issue_pack_files = sorted(DAY8_ISSUE_PACK.glob('gfi-*.md')) if DAY8_ISSUE_PACK.exists() else []
+    if len(issue_pack_files) < 5:
+        errors.append('missing issue-pack artifacts: expected at least 5 gfi-*.md files')
 
     if errors:
         print('day8-contributor-funnel-contract check failed:', file=sys.stderr)

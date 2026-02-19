@@ -117,11 +117,14 @@ Builds Day 8 contributor funnel output with 10 curated good-first-issue tasks an
 
 Examples:
 
-- `sdetkit contributor-funnel --format text`
+- `sdetkit contributor-funnel --format text --strict`
 - `sdetkit contributor-funnel --format json`
 - `sdetkit contributor-funnel --format markdown --output docs/artifacts/day8-good-first-issues-sample.md`
+- `sdetkit contributor-funnel --area docs --issue-pack-dir docs/artifacts/day8-issue-pack`
 
-Useful flags: `--format`, `--output`.
+Useful flags: `--format`, `--output`, `--area`, `--issue-pack-dir`, `--strict`.
+
+`--strict` validates the full Day 8 backlog contract (10 issues, each with at least 3 acceptance criteria) and returns non-zero if it drifts.
 
 See: day-8-ultra-upgrade-report.md
 

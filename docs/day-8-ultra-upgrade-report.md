@@ -17,11 +17,12 @@ Without a generated backlog, first-time contributors face higher discovery frict
 - `src/sdetkit/contributor_funnel.py`
   - Added a Day 8 backlog engine that renders 10 curated good-first-issue tasks.
   - Includes explicit acceptance criteria and output formats (`text`, `markdown`, `json`).
+  - Added Day 8 validation (`--strict`), area filtering (`--area`), and issue-pack export (`--issue-pack-dir`).
   - Supports writing shareable artifacts with `--output`.
 - `src/sdetkit/cli.py`
   - Added top-level command wiring: `python -m sdetkit contributor-funnel ...`.
 - `tests/test_contributor_funnel.py`
-  - Added coverage for issue count, acceptance criteria completeness, and markdown artifact export.
+  - Added coverage for issue count, acceptance criteria completeness, area filtering, and issue-pack artifact export.
 - `tests/test_cli_help_lists_subcommands.py`
   - Extended CLI help contract to include `contributor-funnel`.
 - `README.md`
@@ -37,8 +38,9 @@ Without a generated backlog, first-time contributors face higher discovery frict
 
 ## Validation checklist
 
-- `python -m sdetkit contributor-funnel --format text`
+- `python -m sdetkit contributor-funnel --format text --strict`
 - `python -m sdetkit contributor-funnel --format markdown --output docs/artifacts/day8-good-first-issues-sample.md`
+- `python -m sdetkit contributor-funnel --area docs --issue-pack-dir docs/artifacts/day8-issue-pack`
 - `python -m pytest -q tests/test_contributor_funnel.py tests/test_cli_help_lists_subcommands.py`
 - `python scripts/check_day8_contributor_funnel_contract.py`
 
