@@ -39,6 +39,7 @@ Without a dedicated Day 3 command, proof gathering was manual and inconsistent.
 
 - `python -m sdetkit proof --execute --strict --format markdown --output docs/artifacts/day3-proof-sample.md`
 - `python -m pytest -q tests/test_proof_cli.py tests/test_cli_help_lists_subcommands.py`
+- `python scripts/check_day3_proof_contract.py`
 
 ## Artifact
 

@@ -394,6 +394,12 @@ python -m sdetkit proof --execute --strict --format markdown --output docs/artif
 
 See implementation details: [Day 3 ultra upgrade report](docs/day-3-ultra-upgrade-report.md).
 
+Day 3 closeout gate:
+
+```bash
+python scripts/check_day3_proof_contract.py
+```
+
 - Keep generated markdown artifacts under `docs/artifacts/` for traceability.
 
 ## ⚡ Quick start
