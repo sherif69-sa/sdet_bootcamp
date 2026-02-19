@@ -74,6 +74,12 @@ def _build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Stop execution on the first failed or errored step.",
     )
+    p.add_argument(
+        "--target-seconds",
+        type=float,
+        default=60.0,
+        help="Demo SLA target used to evaluate total execution duration.",
+    )
     return p
 
 
@@ -127,7 +133,23 @@ def _execute_flow(timeout_seconds: float, fail_fast: bool) -> list[dict[str, obj
     return results
 
 
-def _as_text(execution_results: list[dict[str, object]]) -> str:
+def _execution_summary(
+    execution_results: list[dict[str, object]], target_seconds: float
+) -> dict[str, object]:
+    if not execution_results:
+        return {}
+    total = round(
+        sum(float(result.get("duration_seconds") or 0.0) for result in execution_results),
+        3,
+    )
+    return {
+        "total_duration_seconds": total,
+        "target_seconds": float(target_seconds),
+        "within_target": total <= target_seconds,
+    }
+
+
+def _as_text(execution_results: list[dict[str, object]], target_seconds: float) -> str:
     lines = ["Day 2 demo path (target: ~60 seconds)", ""]
     for item in _DEMO_FLOW:
         lines.append(f"[{item['step']}]")
@@ -137,6 +159,7 @@ def _as_text(execution_results: list[dict[str, object]]) -> str:
         lines.append("")
 
     if execution_results:
+        summary = _execution_summary(execution_results, target_seconds)
         lines.append("Execution results")
         for result in execution_results:
             lines.append(
@@ -148,6 +171,10 @@ def _as_text(execution_results: list[dict[str, object]]) -> str:
             err = str(result.get("error") or "")
             if err:
                 lines.append(f"  error: {err}")
+        lines.append(
+            f"- SLA: {summary['total_duration_seconds']}s total vs {summary['target_seconds']}s target -> "
+            f"{'PASS' if summary['within_target'] else 'FAIL'}"
+        )
         lines.append("")
 
     lines.append("Closeout hints")
@@ -156,7 +183,7 @@ def _as_text(execution_results: list[dict[str, object]]) -> str:
     return "\n".join(lines)
 
 
-def _as_markdown(execution_results: list[dict[str, object]]) -> str:
+def _as_markdown(execution_results: list[dict[str, object]], target_seconds: float) -> str:
     rows = [
         "# Day 2 demo path (target: ~60 seconds)",
         "",
@@ -170,6 +197,7 @@ def _as_markdown(execution_results: list[dict[str, object]]) -> str:
         )
 
     if execution_results:
+        summary = _execution_summary(execution_results, target_seconds)
         rows.extend(["", "## Execution results", "", "| Step | Status | Exit code | Duration (s) | Missing snippets |", "|---|---|---:|---:|---|"])
         for result in execution_results:
             missing = result.get("missing_snippets") or []
@@ -177,6 +205,16 @@ def _as_markdown(execution_results: list[dict[str, object]]) -> str:
             rows.append(
                 f"| {result['step']} | {result['status']} | {result['exit_code']} | {result['duration_seconds']} | {missing_text} |"
             )
+        rows.extend(
+            [
+                "",
+                "## SLA summary",
+                "",
+                f"- Total duration: `{summary['total_duration_seconds']}s`",
+                f"- Target: `{summary['target_seconds']}s`",
+                f"- Within target: `{'yes' if summary['within_target'] else 'no'}`",
+            ]
+        )
 
     rows.extend(["", "## Closeout hints", ""])
     rows.extend(f"- {hint}" for hint in _HINTS)
@@ -185,12 +223,13 @@ def _as_markdown(execution_results: list[dict[str, object]]) -> str:
     return "\n".join(rows)
 
 
-def _as_json(execution_results: list[dict[str, object]]) -> str:
+def _as_json(execution_results: list[dict[str, object]], target_seconds: float) -> str:
     return json.dumps(
         {
             "name": "day2-demo-path",
             "steps": _DEMO_FLOW,
             "execution": execution_results,
+            "sla": _execution_summary(execution_results, target_seconds),
             "hints": _HINTS,
         },
         indent=2,
@@ -198,12 +237,12 @@ def _as_json(execution_results: list[dict[str, object]]) -> str:
     )
 
 
-def _render(fmt: str, execution_results: list[dict[str, object]]) -> str:
+def _render(fmt: str, execution_results: list[dict[str, object]], target_seconds: float) -> str:
     if fmt == "json":
-        return _as_json(execution_results)
+        return _as_json(execution_results, target_seconds)
     if fmt == "markdown":
-        return _as_markdown(execution_results)
-    return _as_text(execution_results)
+        return _as_markdown(execution_results, target_seconds)
+    return _as_text(execution_results, target_seconds)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -212,7 +251,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if ns.execute:
         execution_results = _execute_flow(ns.timeout_seconds, ns.fail_fast)
 
-    rendered = _render(ns.format, execution_results)
+    rendered = _render(ns.format, execution_results, ns.target_seconds)
     print(rendered)
 
     if ns.output:

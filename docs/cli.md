@@ -44,7 +44,7 @@ Examples:
 - `sdetkit demo --execute --format markdown --output docs/artifacts/day2-demo-sample.md`
 - `sdetkit demo --format json`
 
-Useful flags: `--execute`, `--timeout-seconds`, `--fail-fast`.
+Useful flags: `--execute`, `--timeout-seconds`, `--fail-fast`, `--target-seconds`.
 
 See: day-2-ultra-upgrade-report.md
 

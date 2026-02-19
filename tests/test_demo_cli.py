@@ -30,6 +30,7 @@ def test_demo_json_is_machine_readable(capsys):
     assert payload["name"] == "day2-demo-path"
     assert len(payload["steps"]) == 3
     assert payload["execution"] == []
+    assert payload["sla"] == {}
     assert payload["hints"]
 
 
@@ -70,6 +71,19 @@ top findings:
     assert rc == 0
     assert len(payload["execution"]) == 3
     assert all(item["status"] == "pass" for item in payload["execution"])
+    assert payload["sla"]["within_target"] is True
+
+
+def test_demo_execute_sla_can_fail(monkeypatch, capsys):
+    def fake_run(_command: str, _timeout: float):
+        return 0, "doctor score:\nrecommendations:\nRepo audit:\nResult:\nsecurity scan:\ntop findings:\n", "", 30.0
+
+    monkeypatch.setattr(demo, "_run_command", fake_run)
+    rc = demo.main(["--execute", "--target-seconds", "60", "--format", "json"])
+    payload = json.loads(capsys.readouterr().out)
+    assert rc == 0
+    assert payload["sla"]["total_duration_seconds"] == 90.0
+    assert payload["sla"]["within_target"] is False
 
 
 def test_demo_execute_fail_fast_stops(monkeypatch, capsys):

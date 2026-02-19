@@ -376,6 +376,7 @@ Day 2 closeout hints:
 
 - Use `--fail-fast` during live demos to stop on first blocker.
 - Use `--timeout-seconds 30` on slower CI machines.
+- Use `--target-seconds 60` to enforce a strict Day 2 demo SLA.
 - Keep generated markdown artifacts under `docs/artifacts/` for traceability.
 
 ## ⚡ Quick start

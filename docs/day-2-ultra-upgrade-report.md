@@ -16,7 +16,7 @@ For day-closeout quality, the demo path needed to be executable, self-validating
 
 - `src/sdetkit/demo.py`
   - Added `--execute` mode to run each Day 2 command and validate required output snippets.
-  - Added execution controls: `--timeout-seconds` and `--fail-fast`.
+  - Added execution controls: `--timeout-seconds`, `--fail-fast`, and `--target-seconds` SLA evaluation.
   - Added execution result rendering across text/markdown/json formats.
   - Added closeout hints in command output for better operator guidance.
 - `tests/test_demo_cli.py`
@@ -34,7 +34,7 @@ For day-closeout quality, the demo path needed to be executable, self-validating
 
 ## Validation checklist
 
-- `python -m sdetkit demo --execute --format markdown --output docs/artifacts/day2-demo-sample.md`
+- `python -m sdetkit demo --execute --target-seconds 60 --format markdown --output docs/artifacts/day2-demo-sample.md`
 - `python -m pytest -q tests/test_demo_cli.py tests/test_onboarding_cli.py`
 
 ## Day 2 operator hints

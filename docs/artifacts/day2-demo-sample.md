@@ -10,9 +10,15 @@
 
 | Step | Status | Exit code | Duration (s) | Missing snippets |
 |---|---|---:|---:|---|
-| Health check | pass | 0 | 0.548 | - |
-| Repository audit | pass | 0 | 1.013 | - |
-| Security baseline | pass | 0 | 1.81 | - |
+| Health check | pass | 0 | 0.624 | - |
+| Repository audit | pass | 0 | 1.086 | - |
+| Security baseline | pass | 0 | 1.909 | - |
+
+## SLA summary
+
+- Total duration: `3.619s`
+- Target: `60.0s`
+- Within target: `yes`
 
 ## Closeout hints
 
