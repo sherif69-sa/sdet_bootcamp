@@ -189,6 +189,7 @@ Sample runnable artifact: [`docs/artifacts/day1-onboarding-sample.md`](docs/arti
 |---|---|---|
 | Get up and running quickly | [Quick start](#quick-start) | Ready-to-run local environment + first quality pass |
 | Get role-based first steps instantly | `sdetkit onboarding --format markdown` | Copy/paste role paths for SDET, Platform, Security, and Engineering leads |
+| Bootstrap Linux/macOS/Windows quickly | `sdetkit onboarding --platform all --format text` | One command prints platform-specific setup commands for mixed teams |
 | Understand repository layout | [Repo tour](docs/repo-tour.md) | Role-based orientation and architecture map |
 | Use CLI commands effectively | [CLI guide](docs/cli.md) | Practical usage patterns and examples |
 | Diagnose repository health | [Doctor docs](docs/doctor.md) | Health checks and recommendations |
@@ -401,6 +402,23 @@ python scripts/check_day3_proof_contract.py
 ```
 
 - Keep generated markdown artifacts under `docs/artifacts/` for traceability.
+
+
+## 🖥️ Day 5 ultra: platform onboarding boost
+
+Day 5 adds copy/paste setup snippets for Linux, macOS, and Windows so teams can standardize onboarding across mixed environments.
+
+```bash
+python -m sdetkit onboarding --format text --platform all
+```
+
+Generate a shareable onboarding artifact:
+
+```bash
+python -m sdetkit onboarding --format markdown --platform all --output docs/artifacts/day5-platform-onboarding-sample.md
+```
+
+See implementation details: [Day 5 ultra upgrade report](docs/day-5-ultra-upgrade-report.md).
 
 ## ⚡ Quick start
 
