@@ -4,7 +4,7 @@
 
 # Runtime dependency
 httpx==0.28.1
-filelock==3.20.3
+filelock==3.24.3
 
 # Dev + QA tooling
 ruff==0.15.1
@@ -24,7 +24,7 @@ cyclonedx-bom==7.2.1
 
 # Docs
 mkdocs==1.6.1
-mkdocs-material==9.7.1
+mkdocs-material==9.7.2
 
 # Backport for environments below Python 3.11
 # (kept for compatibility in ad-hoc environments)
