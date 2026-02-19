@@ -110,6 +110,21 @@ Useful flags: `--root`, `--format`, `--output`.
 
 See: day-7-ultra-upgrade-report.md
 
+
+## contributor-funnel
+
+Builds Day 8 contributor funnel output with 10 curated good-first-issue tasks and explicit acceptance criteria.
+
+Examples:
+
+- `sdetkit contributor-funnel --format text`
+- `sdetkit contributor-funnel --format json`
+- `sdetkit contributor-funnel --format markdown --output docs/artifacts/day8-good-first-issues-sample.md`
+
+Useful flags: `--format`, `--output`.
+
+See: day-8-ultra-upgrade-report.md
+
 ## patch
 
 Deterministic, spec-driven file edits (official CLI command).
