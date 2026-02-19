@@ -155,14 +155,14 @@ def safe_path(root: Path, user_path: str, *, allow_absolute: bool = False) -> Pa
         absolute_target = Path("/")
         for part in segments:
             absolute_target = absolute_target / part
-        return absolute_target.resolve(strict=False)
-
-    target = resolved_root
-    for part in segments:
-        target = target / part
-    resolved_target = target.resolve(strict=False)
-    if resolved_target == resolved_root:
-        return resolved_target
+        resolved_target = absolute_target.resolve(strict=False)
+    else:
+        target = resolved_root
+        for part in segments:
+            target = target / part
+        resolved_target = target.resolve(strict=False)
+        if resolved_target == resolved_root:
+            return resolved_target
     # Ensure the resolved target is strictly within the resolved_root directory
     if hasattr(resolved_target, "is_relative_to"):
         if not resolved_target.is_relative_to(resolved_root):
