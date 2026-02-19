@@ -29,7 +29,9 @@ from .security_gate import scan_repo
 
 _UTC = getattr(dt, "UTC", dt.timezone.utc)  # noqa: UP017
 _VAR_RE = re.compile(r"\$\{([^}]+)\}")
-_WORKFLOW_ALLOWED_CHARS = frozenset("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-")
+_WORKFLOW_ALLOWED_CHARS = frozenset(
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-"
+)
 
 
 def _sanitize_workflow_filename(path: Path) -> str:

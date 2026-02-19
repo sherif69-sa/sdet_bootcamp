@@ -17,7 +17,7 @@ try:
 except Exception:  # pragma: no cover
     _safe_et = None
 
-_XML_PARSE_ERRORS = (AttributeError, ValueError)
+_XML_PARSE_ERRORS: tuple[type[BaseException], ...] = (AttributeError, ValueError)
 if _safe_et is not None and hasattr(_safe_et, "ParseError"):
     _XML_PARSE_ERRORS = (_safe_et.ParseError, *_XML_PARSE_ERRORS)
 

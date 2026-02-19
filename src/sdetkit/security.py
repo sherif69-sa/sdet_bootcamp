@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import os
 import re
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -135,16 +134,13 @@ def safe_path(root: Path, user_path: str, *, allow_absolute: bool = False) -> Pa
     if any(part == ".." for part in p.parts):
         raise SecurityError("unsafe path rejected: traversal is not allowed")
 
-    # sdetkit: allow-security SEC_POTENTIAL_PATH_TRAVERSAL
     base = p if p.is_absolute() else (root / p)
-    resolved_target = Path(os.path.normpath(str(base)))
+    resolved_target = base.resolve(strict=False)
     if not p.is_absolute() or not allow_absolute:
         resolved_root = root.resolve(strict=True)
-        if not resolved_target.is_absolute():
-            resolved_target = (resolved_root / resolved_target).resolve(strict=False)
         if resolved_target != resolved_root and resolved_root not in resolved_target.parents:
             raise SecurityError("unsafe path rejected: escapes root")
-    return resolved_target.resolve(strict=False)
+    return resolved_target
 
 
 def default_http_timeout(timeout_seconds: float | None = None) -> httpx.Timeout:
