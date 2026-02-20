@@ -567,6 +567,21 @@ def _looks_like_hex_digest(token: str) -> bool:
     return re.fullmatch(r"[0-9a-f]+", token) is not None
 
 
+def _looks_like_path(token: str) -> bool:
+    if "/" not in token:
+        return False
+    if token.startswith(("docs/", "src/", "tools/", ".sdetkit/")):
+        return True
+    if "docs/artifacts/" in token:
+        return True
+    if re.fullmatch(r"[A-Za-z0-9._/-]+", token) is None:
+        return False
+    parts = [p for p in token.split("/") if p]
+    if not parts:
+        return False
+    return all(re.fullmatch(r"[A-Za-z0-9._-]+", part) is not None for part in parts)
+
+
 def _is_test_fixture_secret(rel_path: str, line: str) -> bool:
     if not rel_path.startswith("tests/"):
         return False
@@ -596,6 +611,10 @@ def _scan_text_patterns(rel_path: str, text: str) -> list[Finding]:
         # quoted token-like strings
         for match in re.finditer(r"['\"]([A-Za-z0-9+/=_\-]{20,})['\"]", line):
             token = match.group(1)
+            if any(ch.isspace() for ch in token):
+                continue
+            if _looks_like_path(token):
+                continue
             if _looks_like_slug(token):
                 continue
             if _looks_like_uuid(token):
