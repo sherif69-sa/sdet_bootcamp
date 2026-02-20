@@ -8,7 +8,7 @@ A practical, production-ready toolkit for SDET workflows — with clean CLI ergo
 
 <div class="quick-jump" markdown>
 
-[⚡ Fast start](#fast-start) · [🚀 Phase-1 daily plan](top-10-github-strategy.md#phase-1-days-1-30-positioning-conversion-daily-execution) · [🧪 Day 1 ultra report](day-1-ultra-upgrade-report.md) · [⚡ Day 2 ultra report](day-2-ultra-upgrade-report.md) · [📸 Day 3 ultra report](day-3-ultra-upgrade-report.md) · [🧠 Day 4 ultra report](day-4-ultra-upgrade-report.md) · [🖥️ Day 5 ultra report](day-5-ultra-upgrade-report.md) · [🔗 Day 6 ultra report](day-6-ultra-upgrade-report.md) · [📊 Day 7 ultra report](day-7-ultra-upgrade-report.md) · [🧲 Day 8 ultra report](day-8-ultra-upgrade-report.md) · [🧩 Day 9 ultra report](day-9-ultra-upgrade-report.md) · [✅ Day 10 ultra report](day-10-ultra-upgrade-report.md) · [🧭 Day 11 ultra report](day-11-ultra-upgrade-report.md) · [🧪 Day 12 ultra report](day-12-ultra-upgrade-report.md) · [🏢 Day 13 ultra report](day-13-ultra-upgrade-report.md) · [🧭 Repo tour](repo-tour.md) · [📈 Top-10 strategy](top-10-github-strategy.md) · [🤖 AgentOS](agentos-foundation.md) · [🍳 Cookbook](agentos-cookbook.md) · [🛠 CLI commands](cli.md) · [🩺 Doctor checks](doctor.md) · [🤝 Contribute](contributing.md)
+[⚡ Fast start](#fast-start) · [🚀 Phase-1 daily plan](top-10-github-strategy.md#phase-1-days-1-30-positioning-conversion-daily-execution) · [🧪 Day 1 ultra report](day-1-ultra-upgrade-report.md) · [⚡ Day 2 ultra report](day-2-ultra-upgrade-report.md) · [📸 Day 3 ultra report](day-3-ultra-upgrade-report.md) · [🧠 Day 4 ultra report](day-4-ultra-upgrade-report.md) · [🖥️ Day 5 ultra report](day-5-ultra-upgrade-report.md) · [🔗 Day 6 ultra report](day-6-ultra-upgrade-report.md) · [📊 Day 7 ultra report](day-7-ultra-upgrade-report.md) · [🧲 Day 8 ultra report](day-8-ultra-upgrade-report.md) · [🧩 Day 9 ultra report](day-9-ultra-upgrade-report.md) · [✅ Day 10 ultra report](day-10-ultra-upgrade-report.md) · [🧭 Day 11 ultra report](day-11-ultra-upgrade-report.md) · [🧪 Day 12 ultra report](day-12-ultra-upgrade-report.md) · [🏢 Day 13 ultra report](day-13-ultra-upgrade-report.md) · [📈 Day 14 ultra report](day-14-ultra-upgrade-report.md) · [🧭 Repo tour](repo-tour.md) · [📈 Top-10 strategy](top-10-github-strategy.md) · [🤖 AgentOS](agentos-foundation.md) · [🍳 Cookbook](agentos-cookbook.md) · [🛠 CLI commands](cli.md) · [🩺 Doctor checks](doctor.md) · [🤝 Contribute](contributing.md)
 
 </div>
 
@@ -171,6 +171,14 @@ A practical, production-ready toolkit for SDET workflows — with clean CLI ergo
 - Emit enterprise operating pack (checklist + CI + controls register): `sdetkit enterprise-use-case --emit-pack-dir docs/artifacts/day13-enterprise-pack --format json --strict`.
 - Execute full enterprise command sequence and write evidence bundle: `sdetkit enterprise-use-case --execute --evidence-dir docs/artifacts/day13-enterprise-pack/evidence --format json --strict`.
 - Review the generated artifact: [day13 enterprise use-case sample](artifacts/day13-enterprise-use-case-sample.md).
+
+## Day 14 ultra upgrades (weekly review #2 + KPI checkpoint)
+
+- Read the implementation report: [Day 14 ultra upgrade report](day-14-ultra-upgrade-report.md).
+- Run `sdetkit weekly-review --week 2 --format text --signals-file docs/artifacts/day14-growth-signals.json --previous-signals-file docs/artifacts/day7-growth-signals.json` to summarize Day 8-13 shipped scope, KPI movement, growth signals, and week-over-week deltas.
+- Export markdown review artifact: `sdetkit weekly-review --week 2 --format markdown --signals-file docs/artifacts/day14-growth-signals.json --previous-signals-file docs/artifacts/day7-growth-signals.json --output docs/artifacts/day14-weekly-review-sample.md`.
+- Emit Day 14 closeout pack: `sdetkit weekly-review --week 2 --emit-pack-dir docs/artifacts/day14-weekly-pack --signals-file docs/artifacts/day14-growth-signals.json --previous-signals-file docs/artifacts/day7-growth-signals.json --format json --strict`.
+- Review generated artifacts: [day14 weekly review sample](artifacts/day14-weekly-review-sample.md), [day14 growth signals](artifacts/day14-growth-signals.json), and [day14 closeout checklist](artifacts/day14-weekly-pack/day14-closeout-checklist.md).
 
 ## Fast start
 

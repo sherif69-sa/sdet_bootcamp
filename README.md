@@ -652,6 +652,36 @@ python -m sdetkit enterprise-use-case --format json --strict
 python -m sdetkit enterprise-use-case --execute --evidence-dir docs/artifacts/day13-enterprise-pack/evidence --format json --strict
 ```
 
+## 📈 Day 14 ultra: weekly review #2
+
+Day 14 closes week two with deterministic reporting for Day 8-13 shipment status, KPI movement, growth signals (traffic/stars/discussions), and blocker-fix closeout tracking.
+
+```bash
+python -m sdetkit weekly-review --week 2 --format text --signals-file docs/artifacts/day14-growth-signals.json --previous-signals-file docs/artifacts/day7-growth-signals.json
+```
+
+Export a markdown artifact for stakeholder handoff:
+
+```bash
+python -m sdetkit weekly-review --week 2 --format markdown --signals-file docs/artifacts/day14-growth-signals.json --previous-signals-file docs/artifacts/day7-growth-signals.json --output docs/artifacts/day14-weekly-review-sample.md
+```
+
+Emit a Day 14 closeout pack (checklist, KPI scorecard, blocker action plan):
+
+```bash
+python -m sdetkit weekly-review --week 2 --emit-pack-dir docs/artifacts/day14-weekly-pack --signals-file docs/artifacts/day14-growth-signals.json --previous-signals-file docs/artifacts/day7-growth-signals.json --format json --strict
+```
+
+See implementation details: [Day 14 ultra upgrade report](docs/day-14-ultra-upgrade-report.md).
+
+Day 14 closeout checks:
+
+```bash
+python -m pytest -q tests/test_weekly_review.py tests/test_cli_help_lists_subcommands.py
+python scripts/check_day14_weekly_review_contract.py
+python -m sdetkit weekly-review --week 2 --format json --signals-file docs/artifacts/day14-growth-signals.json --previous-signals-file docs/artifacts/day7-growth-signals.json --strict
+```
+
 ## ⚡ Quick start
 
 ```bash
