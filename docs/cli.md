@@ -294,6 +294,26 @@ Useful flags: `--root`, `--format`, `--output`, `--strict`, `--write-defaults`, 
 
 See: day-16-ultra-upgrade-report.md
 
+## quality-contribution-delta
+
+Builds Day 17 quality + contribution week-over-week delta evidence from two signal files and weekly review KPIs.
+
+Examples:
+
+- `sdetkit quality-contribution-delta --current-signals-file docs/artifacts/day17-growth-signals.json --previous-signals-file docs/artifacts/day14-growth-signals.json --format text`
+- `sdetkit quality-contribution-delta --current-signals-file docs/artifacts/day17-growth-signals.json --previous-signals-file docs/artifacts/day14-growth-signals.json --format json --strict`
+- `sdetkit quality-contribution-delta --current-signals-file docs/artifacts/day17-growth-signals.json --previous-signals-file docs/artifacts/day14-growth-signals.json --min-traffic-delta 100 --min-stars-delta 5 --min-discussions-delta 2 --min-blocker-fixes-delta 1 --format json --strict`
+- `sdetkit quality-contribution-delta --current-signals-file docs/artifacts/day17-growth-signals.json --previous-signals-file docs/artifacts/day14-growth-signals.json --format markdown --output docs/artifacts/day17-quality-contribution-delta-sample.md`
+- `sdetkit quality-contribution-delta --current-signals-file docs/artifacts/day17-growth-signals.json --previous-signals-file docs/artifacts/day14-growth-signals.json --emit-pack-dir docs/artifacts/day17-delta-pack --format json --strict`
+
+Useful flags: `--root`, `--current-signals-file`, `--previous-signals-file`, `--emit-pack-dir`, `--strict`, `--min-traffic-delta`, `--min-stars-delta`, `--min-discussions-delta`, `--min-blocker-fixes-delta`, `--format`, `--output`.
+
+`--emit-pack-dir` writes a Day 17 evidence pack containing delta summary JSON, quality scorecard markdown, contribution action plan markdown, and a remediation checklist.
+
+`--strict` returns non-zero when any strict delta gate fails (quality regression or contribution delta below minimum thresholds).
+
+See: day-17-ultra-upgrade-report.md
+
 ## patch
 
 Deterministic, spec-driven file edits (official CLI command).
