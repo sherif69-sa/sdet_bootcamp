@@ -1,0 +1,66 @@
+{
+  "name": "day17-quality-contribution-delta",
+  "quality": {
+    "week1": {
+      "days_completed": 6,
+      "days_planned": 6,
+      "completion_rate_percent": 100,
+      "runnable_commands": 6,
+      "artifact_coverage": 6
+    },
+    "week2": {
+      "days_completed": 6,
+      "days_planned": 6,
+      "completion_rate_percent": 100,
+      "runnable_commands": 6,
+      "artifact_coverage": 6
+    },
+    "deltas": {
+      "completion_rate_percent": 0,
+      "artifact_coverage": 0,
+      "runnable_commands": 0
+    },
+    "delta_status": {
+      "completion_rate_percent": "flat",
+      "artifact_coverage": "flat",
+      "runnable_commands": "flat"
+    },
+    "stability_score": 100.0
+  },
+  "contributions": {
+    "current": {
+      "traffic": 2200,
+      "stars": 112,
+      "discussions": 31,
+      "blocker_fixes": 9
+    },
+    "previous": {
+      "traffic": 1800,
+      "stars": 90,
+      "discussions": 24,
+      "blocker_fixes": 7
+    },
+    "deltas": {
+      "traffic": 400,
+      "stars": 22,
+      "discussions": 7,
+      "blocker_fixes": 2
+    },
+    "delta_percent": {
+      "traffic": 22.22,
+      "stars": 24.44,
+      "discussions": 29.17,
+      "blocker_fixes": 28.57
+    },
+    "delta_status": {
+      "traffic": "up",
+      "stars": "up",
+      "discussions": "up",
+      "blocker_fixes": "up"
+    },
+    "velocity_score": 75.44
+  },
+  "recommendations": [
+    "All tracked deltas are stable or improving; preserve current operating cadence."
+  ]
+}

@@ -742,6 +742,33 @@ python -m sdetkit gitlab-ci-quickstart --variant strict --bootstrap-pipeline --p
 python -m sdetkit gitlab-ci-quickstart --execute --evidence-dir docs/artifacts/day16-gitlab-pack/evidence --format json --strict
 ```
 
+## 🧮 Day 17 ultra: quality + contribution deltas
+
+Day 17 captures one **week-over-week evidence pack** that combines quality KPIs and contribution signals into a single closeout view.
+
+```bash
+python -m sdetkit quality-contribution-delta --current-signals-file docs/artifacts/day17-growth-signals.json --previous-signals-file docs/artifacts/day14-growth-signals.json --format text
+python -m sdetkit quality-contribution-delta --current-signals-file docs/artifacts/day17-growth-signals.json --previous-signals-file docs/artifacts/day14-growth-signals.json --format json --strict
+python -m sdetkit quality-contribution-delta --current-signals-file docs/artifacts/day17-growth-signals.json --previous-signals-file docs/artifacts/day14-growth-signals.json --min-traffic-delta 100 --min-stars-delta 5 --min-discussions-delta 2 --min-blocker-fixes-delta 1 --format json --strict
+python -m sdetkit quality-contribution-delta --current-signals-file docs/artifacts/day17-growth-signals.json --previous-signals-file docs/artifacts/day14-growth-signals.json --emit-pack-dir docs/artifacts/day17-delta-pack --format json --strict
+```
+
+Export a markdown artifact for handoff:
+
+```bash
+python -m sdetkit quality-contribution-delta --current-signals-file docs/artifacts/day17-growth-signals.json --previous-signals-file docs/artifacts/day14-growth-signals.json --format markdown --output docs/artifacts/day17-quality-contribution-delta-sample.md
+```
+
+See implementation details: [Day 17 ultra upgrade report](docs/day-17-ultra-upgrade-report.md).
+
+Day 17 closeout checks:
+
+```bash
+python -m pytest -q tests/test_quality_contribution_delta.py tests/test_cli_help_lists_subcommands.py
+python scripts/check_day17_quality_contribution_delta_contract.py
+python -m sdetkit quality-contribution-delta --current-signals-file docs/artifacts/day17-growth-signals.json --previous-signals-file docs/artifacts/day14-growth-signals.json --format json --strict
+```
+
 ## ⚡ Quick start
 
 ```bash

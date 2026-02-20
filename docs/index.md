@@ -293,3 +293,11 @@ Free for personal/educational noncommercial use. Commercial use requires a paid 
 - Capture deterministic execution evidence: `sdetkit gitlab-ci-quickstart --execute --evidence-dir docs/artifacts/day16-gitlab-pack/evidence --format json --strict`.
 - Review generated artifacts: [day16 quickstart sample](artifacts/day16-gitlab-ci-quickstart-sample.md), [day16 strict pipeline](artifacts/day16-gitlab-pack/day16-sdetkit-strict.yml), [day16 evidence summary](artifacts/day16-gitlab-pack/evidence/day16-execution-summary.json).
 
+
+## Day 17 ultra upgrades (quality + contribution deltas)
+
+- Read the implementation report: [Day 17 ultra upgrade report](day-17-ultra-upgrade-report.md).
+- Run `sdetkit quality-contribution-delta --current-signals-file docs/artifacts/day17-growth-signals.json --previous-signals-file docs/artifacts/day14-growth-signals.json --format json --strict` to compute week-over-week KPI and contribution deltas.
+- Export markdown artifact: `sdetkit quality-contribution-delta --current-signals-file docs/artifacts/day17-growth-signals.json --previous-signals-file docs/artifacts/day14-growth-signals.json --format markdown --output docs/artifacts/day17-quality-contribution-delta-sample.md`.
+- Emit Day 17 delta pack: `sdetkit quality-contribution-delta --current-signals-file docs/artifacts/day17-growth-signals.json --previous-signals-file docs/artifacts/day14-growth-signals.json --emit-pack-dir docs/artifacts/day17-delta-pack --format json --strict`.
+- Review generated artifacts: [day17 quality/contribution sample](artifacts/day17-quality-contribution-delta-sample.md), [day17 delta summary](artifacts/day17-delta-pack/day17-delta-summary.json), and [day17 contribution action plan](artifacts/day17-delta-pack/day17-contribution-action-plan.md).
