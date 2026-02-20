@@ -798,6 +798,36 @@ python -m sdetkit reliability-evidence-pack --format json --strict
 python -m sdetkit reliability-evidence-pack --execute --evidence-dir docs/artifacts/day18-reliability-pack/evidence --format json --strict
 ```
 
+
+## 🧭 Day 19 ultra: release readiness board
+
+Day 19 ships a deterministic **release readiness board** that combines Day 18 reliability posture with Day 14 KPI trend health into one go/no-go score.
+
+```bash
+python -m sdetkit release-readiness-board --format text
+python -m sdetkit release-readiness-board --format json --strict
+python -m sdetkit release-readiness-board --write-defaults --format json --strict
+python -m sdetkit release-readiness-board --emit-pack-dir docs/artifacts/day19-release-readiness-pack --format json --strict
+python -m sdetkit release-readiness-board --execute --evidence-dir docs/artifacts/day19-release-readiness-pack/evidence --format json --strict
+```
+
+Export a markdown artifact for handoff:
+
+```bash
+python -m sdetkit release-readiness-board --format markdown --output docs/artifacts/day19-release-readiness-board-sample.md
+```
+
+See implementation details: [Day 19 ultra upgrade report](docs/day-19-ultra-upgrade-report.md).
+
+Day 19 closeout checks:
+
+```bash
+python -m pytest -q tests/test_release_readiness_board.py tests/test_cli_help_lists_subcommands.py
+python scripts/check_day19_release_readiness_board_contract.py
+python -m sdetkit release-readiness-board --format json --strict
+python -m sdetkit release-readiness-board --execute --evidence-dir docs/artifacts/day19-release-readiness-pack/evidence --format json --strict
+```
+
 ## ⚡ Quick start
 
 ```bash

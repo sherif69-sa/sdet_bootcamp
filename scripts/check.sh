@@ -55,6 +55,9 @@ case "$mode" in
     python scripts/check_day16_gitlab_ci_quickstart_contract.py
     python scripts/check_day18_reliability_evidence_pack_contract.py
     ;;
+  day19)
+    python scripts/check_day19_release_readiness_board_contract.py --skip-evidence
+    ;;
   all)
     ruff format --check .
     ruff check .
@@ -70,7 +73,7 @@ case "$mode" in
     python scripts/check_day18_reliability_evidence_pack_contract.py
     ;;
   *)
-    echo "Usage: bash scripts/check.sh {fmt|lint|types|tests|coverage|docs|onboarding|day3|day4|day15|day16|all}" >&2
+    echo "Usage: bash scripts/check.sh {fmt|lint|types|tests|coverage|docs|onboarding|day3|day4|day15|day16|day19|all}" >&2
     exit 2
     ;;
 esac

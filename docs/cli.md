@@ -464,3 +464,27 @@ See: agentos-foundation.md, omnichannel-mcp-bridge.md, and automation-templates-
 - Agent/report commands use shared option names where applicable: `--history-dir`, `--output`, `--format`, `--config`, `--cache-dir`, `--no-cache`, `--approve`, `--output-dir`, and `--set`.
 - `--help` output includes default values for faster operator onboarding.
 - Normal user errors are emitted as single-line messages (`agent error: ...`, `report error: ...`) without stack traces.
+
+
+## release-readiness-board
+
+Builds Day 19 release-readiness evidence by combining Day 18 reliability summary and Day 14 weekly KPI summary.
+
+Examples:
+
+- `sdetkit release-readiness-board --format text`
+- `sdetkit release-readiness-board --format json --strict`
+- `sdetkit release-readiness-board --write-defaults --format json --strict`
+- `sdetkit release-readiness-board --emit-pack-dir docs/artifacts/day19-release-readiness-pack --format json --strict`
+- `sdetkit release-readiness-board --execute --evidence-dir docs/artifacts/day19-release-readiness-pack/evidence --format json --strict`
+- `sdetkit release-readiness-board --format markdown --output docs/artifacts/day19-release-readiness-board-sample.md`
+
+Useful flags: `--root`, `--day18-summary`, `--day14-summary`, `--min-release-score`, `--write-defaults`, `--emit-pack-dir`, `--execute`, `--evidence-dir`, `--timeout-sec`, `--strict`, `--format`, `--output`.
+
+`--write-defaults` writes a hardened Day 19 integration page if missing/incomplete, then validates it.
+
+`--emit-pack-dir` writes a Day 19 pack containing summary JSON, scorecard markdown, closeout checklist markdown, and a validation commands file.
+
+`--execute` runs the Day 19 command chain and emits an execution summary plus per-command logs for closeout evidence.
+
+`--strict` returns non-zero if Day 19 required docs sections/commands are missing, strict gates are not green, or release score falls below `--min-release-score`.
