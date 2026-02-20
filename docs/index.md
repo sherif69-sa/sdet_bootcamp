@@ -312,3 +312,14 @@ Free for personal/educational noncommercial use. Commercial use requires a paid 
 - Emit Day 18 reliability pack: `sdetkit reliability-evidence-pack --emit-pack-dir docs/artifacts/day18-reliability-pack --format json --strict`.
 - Capture deterministic execution logs: `sdetkit reliability-evidence-pack --execute --evidence-dir docs/artifacts/day18-reliability-pack/evidence --format json --strict`.
 - Review generated artifacts: [day18 reliability sample](artifacts/day18-reliability-evidence-pack-sample.md), [day18 reliability summary](artifacts/day18-reliability-pack/day18-reliability-summary.json), [day18 validation commands](artifacts/day18-reliability-pack/day18-validation-commands.md), and [day18 execution summary](artifacts/day18-reliability-pack/evidence/day18-execution-summary.json).
+
+
+## Day 19 ultra upgrades (release readiness board)
+
+- Read the implementation report: [Day 19 ultra upgrade report](day-19-ultra-upgrade-report.md).
+- Run `sdetkit release-readiness-board --format json --strict` to generate Day 19 release readiness posture.
+- Auto-recover missing Day 19 integration docs: `sdetkit release-readiness-board --write-defaults --format json --strict`.
+- Export markdown artifact: `sdetkit release-readiness-board --format markdown --output docs/artifacts/day19-release-readiness-board-sample.md`.
+- Emit Day 19 release-readiness pack: `sdetkit release-readiness-board --emit-pack-dir docs/artifacts/day19-release-readiness-pack --format json --strict`.
+- Capture deterministic execution logs: `sdetkit release-readiness-board --execute --evidence-dir docs/artifacts/day19-release-readiness-pack/evidence --format json --strict`.
+- Review generated artifacts: [day19 release readiness sample](artifacts/day19-release-readiness-board-sample.md), [day19 release summary](artifacts/day19-release-readiness-pack/day19-release-readiness-summary.json), [day19 release decision](artifacts/day19-release-readiness-pack/day19-release-decision.md), [day19 validation commands](artifacts/day19-release-readiness-pack/day19-validation-commands.md), and [day19 execution summary](artifacts/day19-release-readiness-pack/evidence/day19-execution-summary.json).

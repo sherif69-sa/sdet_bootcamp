@@ -24,6 +24,7 @@ from . import (
     policy,
     proof,
     quality_contribution_delta,
+    release_readiness_board,
     reliability_evidence_pack,
     repo,
     report,
@@ -153,6 +154,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     if argv and argv[0] == "reliability-evidence-pack":
         return reliability_evidence_pack.main(list(argv[1:]))
 
+    if argv and argv[0] == "release-readiness-board":
+        return release_readiness_board.main(list(argv[1:]))
+
     p = argparse.ArgumentParser(prog="sdetkit", add_help=True)
     p.add_argument("--version", action="version", version=_tool_version())
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -247,6 +251,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     rep = sub.add_parser("reliability-evidence-pack")
     rep.add_argument("args", nargs=argparse.REMAINDER)
 
+    rrb = sub.add_parser("release-readiness-board")
+    rrb.add_argument("args", nargs=argparse.REMAINDER)
+
     ns = p.parse_args(argv)
 
     if ns.cmd == "kv":
@@ -329,6 +336,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if ns.cmd == "reliability-evidence-pack":
         return reliability_evidence_pack.main(ns.args)
+
+    if ns.cmd == "release-readiness-board":
+        return release_readiness_board.main(ns.args)
 
     if ns.cmd == "apiget":
         raw_args = list(argv)
