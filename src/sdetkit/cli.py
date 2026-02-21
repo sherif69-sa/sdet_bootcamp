@@ -10,6 +10,7 @@ from . import (
     contributor_funnel,
     community_activation,
     external_contribution_push,
+    kpi_audit,
     demo,
     docs_navigation,
     docs_qa,
@@ -127,6 +128,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     if argv and argv[0] == "external-contribution-push":
         return external_contribution_push.main(list(argv[1:]))
 
+    if argv and argv[0] == "kpi-audit":
+        return kpi_audit.main(list(argv[1:]))
+
     if argv and argv[0] == "faq-objections":
         return faq_objections.main(list(argv[1:]))
 
@@ -242,6 +246,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     ecp = sub.add_parser("external-contribution-push")
     ecp.add_argument("args", nargs=argparse.REMAINDER)
 
+    kpa = sub.add_parser("kpi-audit")
+    kpa.add_argument("args", nargs=argparse.REMAINDER)
+
     fqo = sub.add_parser("faq-objections")
     fqo.add_argument("args", nargs=argparse.REMAINDER)
 
@@ -345,6 +352,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if ns.cmd == "external-contribution-push":
         return external_contribution_push.main(ns.args)
+
+    if ns.cmd == "kpi-audit":
+        return kpi_audit.main(ns.args)
 
     if ns.cmd == "faq-objections":
         return faq_objections.main(ns.args)

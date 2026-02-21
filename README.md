@@ -936,6 +936,15 @@ See implementation details: [Day 25 ultra upgrade report](docs/day-25-ultra-upgr
 
 See implementation details: [Day 26 ultra upgrade report](docs/day-26-ultra-upgrade-report.md).
 
+## 📊 Day 27 ultra: KPI audit closeout
+
+- Run `python -m sdetkit kpi-audit --format json --strict` to validate Day 27 KPI baseline-vs-current readiness.
+- Emit shareable KPI pack: `python -m sdetkit kpi-audit --emit-pack-dir docs/artifacts/day27-kpi-pack --format json --strict`.
+- Execute and collect deterministic logs: `python -m sdetkit kpi-audit --execute --evidence-dir docs/artifacts/day27-kpi-pack/evidence --format json --strict`.
+- Review Day 27 integration guide: [KPI audit](docs/integrations-kpi-audit.md).
+
+See implementation details: [Day 27 ultra upgrade report](docs/day-27-ultra-upgrade-report.md).
+
 Day 23 closeout checks:
 
 ```bash
