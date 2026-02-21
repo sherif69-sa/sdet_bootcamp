@@ -584,3 +584,30 @@ Useful flags: `--root`, `--readme`, `--docs-index`, `--top10`, `--write-defaults
 `--execute` runs the Day 25 command chain and emits an execution summary for closeout evidence.
 
 `--strict` returns non-zero if Day 25 required docs sections/commands are missing, critical checks fail, or activation score falls below `--min-score`.
+
+## external-contribution-push
+
+Builds Day 26 external-contribution readiness from docs contract completeness, discoverability links, and strategy alignment checks.
+
+Examples:
+
+- `sdetkit external-contribution-push --format text`
+- `sdetkit external-contribution-push --format json --strict`
+- `sdetkit external-contribution-push --write-defaults --format json --strict`
+- `sdetkit external-contribution-push --emit-pack-dir docs/artifacts/day26-external-contribution-pack --format json --strict`
+- `sdetkit external-contribution-push --execute --evidence-dir docs/artifacts/day26-external-contribution-pack/evidence --format json --strict`
+
+Useful flags: `--root`, `--readme`, `--docs-index`, `--top10`, `--write-defaults`, `--emit-pack-dir`, `--execute`, `--evidence-dir`, `--timeout-sec`, `--min-score`, `--strict`, `--format`.
+
+## kpi-audit
+
+Builds Day 27 KPI closeout readiness by validating docs contract, discoverability links, and baseline-vs-current KPI snapshots.
+
+Examples:
+
+- `sdetkit kpi-audit --format text`
+- `sdetkit kpi-audit --format json --strict`
+- `sdetkit kpi-audit --emit-pack-dir docs/artifacts/day27-kpi-pack --format json --strict`
+- `sdetkit kpi-audit --execute --evidence-dir docs/artifacts/day27-kpi-pack/evidence --format json --strict`
+
+Useful flags: `--root`, `--readme`, `--docs-index`, `--top10`, `--baseline`, `--current`, `--write-defaults`, `--emit-pack-dir`, `--execute`, `--evidence-dir`, `--timeout-sec`, `--min-score`, `--strict`, `--format`.
