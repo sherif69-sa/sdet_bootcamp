@@ -1002,13 +1002,13 @@ See implementation details: [Day 29 ultra upgrade report](docs/day-29-ultra-upgr
 
 See implementation details: [Day 30 ultra upgrade report](docs/day-30-ultra-upgrade-report.md).
 
-Day 23 closeout checks:
+Day 30 closeout checks:
 
 ```bash
-python -m pytest -q tests/test_faq_objections.py tests/test_cli_help_lists_subcommands.py
-python scripts/check_day23_faq_objections_contract.py
-python -m sdetkit faq-objections --format json --strict
-python -m sdetkit faq-objections --execute --evidence-dir docs/artifacts/day23-faq-pack/evidence --format json --strict
+python -m pytest -q tests/test_day30_phase1_wrap.py tests/test_cli_help_lists_subcommands.py
+python scripts/check_day30_phase1_wrap_contract.py
+python -m sdetkit day30-phase1-wrap --format json --strict
+python -m sdetkit day30-phase1-wrap --execute --evidence-dir docs/artifacts/day30-wrap-pack/evidence --format json --strict
 ```
 
 ## ⚡ Quick start
