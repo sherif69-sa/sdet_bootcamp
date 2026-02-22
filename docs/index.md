@@ -421,3 +421,13 @@ Free for personal/educational noncommercial use. Commercial use requires a paid 
 - Run deterministic execution evidence lane: `python -m sdetkit day30-phase1-wrap --execute --evidence-dir docs/artifacts/day30-wrap-pack/evidence --format json --strict`.
 - Review sample output artifact: [day30 wrap sample](artifacts/day30-phase1-wrap-sample.md).
 - Review integration guide: [Day 30 phase-1 wrap](integrations-day30-phase1-wrap.md).
+
+
+## Day 31 ultra upgrades (Phase-2 kickoff baseline)
+
+- Read the implementation report: [Day 31 ultra upgrade report](day-31-ultra-upgrade-report.md).
+- Run `python -m sdetkit day31-phase2-kickoff --format json --strict` to score Phase-2 kickoff baseline readiness.
+- Emit Day 31 kickoff pack: `python -m sdetkit day31-phase2-kickoff --emit-pack-dir docs/artifacts/day31-phase2-pack --format json --strict`.
+- Run deterministic execution evidence lane: `python -m sdetkit day31-phase2-kickoff --execute --evidence-dir docs/artifacts/day31-phase2-pack/evidence --format json --strict`.
+- Emit upgraded kickoff pack outputs (`summary`, `baseline snapshot`, `delivery board`): `python -m sdetkit day31-phase2-kickoff --emit-pack-dir docs/artifacts/day31-phase2-pack --format json --strict`.
+- Review integration guide: [Day 31 phase-2 kickoff](integrations-day31-phase2-kickoff.md).

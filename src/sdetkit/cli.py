@@ -11,6 +11,7 @@ from . import (
     community_activation,
     external_contribution_push,
     day30_phase1_wrap,
+    day31_phase2_kickoff,
     day29_phase1_hardening,
     day28_weekly_review,
     kpi_audit,
@@ -143,6 +144,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     if argv and argv[0] == "day30-phase1-wrap":
         return day30_phase1_wrap.main(list(argv[1:]))
 
+    if argv and argv[0] == "day31-phase2-kickoff":
+        return day31_phase2_kickoff.main(list(argv[1:]))
+
     if argv and argv[0] == "faq-objections":
         return faq_objections.main(list(argv[1:]))
 
@@ -270,6 +274,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     d30 = sub.add_parser("day30-phase1-wrap")
     d30.add_argument("args", nargs=argparse.REMAINDER)
 
+    d31 = sub.add_parser("day31-phase2-kickoff")
+    d31.add_argument("args", nargs=argparse.REMAINDER)
+
     fqo = sub.add_parser("faq-objections")
     fqo.add_argument("args", nargs=argparse.REMAINDER)
 
@@ -385,6 +392,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if ns.cmd == "day30-phase1-wrap":
         return day30_phase1_wrap.main(ns.args)
+
+    if ns.cmd == "day31-phase2-kickoff":
+        return day31_phase2_kickoff.main(ns.args)
 
     if ns.cmd == "faq-objections":
         return faq_objections.main(ns.args)
