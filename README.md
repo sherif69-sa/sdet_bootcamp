@@ -1011,6 +1011,25 @@ python -m sdetkit day30-phase1-wrap --format json --strict
 python -m sdetkit day30-phase1-wrap --execute --evidence-dir docs/artifacts/day30-wrap-pack/evidence --format json --strict
 ```
 
+
+## 🚀 Day 31 ultra: Phase-2 kickoff baseline
+
+- Run `python -m sdetkit day31-phase2-kickoff --format json --strict` to validate Day 31 baseline + weekly-target readiness.
+- Emit shareable kickoff pack: `python -m sdetkit day31-phase2-kickoff --emit-pack-dir docs/artifacts/day31-phase2-pack --format json --strict`.
+- Execute and collect deterministic logs: `python -m sdetkit day31-phase2-kickoff --execute --evidence-dir docs/artifacts/day31-phase2-pack/evidence --format json --strict`.
+- Review Day 31 integration guide: [Phase-2 kickoff baseline](docs/integrations-day31-phase2-kickoff.md).
+
+See implementation details: [Day 31 ultra upgrade report](docs/day-31-ultra-upgrade-report.md).
+
+Day 31 kickoff checks:
+
+```bash
+python -m pytest -q tests/test_day31_phase2_kickoff.py tests/test_cli_help_lists_subcommands.py
+python scripts/check_day31_phase2_kickoff_contract.py
+python -m sdetkit day31-phase2-kickoff --format json --strict
+python -m sdetkit day31-phase2-kickoff --execute --evidence-dir docs/artifacts/day31-phase2-pack/evidence --format json --strict
+```
+
 ## ⚡ Quick start
 
 ```bash
