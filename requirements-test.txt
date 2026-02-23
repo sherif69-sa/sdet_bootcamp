@@ -5,4 +5,4 @@ hypothesis==6.151.9
 httpx==0.28.1
 ruff==0.15.2
 mypy==1.19.1
-mutmut==3.4.0
+mutmut==3.5.0
