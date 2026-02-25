@@ -56,7 +56,7 @@ test = [
 ]
 docs = [
   "mkdocs==1.6.1",
-  "mkdocs-material==9.7.2"
+  "mkdocs-material==9.7.3"
 ]
 telegram = [
   "python-telegram-bot>=21,<23"
