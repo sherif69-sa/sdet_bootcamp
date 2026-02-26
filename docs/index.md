@@ -528,3 +528,12 @@ Free for personal/educational noncommercial use. Commercial use requires a paid 
 - Emit Day 41 expansion automation pack: `python -m sdetkit day41-expansion-automation --emit-pack-dir docs/artifacts/day41-expansion-automation-pack --format json --strict`.
 - Run deterministic execution evidence lane: `python -m sdetkit day41-expansion-automation --execute --evidence-dir docs/artifacts/day41-expansion-automation-pack/evidence --format json --strict`.
 - Review integration guide: [Day 41 expansion automation lane](integrations-day41-expansion-automation.md).
+
+
+## Day 42 big upgrades (Optimization closeout lane)
+
+- Read the implementation report: [Day 42 big upgrade report](day-42-big-upgrade-report.md).
+- Run `python -m sdetkit day42-optimization-closeout --format json --strict` to score optimization closeout readiness.
+- Emit Day 42 optimization closeout pack: `python -m sdetkit day42-optimization-closeout --emit-pack-dir docs/artifacts/day42-optimization-closeout-pack --format json --strict`.
+- Run deterministic execution evidence lane: `python -m sdetkit day42-optimization-closeout --execute --evidence-dir docs/artifacts/day42-optimization-closeout-pack/evidence --format json --strict`.
+- Review integration guide: [Day 42 optimization closeout lane](integrations-day42-optimization-closeout.md).
