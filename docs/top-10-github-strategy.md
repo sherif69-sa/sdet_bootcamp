@@ -177,8 +177,9 @@ Phase 2 converts early traction into repeatable growth loops. Each day ships one
 - **Day 39 — Playbook post #1:** publish Repo Reliability Playbook article #1.
 - **Day 40 — Scale lane #1:** scale proven playbook motion across docs, commands, and channel matrix artifacts.
 - **Day 41 — Expansion automation lane:** automate Day 40 winners into repeatable workflows with strict execution proof.
-- **Day 42 — Optimization lane kickoff:** convert Day 41 expansion evidence into optimization loops.
+- **Day 42 — Optimization closeout lane:** convert Day 41 expansion evidence into deterministic remediation loops.
 - **Day 42 — Weekly review #6:** measure referral traffic, asset engagement, and stars/week trend.
+- **Day 43 — Acceleration lane kickoff:** convert Day 42 optimization wins into accelerated growth loops.
 
 - **Day 43 — Production templates bundle v1:** package and document first template set.
 - **Day 44 — Integration spotlight #1:** announce template usage with example CI scenario.

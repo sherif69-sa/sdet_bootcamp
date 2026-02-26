@@ -1427,3 +1427,34 @@ Day 41 upgraded pack artifacts include:
 - `day41-execution-log.md`
 - `day41-delivery-board.md`
 - `day41-validation-commands.md`
+
+
+## ⚡ Day 42 big upgrade: Optimization closeout lane
+
+- Run `python -m sdetkit day42-optimization-closeout --format json --strict` to validate Day 42 optimization readiness.
+- Emit shareable Day 42 optimization pack: `python -m sdetkit day42-optimization-closeout --emit-pack-dir docs/artifacts/day42-optimization-closeout-pack --format json --strict`.
+- Execute and collect deterministic logs: `python -m sdetkit day42-optimization-closeout --execute --evidence-dir docs/artifacts/day42-optimization-closeout-pack/evidence --format json --strict`.
+- Review Day 42 integration guide: [Optimization closeout lane](docs/integrations-day42-optimization-closeout.md).
+
+See implementation details: [Day 42 big upgrade report](docs/day-42-big-upgrade-report.md).
+
+Day 42 demo checks:
+
+```bash
+python -m pytest -q tests/test_day42_optimization_closeout.py tests/test_cli_help_lists_subcommands.py
+python scripts/check_day42_optimization_closeout_contract.py
+python -m sdetkit day42-optimization-closeout --emit-pack-dir docs/artifacts/day42-optimization-closeout-pack --format json --strict
+python -m sdetkit day42-optimization-closeout --execute --evidence-dir docs/artifacts/day42-optimization-closeout-pack/evidence --format json --strict
+python -m sdetkit day42-optimization-closeout --format json --strict
+```
+
+Day 42 upgraded pack artifacts include:
+
+- `day42-optimization-closeout-summary.json`
+- `day42-optimization-closeout-summary.md`
+- `day42-optimization-plan.md`
+- `day42-remediation-matrix.csv`
+- `day42-optimization-kpi-scorecard.json`
+- `day42-execution-log.md`
+- `day42-delivery-board.md`
+- `day42-validation-commands.md`
