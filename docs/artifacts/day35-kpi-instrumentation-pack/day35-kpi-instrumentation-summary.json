@@ -1,0 +1,135 @@
+{
+  "name": "day35-kpi-instrumentation",
+  "inputs": {
+    "readme": "README.md",
+    "docs_index": "docs/index.md",
+    "docs_page": "docs/integrations-day35-kpi-instrumentation.md",
+    "top10": "docs/top-10-github-strategy.md",
+    "day34_summary": "docs/artifacts/day34-demo-asset2-pack/day34-demo-asset2-summary.json",
+    "day34_delivery_board": "docs/artifacts/day34-demo-asset2-pack/day34-delivery-board.md"
+  },
+  "checks": [
+    {
+      "check_id": "docs_page_exists",
+      "weight": 10,
+      "passed": true,
+      "evidence": "/workspace/DevS69-sdetkit/docs/integrations-day35-kpi-instrumentation.md"
+    },
+    {
+      "check_id": "required_sections_present",
+      "weight": 10,
+      "passed": true,
+      "evidence": {
+        "missing_sections": []
+      }
+    },
+    {
+      "check_id": "required_commands_present",
+      "weight": 10,
+      "passed": true,
+      "evidence": {
+        "missing_commands": []
+      }
+    },
+    {
+      "check_id": "readme_day35_link",
+      "weight": 8,
+      "passed": true,
+      "evidence": "docs/integrations-day35-kpi-instrumentation.md"
+    },
+    {
+      "check_id": "readme_day35_command",
+      "weight": 4,
+      "passed": true,
+      "evidence": "day35-kpi-instrumentation"
+    },
+    {
+      "check_id": "docs_index_day35_links",
+      "weight": 8,
+      "passed": true,
+      "evidence": "day-35-big-upgrade-report.md + integrations-day35-kpi-instrumentation.md"
+    },
+    {
+      "check_id": "top10_day35_alignment",
+      "weight": 5,
+      "passed": true,
+      "evidence": "Day 35 + Day 36 strategy chain"
+    },
+    {
+      "check_id": "day34_summary_present",
+      "weight": 10,
+      "passed": true,
+      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day34-demo-asset2-pack/day34-demo-asset2-summary.json"
+    },
+    {
+      "check_id": "day34_delivery_board_present",
+      "weight": 8,
+      "passed": true,
+      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day34-demo-asset2-pack/day34-delivery-board.md"
+    },
+    {
+      "check_id": "day34_quality_floor",
+      "weight": 10,
+      "passed": true,
+      "evidence": {
+        "day34_score": 100.0,
+        "strict_pass": true,
+        "day34_checks": 14
+      }
+    },
+    {
+      "check_id": "day34_board_integrity",
+      "weight": 7,
+      "passed": true,
+      "evidence": {
+        "board_items": 5,
+        "contains_day35": true,
+        "contains_day36": true
+      }
+    },
+    {
+      "check_id": "kpi_contract_locked",
+      "weight": 5,
+      "passed": true,
+      "evidence": {
+        "missing_contract_lines": []
+      }
+    },
+    {
+      "check_id": "kpi_quality_checklist_locked",
+      "weight": 3,
+      "passed": true,
+      "evidence": {
+        "missing_quality_items": []
+      }
+    },
+    {
+      "check_id": "delivery_board_locked",
+      "weight": 2,
+      "passed": true,
+      "evidence": {
+        "missing_board_items": []
+      }
+    }
+  ],
+  "rollup": {
+    "day34_activation_score": 100.0,
+    "day34_checks": 14,
+    "day34_delivery_board_items": 5
+  },
+  "summary": {
+    "activation_score": 100,
+    "passed_checks": 14,
+    "failed_checks": 0,
+    "critical_failures": [],
+    "strict_pass": true
+  },
+  "wins": [
+    "Day 34 continuity is strict-pass with activation score=100.0.",
+    "Day 34 delivery board integrity validated with 5 checklist items.",
+    "KPI instrumentation contract + quality checklist is fully locked for execution.",
+    "Day 35 KPI instrumentation closeout is fully complete and ready for Day 36 distribution execution."
+  ],
+  "misses": [],
+  "handoff_actions": []
+}

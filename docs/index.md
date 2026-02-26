@@ -462,3 +462,13 @@ Free for personal/educational noncommercial use. Commercial use requires a paid 
 - Review integration guide: [Day 34 demo asset #2 production](integrations-day34-demo-asset2.md).
 
 
+
+
+## Day 35 big upgrades (KPI instrumentation closeout)
+
+- Read the implementation report: [Day 35 big upgrade report](day-35-big-upgrade-report.md).
+- Run `python -m sdetkit day35-kpi-instrumentation --format json --strict` to score KPI instrumentation readiness.
+- Emit Day 35 KPI pack: `python -m sdetkit day35-kpi-instrumentation --emit-pack-dir docs/artifacts/day35-kpi-instrumentation-pack --format json --strict`.
+- Run deterministic execution evidence lane: `python -m sdetkit day35-kpi-instrumentation --execute --evidence-dir docs/artifacts/day35-kpi-instrumentation-pack/evidence --format json --strict`.
+- Emit upgraded KPI pack outputs (`summary`, `kpi dictionary`, `alert policy`): `python -m sdetkit day35-kpi-instrumentation --emit-pack-dir docs/artifacts/day35-kpi-instrumentation-pack --format json --strict`.
+- Review integration guide: [Day 35 KPI instrumentation closeout](integrations-day35-kpi-instrumentation.md).
