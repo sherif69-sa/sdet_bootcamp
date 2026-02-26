@@ -1,0 +1,4 @@
+experiment_id,distribution_miss,control,variant,kpi_target,stop_threshold,owner,decision_deadline
+exp-01,github_hook_ctr_low,narrative-first,command-first,readme_to_command_ctr:+2%,<0.5% uplift,community-owner,2026-03-01
+exp-02,linkedin_post_timing_miss,afternoon_slot,morning_slot,docs_unique_visitors:+8%,engagement<-5%,growth-owner,2026-03-01
+exp-03,newsletter_reply_rate_flat,text-only,teaser-gif,newsletter_reply_rate:+1.5%,unsubscribe>0.2%,pm-owner,2026-03-01

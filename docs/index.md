@@ -483,3 +483,13 @@ Free for personal/educational noncommercial use. Commercial use requires a paid 
 - Emit upgraded distribution pack outputs (`summary`, `message kit`, `launch plan`): `python -m sdetkit day36-distribution-closeout --emit-pack-dir docs/artifacts/day36-distribution-closeout-pack --format json --strict`.
 - Review integration guide: [Day 36 community distribution closeout](integrations-day36-distribution-closeout.md).
 
+
+## Day 37 big upgrades (Experiment lane activation)
+
+- Read the implementation report: [Day 37 big upgrade report](day-37-big-upgrade-report.md).
+- Run `python -m sdetkit day37-experiment-lane --format json --strict` to score experiment lane readiness.
+- Emit Day 37 experiment pack: `python -m sdetkit day37-experiment-lane --emit-pack-dir docs/artifacts/day37-experiment-lane-pack --format json --strict`.
+- Run deterministic execution evidence lane: `python -m sdetkit day37-experiment-lane --execute --evidence-dir docs/artifacts/day37-experiment-lane-pack/evidence --format json --strict`.
+- Emit upgraded experiment pack outputs (`summary`, `matrix`, `scorecard`, `decision log`): `python -m sdetkit day37-experiment-lane --emit-pack-dir docs/artifacts/day37-experiment-lane-pack --format json --strict`.
+- Review integration guide: [Day 37 experiment lane activation](integrations-day37-experiment-lane.md).
+
