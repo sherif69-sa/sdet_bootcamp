@@ -1522,3 +1522,12 @@ See implementation details: [Day 48 big upgrade report](docs/day-48-big-upgrade-
 
 See implementation details: [Day 49 big upgrade report](docs/day-49-big-upgrade-report.md).
 
+### Day 50 — Execution prioritization closeout lane
+
+- Run `python -m sdetkit day50-execution-prioritization-closeout --format json --strict` to validate Day 50 execution prioritization readiness.
+- Emit shareable Day 50 execution prioritization pack: `python -m sdetkit day50-execution-prioritization-closeout --emit-pack-dir docs/artifacts/day50-execution-prioritization-closeout-pack --format json --strict`.
+- Execute and collect deterministic logs: `python -m sdetkit day50-execution-prioritization-closeout --execute --evidence-dir docs/artifacts/day50-execution-prioritization-closeout-pack/evidence --format json --strict`.
+- Review Day 50 integration guide: [Execution prioritization closeout lane](docs/integrations-day50-execution-prioritization-closeout.md).
+
+See implementation details: [Day 50 big upgrade report](docs/day-50-big-upgrade-report.md).
+
