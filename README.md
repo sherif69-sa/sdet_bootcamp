@@ -1156,6 +1156,37 @@ Day 35 upgraded pack artifacts include:
 - `day35-validation-commands.md`
 
 
+
+## 🚀 Day 36 big upgrade: Community distribution closeout
+
+- Run `python -m sdetkit day36-distribution-closeout --format json --strict` to validate Day 36 distribution readiness.
+- Emit shareable distribution pack: `python -m sdetkit day36-distribution-closeout --emit-pack-dir docs/artifacts/day36-distribution-closeout-pack --format json --strict`.
+- Execute and collect deterministic logs: `python -m sdetkit day36-distribution-closeout --execute --evidence-dir docs/artifacts/day36-distribution-closeout-pack/evidence --format json --strict`.
+- Review Day 36 integration guide: [Community distribution closeout](docs/integrations-day36-distribution-closeout.md).
+
+See implementation details: [Day 36 big upgrade report](docs/day-36-big-upgrade-report.md).
+
+Day 36 demo checks:
+
+```bash
+python -m pytest -q tests/test_day36_distribution_closeout.py tests/test_cli_help_lists_subcommands.py
+python scripts/check_day36_distribution_closeout_contract.py
+python -m sdetkit day36-distribution-closeout --emit-pack-dir docs/artifacts/day36-distribution-closeout-pack --format json --strict
+python -m sdetkit day36-distribution-closeout --execute --evidence-dir docs/artifacts/day36-distribution-closeout-pack/evidence --format json --strict
+python -m sdetkit day36-distribution-closeout --format json --strict
+```
+
+Day 36 upgraded pack artifacts include:
+
+- `day36-distribution-closeout-summary.json`
+- `day36-distribution-closeout-summary.md`
+- `day36-distribution-message-kit.md`
+- `day36-launch-plan.csv`
+- `day36-experiment-backlog.md`
+- `day36-delivery-board.md`
+- `day36-validation-commands.md`
+
+
 ## ⚡ Quick start
 
 ```bash
