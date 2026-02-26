@@ -597,3 +597,11 @@ Free for personal/educational noncommercial use. Commercial use requires a paid 
 - Run deterministic execution evidence lane: `python -m sdetkit day49-weekly-review-closeout --execute --evidence-dir docs/artifacts/day49-weekly-review-closeout-pack/evidence --format json --strict`.
 - Review integration guide: [Day 49 weekly review closeout lane](integrations-day49-weekly-review-closeout.md).
 
+## Day 50 execution prioritization closeout lane
+
+- Read the implementation report: [Day 50 big upgrade report](day-50-big-upgrade-report.md).
+- Run `python -m sdetkit day50-execution-prioritization-closeout --format json --strict` to score execution prioritization closeout readiness.
+- Emit Day 50 execution prioritization closeout pack: `python -m sdetkit day50-execution-prioritization-closeout --emit-pack-dir docs/artifacts/day50-execution-prioritization-closeout-pack --format json --strict`.
+- Run deterministic execution evidence lane: `python -m sdetkit day50-execution-prioritization-closeout --execute --evidence-dir docs/artifacts/day50-execution-prioritization-closeout-pack/evidence --format json --strict`.
+- Review integration guide: [Day 50 execution prioritization closeout lane](integrations-day50-execution-prioritization-closeout.md).
+
