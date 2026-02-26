@@ -1,0 +1,135 @@
+{
+  "name": "day33-demo-asset",
+  "inputs": {
+    "readme": "README.md",
+    "docs_index": "docs/index.md",
+    "docs_page": "docs/integrations-day33-demo-asset.md",
+    "top10": "docs/top-10-github-strategy.md",
+    "day32_summary": "docs/artifacts/day32-release-cadence-pack/day32-release-cadence-summary.json",
+    "day32_delivery_board": "docs/artifacts/day32-release-cadence-pack/day32-delivery-board.md"
+  },
+  "checks": [
+    {
+      "check_id": "docs_page_exists",
+      "weight": 10,
+      "passed": true,
+      "evidence": "/workspace/DevS69-sdetkit/docs/integrations-day33-demo-asset.md"
+    },
+    {
+      "check_id": "required_sections_present",
+      "weight": 10,
+      "passed": true,
+      "evidence": {
+        "missing_sections": []
+      }
+    },
+    {
+      "check_id": "required_commands_present",
+      "weight": 10,
+      "passed": true,
+      "evidence": {
+        "missing_commands": []
+      }
+    },
+    {
+      "check_id": "readme_day33_link",
+      "weight": 8,
+      "passed": true,
+      "evidence": "docs/integrations-day33-demo-asset.md"
+    },
+    {
+      "check_id": "readme_day33_command",
+      "weight": 4,
+      "passed": true,
+      "evidence": "day33-demo-asset"
+    },
+    {
+      "check_id": "docs_index_day33_links",
+      "weight": 8,
+      "passed": true,
+      "evidence": "day-33-ultra-upgrade-report.md + integrations-day33-demo-asset.md"
+    },
+    {
+      "check_id": "top10_day33_alignment",
+      "weight": 5,
+      "passed": true,
+      "evidence": "Day 33 + Day 34 strategy chain"
+    },
+    {
+      "check_id": "day32_summary_present",
+      "weight": 10,
+      "passed": true,
+      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day32-release-cadence-pack/day32-release-cadence-summary.json"
+    },
+    {
+      "check_id": "day32_delivery_board_present",
+      "weight": 8,
+      "passed": true,
+      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day32-release-cadence-pack/day32-delivery-board.md"
+    },
+    {
+      "check_id": "day32_quality_floor",
+      "weight": 10,
+      "passed": true,
+      "evidence": {
+        "day32_score": 100.0,
+        "strict_pass": true,
+        "day32_checks": 14
+      }
+    },
+    {
+      "check_id": "day32_board_integrity",
+      "weight": 7,
+      "passed": true,
+      "evidence": {
+        "board_items": 5,
+        "contains_day33": true,
+        "contains_day34": true
+      }
+    },
+    {
+      "check_id": "demo_contract_locked",
+      "weight": 5,
+      "passed": true,
+      "evidence": {
+        "missing_contract_lines": []
+      }
+    },
+    {
+      "check_id": "demo_quality_checklist_locked",
+      "weight": 3,
+      "passed": true,
+      "evidence": {
+        "missing_quality_items": []
+      }
+    },
+    {
+      "check_id": "delivery_board_locked",
+      "weight": 2,
+      "passed": true,
+      "evidence": {
+        "missing_board_items": []
+      }
+    }
+  ],
+  "rollup": {
+    "day32_activation_score": 100.0,
+    "day32_checks": 14,
+    "day32_delivery_board_items": 5
+  },
+  "summary": {
+    "activation_score": 100,
+    "passed_checks": 14,
+    "failed_checks": 0,
+    "critical_failures": [],
+    "strict_pass": true
+  },
+  "wins": [
+    "Day 32 continuity is strict-pass with activation score=100.0.",
+    "Day 32 delivery board integrity validated with 5 checklist items.",
+    "Demo production contract + quality checklist is fully locked for execution.",
+    "Day 33 demo asset #1 production is fully closed and ready for Day 34 sequencing."
+  ],
+  "misses": [],
+  "handoff_actions": []
+}

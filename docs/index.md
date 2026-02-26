@@ -441,3 +441,13 @@ Free for personal/educational noncommercial use. Commercial use requires a paid 
 - Emit upgraded cadence pack outputs (`summary`, `cadence calendar`, `changelog template`): `python -m sdetkit day32-release-cadence --emit-pack-dir docs/artifacts/day32-release-cadence-pack --format json --strict`.
 - Review integration guide: [Day 32 release cadence setup](integrations-day32-release-cadence.md).
 
+
+## Day 33 ultra upgrades (Demo asset #1 production)
+
+- Read the implementation report: [Day 33 ultra upgrade report](day-33-ultra-upgrade-report.md).
+- Run `python -m sdetkit day33-demo-asset --format json --strict` to score demo-production readiness.
+- Emit Day 33 demo pack: `python -m sdetkit day33-demo-asset --emit-pack-dir docs/artifacts/day33-demo-asset-pack --format json --strict`.
+- Run deterministic execution evidence lane: `python -m sdetkit day33-demo-asset --execute --evidence-dir docs/artifacts/day33-demo-asset-pack/evidence --format json --strict`.
+- Emit upgraded demo pack outputs (`summary`, `demo plan`, `script template`): `python -m sdetkit day33-demo-asset --emit-pack-dir docs/artifacts/day33-demo-asset-pack --format json --strict`.
+- Review integration guide: [Day 33 demo asset #1 production](integrations-day33-demo-asset.md).
+
