@@ -472,3 +472,14 @@ Free for personal/educational noncommercial use. Commercial use requires a paid 
 - Run deterministic execution evidence lane: `python -m sdetkit day35-kpi-instrumentation --execute --evidence-dir docs/artifacts/day35-kpi-instrumentation-pack/evidence --format json --strict`.
 - Emit upgraded KPI pack outputs (`summary`, `kpi dictionary`, `alert policy`): `python -m sdetkit day35-kpi-instrumentation --emit-pack-dir docs/artifacts/day35-kpi-instrumentation-pack --format json --strict`.
 - Review integration guide: [Day 35 KPI instrumentation closeout](integrations-day35-kpi-instrumentation.md).
+
+
+## Day 36 big upgrades (Community distribution closeout)
+
+- Read the implementation report: [Day 36 big upgrade report](day-36-big-upgrade-report.md).
+- Run `python -m sdetkit day36-distribution-closeout --format json --strict` to score distribution closeout readiness.
+- Emit Day 36 distribution pack: `python -m sdetkit day36-distribution-closeout --emit-pack-dir docs/artifacts/day36-distribution-closeout-pack --format json --strict`.
+- Run deterministic execution evidence lane: `python -m sdetkit day36-distribution-closeout --execute --evidence-dir docs/artifacts/day36-distribution-closeout-pack/evidence --format json --strict`.
+- Emit upgraded distribution pack outputs (`summary`, `message kit`, `launch plan`): `python -m sdetkit day36-distribution-closeout --emit-pack-dir docs/artifacts/day36-distribution-closeout-pack --format json --strict`.
+- Review integration guide: [Day 36 community distribution closeout](integrations-day36-distribution-closeout.md).
+

@@ -171,8 +171,8 @@ Phase 2 converts early traction into repeatable growth loops. Each day ships one
 - **Day 34 — Demo asset #2:** produce/publish `repo audit` workflow short video or GIF.
 - **Day 35 — KPI instrumentation closeout:** report growth deltas, lock threshold alerts, and tighten next-week actions.
 
-- **Day 36 — Demo asset #3:** produce/publish `security gate` workflow short video or GIF.
-- **Day 37 — Demo asset #4:** produce/publish `cassette replay` workflow short video or GIF.
+- **Day 36 — Community distribution closeout:** publish Day 35 KPI narrative across GitHub/LinkedIn/newsletter with owner-backed posting windows.
+- **Day 37 — Experiment lane activation:** seed controlled experiments from Day 36 distribution misses and KPI deltas.
 - **Day 38 — Distribution batch #1:** publish coordinated posts linking demo assets to docs.
 - **Day 39 — Playbook post #1:** publish Repo Reliability Playbook article #1.
 - **Day 40 — Playbook post #2:** publish Repo Reliability Playbook article #2.

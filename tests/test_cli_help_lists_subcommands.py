@@ -52,3 +52,4 @@ def test_help_lists_doctor_patch_cassette_get_repo_dev_report_maintenance_agent_
     assert "day33-demo-asset" in out
     assert "day34-demo-asset2" in out
     assert "day35-kpi-instrumentation" in out
+    assert "day36-distribution-closeout" in out
