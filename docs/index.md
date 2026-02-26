@@ -431,3 +431,13 @@ Free for personal/educational noncommercial use. Commercial use requires a paid 
 - Run deterministic execution evidence lane: `python -m sdetkit day31-phase2-kickoff --execute --evidence-dir docs/artifacts/day31-phase2-pack/evidence --format json --strict`.
 - Emit upgraded kickoff pack outputs (`summary`, `baseline snapshot`, `delivery board`): `python -m sdetkit day31-phase2-kickoff --emit-pack-dir docs/artifacts/day31-phase2-pack --format json --strict`.
 - Review integration guide: [Day 31 phase-2 kickoff](integrations-day31-phase2-kickoff.md).
+
+## Day 32 ultra upgrades (Release cadence setup)
+
+- Read the implementation report: [Day 32 ultra upgrade report](day-32-ultra-upgrade-report.md).
+- Run `python -m sdetkit day32-release-cadence --format json --strict` to score release-cadence readiness.
+- Emit Day 32 cadence pack: `python -m sdetkit day32-release-cadence --emit-pack-dir docs/artifacts/day32-release-cadence-pack --format json --strict`.
+- Run deterministic execution evidence lane: `python -m sdetkit day32-release-cadence --execute --evidence-dir docs/artifacts/day32-release-cadence-pack/evidence --format json --strict`.
+- Emit upgraded cadence pack outputs (`summary`, `cadence calendar`, `changelog template`): `python -m sdetkit day32-release-cadence --emit-pack-dir docs/artifacts/day32-release-cadence-pack --format json --strict`.
+- Review integration guide: [Day 32 release cadence setup](integrations-day32-release-cadence.md).
+

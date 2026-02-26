@@ -1,0 +1,13 @@
+{
+  "day": 32,
+  "cadence": {
+    "publish_day": "Friday",
+    "merge_cutoff": "16:00 UTC",
+    "artifact_sla_minutes": 60,
+    "owner_rotation": "weekly"
+  },
+  "quality_gate": {
+    "minimum_activation_score": 95,
+    "rollback_required_below_floor": true
+  }
+}

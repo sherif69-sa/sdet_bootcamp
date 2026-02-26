@@ -1039,6 +1039,35 @@ Day 31 upgraded pack artifacts include:
 - `day31-delivery-board.md`
 - `day31-validation-commands.md`
 
+
+## 🧭 Day 32 ultra: Release cadence setup
+
+- Run `python -m sdetkit day32-release-cadence --format json --strict` to validate Day 32 release-cadence and changelog-quality readiness.
+- Emit shareable cadence pack: `python -m sdetkit day32-release-cadence --emit-pack-dir docs/artifacts/day32-release-cadence-pack --format json --strict`.
+- Execute and collect deterministic logs: `python -m sdetkit day32-release-cadence --execute --evidence-dir docs/artifacts/day32-release-cadence-pack/evidence --format json --strict`.
+- Review Day 32 integration guide: [Release cadence setup](docs/integrations-day32-release-cadence.md).
+
+See implementation details: [Day 32 ultra upgrade report](docs/day-32-ultra-upgrade-report.md).
+
+Day 32 cadence checks:
+
+```bash
+python -m pytest -q tests/test_day32_release_cadence.py tests/test_cli_help_lists_subcommands.py
+python scripts/check_day32_release_cadence_contract.py
+python -m sdetkit day32-release-cadence --emit-pack-dir docs/artifacts/day32-release-cadence-pack --format json --strict
+python -m sdetkit day32-release-cadence --execute --evidence-dir docs/artifacts/day32-release-cadence-pack/evidence --format json --strict
+python -m sdetkit day32-release-cadence --format json --strict
+```
+
+Day 32 upgraded pack artifacts include:
+
+- `day32-release-cadence-summary.json`
+- `day32-release-cadence-summary.md`
+- `day32-cadence-calendar.json`
+- `day32-changelog-template.md`
+- `day32-delivery-board.md`
+- `day32-validation-commands.md`
+
 ## ⚡ Quick start
 
 ```bash
