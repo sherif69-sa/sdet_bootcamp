@@ -1,6 +1,210 @@
 {
   "entries": [
     {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day25-community-pack/day25-community-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day26-external-contribution-pack/day26-external-contribution-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day27-kpi-pack/day27-kpi-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day28-weekly-pack/day28-weekly-review-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day29-hardening-pack/day29-phase1-hardening-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day31-phase2-pack/day31-phase2-kickoff-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day32-release-cadence-pack/day32-release-cadence-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day34-demo-asset2-pack/day34-demo-asset2-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day35-kpi-instrumentation-pack/day35-kpi-instrumentation-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day36-distribution-closeout-pack/day36-distribution-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day37-experiment-lane-pack/day37-experiment-lane-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day38-distribution-batch-pack/day38-distribution-batch-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day39-playbook-post-pack/day39-playbook-post-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day41-expansion-automation-pack/day41-expansion-automation-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day42-optimization-closeout-pack/day42-optimization-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day45-expansion-closeout-pack/day45-expansion-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day46-optimization-closeout-pack/day46-optimization-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day47-reliability-closeout-pack/day47-reliability-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day48-objection-closeout-pack/day48-objection-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day49-weekly-review-closeout-pack/day49-weekly-review-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day50-execution-prioritization-closeout-pack/day50-execution-prioritization-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day52-narrative-closeout-pack/day52-narrative-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day53-docs-loop-closeout-pack/day53-docs-loop-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/community_activation.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day28_weekly_review.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day29_phase1_hardening.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day31_phase2_kickoff.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day32_release_cadence.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day34_demo_asset2.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day35_kpi_instrumentation.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day36_distribution_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day37_experiment_lane.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day38_distribution_batch.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day39_playbook_post.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day41_expansion_automation.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day42_optimization_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day43_acceleration_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day45_expansion_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day46_optimization_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day47_reliability_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day48_objection_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day49_weekly_review_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day50_execution_prioritization_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day52_narrative_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day53_docs_loop_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day56_stabilization_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day57_kpi_deep_audit_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day58_phase2_hardening_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day59_phase3_preplan_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/external_contribution_push.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/kpi_audit.py"
+    },
+    {
       "line": 13,
       "path": "src/sdetkit/atomicio.py",
       "rule_id": "SEC_POTENTIAL_PATH_TRAVERSAL"
