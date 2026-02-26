@@ -16,6 +16,7 @@ from . import (
     day32_release_cadence,
     day33_demo_asset,
     day34_demo_asset2,
+    day35_kpi_instrumentation,
     demo,
     docs_navigation,
     docs_qa,
@@ -159,6 +160,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     if argv and argv[0] == "day34-demo-asset2":
         return day34_demo_asset2.main(list(argv[1:]))
 
+    if argv and argv[0] == "day35-kpi-instrumentation":
+        return day35_kpi_instrumentation.main(list(argv[1:]))
+
     if argv and argv[0] == "faq-objections":
         return faq_objections.main(list(argv[1:]))
 
@@ -298,6 +302,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     d34 = sub.add_parser("day34-demo-asset2")
     d34.add_argument("args", nargs=argparse.REMAINDER)
 
+    d35 = sub.add_parser("day35-kpi-instrumentation")
+    d35.add_argument("args", nargs=argparse.REMAINDER)
+
     fqo = sub.add_parser("faq-objections")
     fqo.add_argument("args", nargs=argparse.REMAINDER)
 
@@ -425,6 +432,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if ns.cmd == "day34-demo-asset2":
         return day34_demo_asset2.main(ns.args)
+
+    if ns.cmd == "day35-kpi-instrumentation":
+        return day35_kpi_instrumentation.main(ns.args)
 
     if ns.cmd == "faq-objections":
         return faq_objections.main(ns.args)

@@ -1127,6 +1127,35 @@ Day 34 upgraded pack artifacts include:
 - `day34-validation-commands.md`
 
 
+## 📈 Day 35 big upgrade: KPI instrumentation closeout
+
+- Run `python -m sdetkit day35-kpi-instrumentation --format json --strict` to validate Day 35 KPI instrumentation readiness.
+- Emit shareable KPI pack: `python -m sdetkit day35-kpi-instrumentation --emit-pack-dir docs/artifacts/day35-kpi-instrumentation-pack --format json --strict`.
+- Execute and collect deterministic logs: `python -m sdetkit day35-kpi-instrumentation --execute --evidence-dir docs/artifacts/day35-kpi-instrumentation-pack/evidence --format json --strict`.
+- Review Day 35 integration guide: [KPI instrumentation closeout](docs/integrations-day35-kpi-instrumentation.md).
+
+See implementation details: [Day 35 big upgrade report](docs/day-35-big-upgrade-report.md).
+
+Day 35 demo checks:
+
+```bash
+python -m pytest -q tests/test_day35_kpi_instrumentation.py tests/test_cli_help_lists_subcommands.py
+python scripts/check_day35_kpi_instrumentation_contract.py
+python -m sdetkit day35-kpi-instrumentation --emit-pack-dir docs/artifacts/day35-kpi-instrumentation-pack --format json --strict
+python -m sdetkit day35-kpi-instrumentation --execute --evidence-dir docs/artifacts/day35-kpi-instrumentation-pack/evidence --format json --strict
+python -m sdetkit day35-kpi-instrumentation --format json --strict
+```
+
+Day 35 upgraded pack artifacts include:
+
+- `day35-kpi-instrumentation-summary.json`
+- `day35-kpi-instrumentation-summary.md`
+- `day35-kpi-dictionary.csv`
+- `day35-alert-policy.md`
+- `day35-delivery-board.md`
+- `day35-validation-commands.md`
+
+
 ## ⚡ Quick start
 
 ```bash
