@@ -1187,6 +1187,37 @@ Day 36 upgraded pack artifacts include:
 - `day36-validation-commands.md`
 
 
+## 🧪 Day 37 big upgrade: Experiment lane activation
+
+- Run `python -m sdetkit day37-experiment-lane --format json --strict` to validate Day 37 experiment readiness.
+- Emit shareable experiment pack: `python -m sdetkit day37-experiment-lane --emit-pack-dir docs/artifacts/day37-experiment-lane-pack --format json --strict`.
+- Execute and collect deterministic logs: `python -m sdetkit day37-experiment-lane --execute --evidence-dir docs/artifacts/day37-experiment-lane-pack/evidence --format json --strict`.
+- Review Day 37 integration guide: [Experiment lane activation](docs/integrations-day37-experiment-lane.md).
+
+See implementation details: [Day 37 big upgrade report](docs/day-37-big-upgrade-report.md).
+
+Day 37 demo checks:
+
+```bash
+python -m pytest -q tests/test_day37_experiment_lane.py tests/test_cli_help_lists_subcommands.py
+python scripts/check_day37_experiment_lane_contract.py
+python -m sdetkit day37-experiment-lane --emit-pack-dir docs/artifacts/day37-experiment-lane-pack --format json --strict
+python -m sdetkit day37-experiment-lane --execute --evidence-dir docs/artifacts/day37-experiment-lane-pack/evidence --format json --strict
+python -m sdetkit day37-experiment-lane --format json --strict
+```
+
+Day 37 upgraded pack artifacts include:
+
+- `day37-experiment-lane-summary.json`
+- `day37-experiment-lane-summary.md`
+- `day37-experiment-matrix.csv`
+- `day37-hypothesis-brief.md`
+- `day37-experiment-scorecard.json`
+- `day37-decision-log.md`
+- `day37-delivery-board.md`
+- `day37-validation-commands.md`
+
+
 ## ⚡ Quick start
 
 ```bash
