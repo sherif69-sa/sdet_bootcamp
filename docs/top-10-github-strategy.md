@@ -167,7 +167,7 @@ Phase 2 converts early traction into repeatable growth loops. Each day ships one
 
 - **Day 31 — Phase-2 kickoff:** set baseline metrics from end of Phase 1 and define weekly growth targets.
 - **Day 32 — Release cadence setup:** lock weekly release rhythm and changelog publication checklist.
-- **Day 33 — Demo asset #1:** produce/publish `doctor` workflow short video or GIF.
+- **Day 33 — Demo asset #1:** produce/publish `doctor` workflow short video or GIF, with command evidence and docs CTA.
 - **Day 34 — Demo asset #2:** produce/publish `repo audit` workflow short video or GIF.
 - **Day 35 — Weekly review #5:** report growth deltas and tighten next-week actions.
 

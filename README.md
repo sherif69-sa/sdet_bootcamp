@@ -1068,6 +1068,35 @@ Day 32 upgraded pack artifacts include:
 - `day32-delivery-board.md`
 - `day32-validation-commands.md`
 
+
+## 🎬 Day 33 ultra: Demo asset #1 production
+
+- Run `python -m sdetkit day33-demo-asset --format json --strict` to validate Day 33 demo-production readiness.
+- Emit shareable demo pack: `python -m sdetkit day33-demo-asset --emit-pack-dir docs/artifacts/day33-demo-asset-pack --format json --strict`.
+- Execute and collect deterministic logs: `python -m sdetkit day33-demo-asset --execute --evidence-dir docs/artifacts/day33-demo-asset-pack/evidence --format json --strict`.
+- Review Day 33 integration guide: [Demo asset #1 production](docs/integrations-day33-demo-asset.md).
+
+See implementation details: [Day 33 ultra upgrade report](docs/day-33-ultra-upgrade-report.md).
+
+Day 33 demo checks:
+
+```bash
+python -m pytest -q tests/test_day33_demo_asset.py tests/test_cli_help_lists_subcommands.py
+python scripts/check_day33_demo_asset_contract.py
+python -m sdetkit day33-demo-asset --emit-pack-dir docs/artifacts/day33-demo-asset-pack --format json --strict
+python -m sdetkit day33-demo-asset --execute --evidence-dir docs/artifacts/day33-demo-asset-pack/evidence --format json --strict
+python -m sdetkit day33-demo-asset --format json --strict
+```
+
+Day 33 upgraded pack artifacts include:
+
+- `day33-demo-asset-summary.json`
+- `day33-demo-asset-summary.md`
+- `day33-demo-asset-plan.json`
+- `day33-demo-script.md`
+- `day33-delivery-board.md`
+- `day33-validation-commands.md`
+
 ## ⚡ Quick start
 
 ```bash
