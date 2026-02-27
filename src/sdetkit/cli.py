@@ -50,6 +50,7 @@ from . import (
     day67_integration_expansion3_closeout,
     day68_integration_expansion4_closeout,
     day69_case_study_prep1_closeout,
+    day70_case_study_prep2_closeout,
     demo,
     docs_navigation,
     docs_qa,
@@ -288,6 +289,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     if argv and argv[0] == "day69-case-study-prep1-closeout":
         return day69_case_study_prep1_closeout.main(list(argv[1:]))
 
+    if argv and argv[0] == "day70-case-study-prep2-closeout":
+        return day70_case_study_prep2_closeout.main(list(argv[1:]))
+
     if argv and argv[0] == "faq-objections":
         return faq_objections.main(list(argv[1:]))
 
@@ -521,6 +525,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     d69 = sub.add_parser("day69-case-study-prep1-closeout")
     d69.add_argument("args", nargs=argparse.REMAINDER)
 
+    d70 = sub.add_parser("day70-case-study-prep2-closeout")
+    d70.add_argument("args", nargs=argparse.REMAINDER)
+
     fqo = sub.add_parser("faq-objections")
     fqo.add_argument("args", nargs=argparse.REMAINDER)
 
@@ -740,6 +747,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if ns.cmd == "day69-case-study-prep1-closeout":
         return day69_case_study_prep1_closeout.main(ns.args)
+
+    if ns.cmd == "day70-case-study-prep2-closeout":
+        return day70_case_study_prep2_closeout.main(ns.args)
 
     if ns.cmd == "faq-objections":
         return faq_objections.main(ns.args)
