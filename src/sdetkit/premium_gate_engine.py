@@ -19,7 +19,7 @@ SEVERITY_WEIGHT = {
     "medium": 7,
     "low": 3,
     "warn": 6,
-    "info": 1,
+    "info": 0,
     "unknown": 5,
 }
 
@@ -29,7 +29,7 @@ SEVERITY_RANK = {
     "medium": 4,
     "warn": 3,
     "low": 2,
-    "info": 1,
+    "info": 0,
     "unknown": 0,
 }
 
@@ -230,12 +230,13 @@ def _parse_security(payload: dict[str, Any]) -> SourceResult:
         if not isinstance(item, dict):
             continue
         rule = _safe_text(item.get("rule_id") or item.get("rule") or "finding")
+        severity = _normalize_severity(_safe_text(item.get("severity", "unknown")))
         path = _safe_text(item.get("path"))
         line = _safe_text(item.get("line"))
         msg = " ".join(x for x in [rule, path, f"line={line}" if line else ""] if x)
-        warnings.append(
-            _make_signal("security", rule, _safe_text(item.get("severity", "unknown")), msg)
-        )
+        if severity == "info":
+            continue
+        warnings.append(_make_signal("security", rule, severity, msg))
 
     totals = payload.get("totals")
     if isinstance(totals, dict):
@@ -725,8 +726,12 @@ def run_autofix(out_dir: Path, fix_root: Path) -> list[AutoFixResult]:
 
     results: list[AutoFixResult] = []
     for finding in security_payload.get("findings", []):
-        if isinstance(finding, dict):
-            results.append(_apply_autofix_for_finding(fix_root, finding))
+        if not isinstance(finding, dict):
+            continue
+        severity = _normalize_severity(_safe_text(finding.get("severity", "unknown")))
+        if severity == "info":
+            continue
+        results.append(_apply_autofix_for_finding(fix_root, finding))
     return results
 
 
