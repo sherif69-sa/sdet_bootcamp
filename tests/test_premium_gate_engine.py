@@ -165,6 +165,45 @@ def test_main_auto_fix_adds_manual_followup_recommendation(tmp_path: Path, capsy
     assert payload["manual_fix_plan"][0]["suggested_edit"]
 
 
+def test_collect_signals_ignores_info_security_findings(tmp_path: Path) -> None:
+    (tmp_path / "doctor.json").write_text(
+        json.dumps({"checks": {}, "recommendations": []}), encoding="utf-8"
+    )
+    (tmp_path / "maintenance.json").write_text(
+        json.dumps({"checks": [], "recommendations": []}), encoding="utf-8"
+    )
+    (tmp_path / "security-check.json").write_text(
+        json.dumps(
+            {
+                "findings": [
+                    {
+                        "rule_id": "SEC_DEBUG_PRINT",
+                        "severity": "info",
+                        "path": "src/app.py",
+                        "line": 12,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    payload = eng.collect_signals(tmp_path)
+    assert payload["counts"]["warnings"] == 0
+
+
+def test_run_autofix_ignores_info_findings(tmp_path: Path) -> None:
+    (tmp_path / "security-check.json").write_text(
+        json.dumps(
+            {"findings": [{"rule_id": "SEC_DEBUG_PRINT", "severity": "info", "path": "src/app.py"}]}
+        ),
+        encoding="utf-8",
+    )
+
+    results = eng.run_autofix(tmp_path, tmp_path)
+    assert results == []
+
+
 def test_main_markdown_format_includes_five_heads_and_plan(tmp_path: Path, capsys) -> None:
     (tmp_path / "doctor.json").write_text(
         json.dumps({"checks": {}, "recommendations": []}), encoding="utf-8"
