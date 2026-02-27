@@ -41,6 +41,7 @@ from . import (
     day58_phase2_hardening_closeout,
     day59_phase3_preplan_closeout,
     day60_phase2_wrap_handoff_closeout,
+    day61_phase3_kickoff_closeout,
     demo,
     docs_navigation,
     docs_qa,
@@ -252,6 +253,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     if argv and argv[0] == "day60-phase2-wrap-handoff-closeout":
         return day60_phase2_wrap_handoff_closeout.main(list(argv[1:]))
 
+    if argv and argv[0] == "day61-phase3-kickoff-closeout":
+        return day61_phase3_kickoff_closeout.main(list(argv[1:]))
+
     if argv and argv[0] == "faq-objections":
         return faq_objections.main(list(argv[1:]))
 
@@ -458,6 +462,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     d60 = sub.add_parser("day60-phase2-wrap-handoff-closeout")
     d60.add_argument("args", nargs=argparse.REMAINDER)
 
+    d61 = sub.add_parser("day61-phase3-kickoff-closeout")
+    d61.add_argument("args", nargs=argparse.REMAINDER)
+
     fqo = sub.add_parser("faq-objections")
     fqo.add_argument("args", nargs=argparse.REMAINDER)
 
@@ -650,6 +657,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if ns.cmd == "day60-phase2-wrap-handoff-closeout":
         return day60_phase2_wrap_handoff_closeout.main(ns.args)
+
+    if ns.cmd == "day61-phase3-kickoff-closeout":
+        return day61_phase3_kickoff_closeout.main(ns.args)
 
     if ns.cmd == "faq-objections":
         return faq_objections.main(ns.args)
