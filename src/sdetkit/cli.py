@@ -47,6 +47,7 @@ from . import (
     day64_integration_expansion_closeout,
     day65_weekly_review_closeout,
     day66_integration_expansion2_closeout,
+    day67_integration_expansion3_closeout,
     demo,
     docs_navigation,
     docs_qa,
@@ -276,6 +277,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     if argv and argv[0] == "day66-integration-expansion2-closeout":
         return day66_integration_expansion2_closeout.main(list(argv[1:]))
 
+    if argv and argv[0] == "day67-integration-expansion3-closeout":
+        return day67_integration_expansion3_closeout.main(list(argv[1:]))
+
     if argv and argv[0] == "faq-objections":
         return faq_objections.main(list(argv[1:]))
 
@@ -500,6 +504,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     d66 = sub.add_parser("day66-integration-expansion2-closeout")
     d66.add_argument("args", nargs=argparse.REMAINDER)
 
+    d67 = sub.add_parser("day67-integration-expansion3-closeout")
+    d67.add_argument("args", nargs=argparse.REMAINDER)
+
     fqo = sub.add_parser("faq-objections")
     fqo.add_argument("args", nargs=argparse.REMAINDER)
 
@@ -710,6 +717,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if ns.cmd == "day66-integration-expansion2-closeout":
         return day66_integration_expansion2_closeout.main(ns.args)
+
+    if ns.cmd == "day67-integration-expansion3-closeout":
+        return day67_integration_expansion3_closeout.main(ns.args)
 
     if ns.cmd == "faq-objections":
         return faq_objections.main(ns.args)
