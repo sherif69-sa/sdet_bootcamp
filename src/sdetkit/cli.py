@@ -65,6 +65,7 @@ from . import (
     day82_integration_feedback_closeout,
     day83_trust_faq_expansion_closeout,
     day84_evidence_narrative_closeout,
+    day85_release_prioritization_closeout,
     demo,
     docs_navigation,
     docs_qa,
@@ -348,6 +349,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     if argv and argv[0] == "day84-evidence-narrative-closeout":
         return day84_evidence_narrative_closeout.main(list(argv[1:]))
 
+    if argv and argv[0] == "day85-release-prioritization-closeout":
+        return day85_release_prioritization_closeout.main(list(argv[1:]))
+
     if argv and argv[0] == "faq-objections":
         return faq_objections.main(list(argv[1:]))
 
@@ -611,6 +615,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     d83.add_argument("args", nargs=argparse.REMAINDER)
     d84 = sub.add_parser("day84-evidence-narrative-closeout")
     d84.add_argument("args", nargs=argparse.REMAINDER)
+    d85 = sub.add_parser("day85-release-prioritization-closeout")
+    d85.add_argument("args", nargs=argparse.REMAINDER)
 
     fqo = sub.add_parser("faq-objections")
     fqo.add_argument("args", nargs=argparse.REMAINDER)
@@ -876,6 +882,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if ns.cmd == "day84-evidence-narrative-closeout":
         return day84_evidence_narrative_closeout.main(ns.args)
+
+    if ns.cmd == "day85-release-prioritization-closeout":
+        return day85_release_prioritization_closeout.main(ns.args)
 
     if ns.cmd == "faq-objections":
         return faq_objections.main(ns.args)
