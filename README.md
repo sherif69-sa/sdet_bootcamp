@@ -1625,6 +1625,15 @@ See implementation details: [Day 59 big upgrade report](docs/day-59-big-upgrade-
 
 See implementation details: [Day 60 big upgrade report](docs/day-60-big-upgrade-report.md).
 
+### Day 61 — Phase-3 kickoff execution closeout lane
+
+- Run `python -m sdetkit day61-phase3-kickoff-closeout --format json --strict` to validate Day 61 Phase-3 kickoff readiness.
+- Emit shareable Day 61 Phase-3 kickoff pack: `python -m sdetkit day61-phase3-kickoff-closeout --emit-pack-dir docs/artifacts/day61-phase3-kickoff-closeout-pack --format json --strict`.
+- Execute and collect deterministic logs: `python -m sdetkit day61-phase3-kickoff-closeout --execute --evidence-dir docs/artifacts/day61-phase3-kickoff-closeout-pack/evidence --format json --strict`.
+- Review Day 61 integration guide: [Phase-3 kickoff closeout lane](docs/integrations-day61-phase3-kickoff-closeout.md).
+
+See implementation details: [Day 61 big upgrade report](docs/day-61-big-upgrade-report.md).
+
 ## 🧱 Repository navigation (short version)
 
 For a cleaner README experience, the giant file listings were removed.
