@@ -931,3 +931,12 @@ Free for personal/educational noncommercial use. Commercial use requires a paid 
 - Emit Day 89 governance scale closeout pack: `python -m sdetkit day89-governance-scale-closeout --emit-pack-dir docs/artifacts/day89-governance-scale-closeout-pack --format json --strict`.
 - Run deterministic execution evidence lane: `python -m sdetkit day89-governance-scale-closeout --execute --evidence-dir docs/artifacts/day89-governance-scale-closeout-pack/evidence --format json --strict`.
 - Review integration guide: [Day 89 governance scale closeout lane](integrations-day89-governance-scale-closeout.md).
+
+## Day 90 phase-3 wrap publication closeout lane
+
+- Read the implementation report: [Day 90 big upgrade report](day-90-big-upgrade-report.md).
+- Run `python -m sdetkit day90-phase3-wrap-publication-closeout --format json --strict` to score phase-3 wrap publication readiness.
+- Emit Day 90 phase-3 wrap publication closeout pack: `python -m sdetkit day90-phase3-wrap-publication-closeout --emit-pack-dir docs/artifacts/day90-phase3-wrap-publication-closeout-pack --format json --strict`.
+- Run deterministic execution evidence lane: `python -m sdetkit day90-phase3-wrap-publication-closeout --execute --evidence-dir docs/artifacts/day90-phase3-wrap-publication-closeout-pack/evidence --format json --strict`.
+- Review integration guide: [Day 90 phase-3 wrap publication closeout lane](integrations-day90-phase3-wrap-publication-closeout.md).
+
