@@ -63,6 +63,7 @@ from . import (
     day80_partner_outreach_closeout,
     day81_growth_campaign_closeout,
     day82_integration_feedback_closeout,
+    day83_trust_faq_expansion_closeout,
     demo,
     docs_navigation,
     docs_qa,
@@ -340,6 +341,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     if argv and argv[0] == "day82-integration-feedback-closeout":
         return day82_integration_feedback_closeout.main(list(argv[1:]))
 
+    if argv and argv[0] == "day83-trust-faq-expansion-closeout":
+        return day83_trust_faq_expansion_closeout.main(list(argv[1:]))
+
     if argv and argv[0] == "faq-objections":
         return faq_objections.main(list(argv[1:]))
 
@@ -599,6 +603,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     d81.add_argument("args", nargs=argparse.REMAINDER)
     d82 = sub.add_parser("day82-integration-feedback-closeout")
     d82.add_argument("args", nargs=argparse.REMAINDER)
+    d83 = sub.add_parser("day83-trust-faq-expansion-closeout")
+    d83.add_argument("args", nargs=argparse.REMAINDER)
 
     fqo = sub.add_parser("faq-objections")
     fqo.add_argument("args", nargs=argparse.REMAINDER)
@@ -858,6 +864,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if ns.cmd == "day82-integration-feedback-closeout":
         return day82_integration_feedback_closeout.main(ns.args)
+
+    if ns.cmd == "day83-trust-faq-expansion-closeout":
+        return day83_trust_faq_expansion_closeout.main(ns.args)
 
     if ns.cmd == "faq-objections":
         return faq_objections.main(ns.args)

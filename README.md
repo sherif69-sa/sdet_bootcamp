@@ -1834,6 +1834,15 @@ See implementation details: [Day 81 big upgrade report](docs/day-81-big-upgrade-
 
 See implementation details: [Day 82 big upgrade report](docs/day-82-big-upgrade-report.md).
 
+### Day 83 — Trust FAQ expansion closeout lane
+
+- Run `python -m sdetkit day83-trust-faq-expansion-closeout --format json --strict` to validate Day 83 trust FAQ expansion readiness.
+- Emit shareable Day 83 trust FAQ expansion pack: `python -m sdetkit day83-trust-faq-expansion-closeout --emit-pack-dir docs/artifacts/day83-trust-faq-expansion-closeout-pack --format json --strict`.
+- Execute and collect deterministic logs: `python -m sdetkit day83-trust-faq-expansion-closeout --execute --evidence-dir docs/artifacts/day83-trust-faq-expansion-closeout-pack/evidence --format json --strict`.
+- Review Day 83 integration guide: [Trust FAQ expansion closeout lane](docs/integrations-day83-trust-faq-expansion-closeout.md).
+
+See implementation details: [Day 83 big upgrade report](docs/day-83-big-upgrade-report.md).
+
 ## 🧱 Repository navigation (short version)
 
 For a cleaner README experience, the giant file listings were removed.

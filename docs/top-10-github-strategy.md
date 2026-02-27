@@ -258,6 +258,8 @@ Phase 3 turns growth into durable ecosystem trust: stronger community rituals, d
 - **Day 81 — Growth campaign closeout:** convert partner signals into measurable campaign execution controls.
 - **Day 82 — Integration feedback loop:** fold field feedback into docs/templates.
 - **Day 82 — Community touchpoint #2:** run second office-hours/community Q&A session.
+- **Day 83 — Trust FAQ expansion loop:** translate Day 82 signals into trust FAQ upgrades with clear rollback controls.
+- **Day 83 — Escalation safety lane:** document objection escalation paths, SLA gates, and evidence owners.
 - **Day 83 — Trust FAQ expansion:** answer top compliance/security objections from real users.
 - **Day 84 — Weekly review #12:** compare Phase-3 week-over-week ecosystem metrics.
 
