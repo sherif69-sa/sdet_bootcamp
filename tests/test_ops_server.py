@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import socket
 import threading
 import time
 import urllib.request
@@ -11,12 +12,31 @@ import pytest
 from sdetkit.ops import serve
 
 
+def _free_port() -> int:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.bind(("127.0.0.1", 0))
+        return int(sock.getsockname()[1])
+
+
+def _wait_until_up(port: int, timeout_s: float = 3.0) -> None:
+    deadline = time.time() + timeout_s
+    last_error: Exception | None = None
+    while time.time() < deadline:
+        try:
+            urllib.request.urlopen(f"http://127.0.0.1:{port}/health", timeout=0.5).read()
+            return
+        except Exception as exc:  # noqa: BLE001
+            last_error = exc
+            time.sleep(0.05)
+    raise AssertionError(f"server did not start on port {port}: {last_error}")
+
+
 @pytest.mark.network
 def test_server_health_actions(tmp_path: Path) -> None:
-    port = 8877
+    port = _free_port()
     thread = threading.Thread(target=serve, args=("127.0.0.1", port, tmp_path), daemon=True)
     thread.start()
-    time.sleep(0.1)
+    _wait_until_up(port)
 
     health = urllib.request.urlopen(f"http://127.0.0.1:{port}/health", timeout=2).read()
     payload = json.loads(health.decode("utf-8"))
@@ -29,10 +49,10 @@ def test_server_health_actions(tmp_path: Path) -> None:
 
 @pytest.mark.network
 def test_server_rejects_invalid_run_id(tmp_path: Path) -> None:
-    port = 8878
+    port = _free_port()
     thread = threading.Thread(target=serve, args=("127.0.0.1", port, tmp_path), daemon=True)
     thread.start()
-    time.sleep(0.1)
+    _wait_until_up(port)
 
     try:
         urllib.request.urlopen(f"http://127.0.0.1:{port}/runs/../etc/passwd", timeout=2)
@@ -44,10 +64,10 @@ def test_server_rejects_invalid_run_id(tmp_path: Path) -> None:
 
 @pytest.mark.network
 def test_server_rejects_run_workflow_path_with_directories(tmp_path: Path) -> None:
-    port = 8879
+    port = _free_port()
     thread = threading.Thread(target=serve, args=("127.0.0.1", port, tmp_path), daemon=True)
     thread.start()
-    time.sleep(0.1)
+    _wait_until_up(port)
 
     req = urllib.request.Request(
         f"http://127.0.0.1:{port}/run-workflow",
