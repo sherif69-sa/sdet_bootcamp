@@ -7,7 +7,7 @@ on:
       python-versions:
         required: false
         type: string
-        default: '["3.10", "3.11", "3.12"]'
+        default: '["3.11", "3.12", "3.13"]'
   pull_request:
   push:
     branches: [main]
@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.11", "3.12", "3.13"]
     concurrency:
       group: day64-reference-${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
