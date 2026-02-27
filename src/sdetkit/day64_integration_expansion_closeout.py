@@ -9,10 +9,10 @@ from typing import Any
 
 _PAGE_PATH = "docs/integrations-day64-integration-expansion-closeout.md"
 _TOP10_PATH = "docs/top-10-github-strategy.md"
-_DAY63_SUMMARY_PATH = (
-    "docs/artifacts/day63-onboarding-activation-closeout-pack/day63-onboarding-activation-closeout-summary.json"
+_DAY63_SUMMARY_PATH = "docs/artifacts/day63-onboarding-activation-closeout-pack/day63-onboarding-activation-closeout-summary.json"
+_DAY63_BOARD_PATH = (
+    "docs/artifacts/day63-onboarding-activation-closeout-pack/day63-delivery-board.md"
 )
-_DAY63_BOARD_PATH = "docs/artifacts/day63-onboarding-activation-closeout-pack/day63-delivery-board.md"
 _WORKFLOW_PATH = ".github/workflows/day64-advanced-github-actions-reference.yml"
 _SECTION_HEADER = "# Day 64 — Integration expansion #1 closeout lane"
 _REQUIRED_SECTIONS = [
@@ -285,22 +285,32 @@ def build_day64_integration_expansion_closeout_summary(root: Path) -> dict[str, 
         wins.append(f"Day 63 continuity is strict-pass with activation score={day63_score}.")
     else:
         misses.append("Day 63 strict continuity signal is missing.")
-        handoff_actions.append("Re-run Day 63 closeout command and restore strict baseline before Day 64 lock.")
+        handoff_actions.append(
+            "Re-run Day 63 closeout command and restore strict baseline before Day 64 lock."
+        )
 
     if board_count >= 5 and board_has_day63:
-        wins.append(f"Day 63 delivery board integrity validated with {board_count} checklist items.")
+        wins.append(
+            f"Day 63 delivery board integrity validated with {board_count} checklist items."
+        )
     else:
-        misses.append("Day 63 delivery board integrity is incomplete (needs >=5 items and Day 63 anchors).")
+        misses.append(
+            "Day 63 delivery board integrity is incomplete (needs >=5 items and Day 63 anchors)."
+        )
         handoff_actions.append("Repair Day 63 delivery board entries to include Day 63 anchors.")
 
     if not missing_workflow_lines:
         wins.append("Advanced GitHub Actions workflow reference is fully locked for execution.")
     else:
         misses.append("Advanced workflow reference is missing required controls.")
-        handoff_actions.append("Complete workflow_dispatch/workflow_call/matrix/concurrency/cache lines in workflow file.")
+        handoff_actions.append(
+            "Complete workflow_dispatch/workflow_call/matrix/concurrency/cache lines in workflow file."
+        )
 
     if not failed and not critical_failures:
-        wins.append("Day 64 integration expansion closeout lane is fully complete and ready for Day 65 weekly review.")
+        wins.append(
+            "Day 64 integration expansion closeout lane is fully complete and ready for Day 65 weekly review."
+        )
 
     score = int(round(sum(c["weight"] for c in checks if c["passed"])))
     return {
@@ -311,8 +321,12 @@ def build_day64_integration_expansion_closeout_summary(root: Path) -> dict[str, 
             "docs_page": _PAGE_PATH,
             "top10": _TOP10_PATH,
             "workflow": _WORKFLOW_PATH,
-            "day63_summary": str(day63_summary.relative_to(root)) if day63_summary.exists() else str(day63_summary),
-            "day63_delivery_board": str(day63_board.relative_to(root)) if day63_board.exists() else str(day63_board),
+            "day63_summary": str(day63_summary.relative_to(root))
+            if day63_summary.exists()
+            else str(day63_summary),
+            "day63_delivery_board": str(day63_board.relative_to(root))
+            if day63_board.exists()
+            else str(day63_board),
         },
         "checks": checks,
         "rollup": {
@@ -351,15 +365,24 @@ def _write(path: Path, text: str) -> None:
 
 def _emit_pack(root: Path, pack_dir: Path, payload: dict[str, Any]) -> None:
     target = pack_dir if pack_dir.is_absolute() else root / pack_dir
-    _write(target / "day64-integration-expansion-closeout-summary.json", json.dumps(payload, indent=2) + "\n")
+    _write(
+        target / "day64-integration-expansion-closeout-summary.json",
+        json.dumps(payload, indent=2) + "\n",
+    )
     _write(target / "day64-integration-expansion-closeout-summary.md", _render_text(payload) + "\n")
     _write(target / "day64-integration-brief.md", "# Day 64 integration brief\n")
     _write(target / "day64-workflow-blueprint.md", "# Day 64 workflow blueprint\n")
     _write(target / "day64-matrix-plan.csv", "os,python-version,owner\n")
     _write(target / "day64-kpi-scorecard.json", json.dumps({"kpis": []}, indent=2) + "\n")
     _write(target / "day64-execution-log.md", "# Day 64 execution log\n")
-    _write(target / "day64-delivery-board.md", "\n".join(["# Day 64 delivery board", *_REQUIRED_DELIVERY_BOARD_LINES]) + "\n")
-    _write(target / "day64-validation-commands.md", "# Day 64 validation commands\n\n```bash\n" + "\n".join(_EXECUTION_COMMANDS) + "\n```\n")
+    _write(
+        target / "day64-delivery-board.md",
+        "\n".join(["# Day 64 delivery board", *_REQUIRED_DELIVERY_BOARD_LINES]) + "\n",
+    )
+    _write(
+        target / "day64-validation-commands.md",
+        "# Day 64 validation commands\n\n```bash\n" + "\n".join(_EXECUTION_COMMANDS) + "\n```\n",
+    )
 
 
 def _execute_commands(root: Path, evidence_dir: Path) -> None:
@@ -368,10 +391,18 @@ def _execute_commands(root: Path, evidence_dir: Path) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     for idx, command in enumerate(_EXECUTION_COMMANDS, start=1):
         result = subprocess.run(shlex.split(command), cwd=root, capture_output=True, text=True)
-        event = {"command": command, "returncode": result.returncode, "stdout": result.stdout, "stderr": result.stderr}
+        event = {
+            "command": command,
+            "returncode": result.returncode,
+            "stdout": result.stdout,
+            "stderr": result.stderr,
+        }
         events.append(event)
         _write(out_dir / f"command-{idx:02d}.log", json.dumps(event, indent=2) + "\n")
-    _write(out_dir / "day64-execution-summary.json", json.dumps({"total_commands": len(events), "commands": events}, indent=2) + "\n")
+    _write(
+        out_dir / "day64-execution-summary.json",
+        json.dumps({"total_commands": len(events), "commands": events}, indent=2) + "\n",
+    )
 
 
 def main(argv: list[str] | None = None) -> int:

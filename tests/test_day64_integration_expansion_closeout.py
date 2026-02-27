@@ -42,7 +42,9 @@ def _seed_repo(root: Path) -> None:
         ),
         encoding="utf-8",
     )
-    board = root / "docs/artifacts/day63-onboarding-activation-closeout-pack/day63-delivery-board.md"
+    board = (
+        root / "docs/artifacts/day63-onboarding-activation-closeout-pack/day63-delivery-board.md"
+    )
     board.write_text(
         "\n".join(
             [
@@ -111,8 +113,12 @@ def test_day64_emit_pack_and_execute(tmp_path: Path) -> None:
         ]
     )
     assert rc == 0
-    assert (tmp_path / "artifacts/day64-pack/day64-integration-expansion-closeout-summary.json").exists()
-    assert (tmp_path / "artifacts/day64-pack/day64-integration-expansion-closeout-summary.md").exists()
+    assert (
+        tmp_path / "artifacts/day64-pack/day64-integration-expansion-closeout-summary.json"
+    ).exists()
+    assert (
+        tmp_path / "artifacts/day64-pack/day64-integration-expansion-closeout-summary.md"
+    ).exists()
     assert (tmp_path / "artifacts/day64-pack/day64-integration-brief.md").exists()
     assert (tmp_path / "artifacts/day64-pack/day64-workflow-blueprint.md").exists()
     assert (tmp_path / "artifacts/day64-pack/day64-matrix-plan.csv").exists()
@@ -134,6 +140,8 @@ def test_day64_strict_fails_without_day63(tmp_path: Path) -> None:
 
 def test_day64_cli_dispatch(tmp_path: Path, capsys) -> None:
     _seed_repo(tmp_path)
-    rc = cli.main(["day64-integration-expansion-closeout", "--root", str(tmp_path), "--format", "text"])
+    rc = cli.main(
+        ["day64-integration-expansion-closeout", "--root", str(tmp_path), "--format", "text"]
+    )
     assert rc == 0
     assert "Day 64 integration expansion closeout summary" in capsys.readouterr().out
