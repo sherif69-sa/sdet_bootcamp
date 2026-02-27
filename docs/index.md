@@ -887,3 +887,11 @@ Free for personal/educational noncommercial use. Commercial use requires a paid 
 - Emit Day 84 evidence narrative closeout pack: `python -m sdetkit day84-evidence-narrative-closeout --emit-pack-dir docs/artifacts/day84-evidence-narrative-closeout-pack --format json --strict`.
 - Run deterministic execution evidence lane: `python -m sdetkit day84-evidence-narrative-closeout --execute --evidence-dir docs/artifacts/day84-evidence-narrative-closeout-pack/evidence --format json --strict`.
 - Review integration guide: [Day 84 evidence narrative closeout lane](integrations-day84-evidence-narrative-closeout.md).
+
+## Day 85 release prioritization closeout lane
+
+- Read the implementation report: [Day 85 big upgrade report](day-85-big-upgrade-report.md).
+- Run `python -m sdetkit day85-release-prioritization-closeout --format json --strict` to score release prioritization readiness.
+- Emit Day 85 release prioritization closeout pack: `python -m sdetkit day85-release-prioritization-closeout --emit-pack-dir docs/artifacts/day85-release-prioritization-closeout-pack --format json --strict`.
+- Run deterministic execution evidence lane: `python -m sdetkit day85-release-prioritization-closeout --execute --evidence-dir docs/artifacts/day85-release-prioritization-closeout-pack/evidence --format json --strict`.
+- Review integration guide: [Day 85 release prioritization closeout lane](integrations-day85-release-prioritization-closeout.md).

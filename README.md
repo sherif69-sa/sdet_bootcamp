@@ -1852,6 +1852,15 @@ See implementation details: [Day 83 big upgrade report](docs/day-83-big-upgrade-
 
 See implementation details: [Day 84 big upgrade report](docs/day-84-big-upgrade-report.md).
 
+### Day 85 — Release prioritization closeout lane
+
+- Run `python -m sdetkit day85-release-prioritization-closeout --format json --strict` to validate Day 85 release prioritization readiness.
+- Emit shareable Day 85 release prioritization pack: `python -m sdetkit day85-release-prioritization-closeout --emit-pack-dir docs/artifacts/day85-release-prioritization-closeout-pack --format json --strict`.
+- Execute and collect deterministic logs: `python -m sdetkit day85-release-prioritization-closeout --execute --evidence-dir docs/artifacts/day85-release-prioritization-closeout-pack/evidence --format json --strict`.
+- Review Day 85 integration guide: [Release prioritization closeout lane](docs/integrations-day85-release-prioritization-closeout.md).
+
+See implementation details: [Day 85 big upgrade report](docs/day-85-big-upgrade-report.md).
+
 ## 🧱 Repository navigation (short version)
 
 For a cleaner README experience, the giant file listings were removed.
