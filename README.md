@@ -1908,3 +1908,13 @@ See implementation details: [Day 88 big upgrade report](docs/day-88-big-upgrade-
 - Review Day 89 integration guide: [Governance scale closeout lane](docs/integrations-day89-governance-scale-closeout.md).
 
 See implementation details: [Day 89 big upgrade report](docs/day-89-big-upgrade-report.md).
+
+### Day 90 — Phase-3 wrap publication closeout lane
+
+- Run `python -m sdetkit day90-phase3-wrap-publication-closeout --format json --strict` to validate Day 90 phase-3 wrap publication readiness.
+- Emit shareable Day 90 phase-3 wrap publication pack: `python -m sdetkit day90-phase3-wrap-publication-closeout --emit-pack-dir docs/artifacts/day90-phase3-wrap-publication-closeout-pack --format json --strict`.
+- Execute and collect deterministic logs: `python -m sdetkit day90-phase3-wrap-publication-closeout --execute --evidence-dir docs/artifacts/day90-phase3-wrap-publication-closeout-pack/evidence --format json --strict`.
+- Review Day 90 integration guide: [Phase-3 wrap publication closeout lane](docs/integrations-day90-phase3-wrap-publication-closeout.md).
+
+See implementation details: [Day 90 big upgrade report](docs/day-90-big-upgrade-report.md).
+
