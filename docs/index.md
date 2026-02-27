@@ -870,3 +870,12 @@ Free for personal/educational noncommercial use. Commercial use requires a paid 
 - Emit Day 82 integration feedback closeout pack: `python -m sdetkit day82-integration-feedback-closeout --emit-pack-dir docs/artifacts/day82-integration-feedback-closeout-pack --format json --strict`.
 - Run deterministic execution evidence lane: `python -m sdetkit day82-integration-feedback-closeout --execute --evidence-dir docs/artifacts/day82-integration-feedback-closeout-pack/evidence --format json --strict`.
 - Review integration guide: [Day 82 integration feedback closeout lane](integrations-day82-integration-feedback-closeout.md).
+
+
+## Day 83 trust FAQ expansion closeout lane
+
+- Read the implementation report: [Day 83 big upgrade report](day-83-big-upgrade-report.md).
+- Run `python -m sdetkit day83-trust-faq-expansion-closeout --format json --strict` to score trust FAQ expansion readiness.
+- Emit Day 83 trust FAQ expansion closeout pack: `python -m sdetkit day83-trust-faq-expansion-closeout --emit-pack-dir docs/artifacts/day83-trust-faq-expansion-closeout-pack --format json --strict`.
+- Run deterministic execution evidence lane: `python -m sdetkit day83-trust-faq-expansion-closeout --execute --evidence-dir docs/artifacts/day83-trust-faq-expansion-closeout-pack/evidence --format json --strict`.
+- Review integration guide: [Day 83 trust FAQ expansion closeout lane](integrations-day83-trust-faq-expansion-closeout.md).
