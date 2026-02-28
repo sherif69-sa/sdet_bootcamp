@@ -10,7 +10,7 @@ Close Day 68 with a high-signal self-hosted integration lane that converts Day 6
 - New Day 68 integration guide with command lane, contract lock, quality checklist, and delivery board.
 - New Day 68 contract checker script for CI and local execution gating.
 - New integration artifact pack outputs for self-hosted blueprinting, policy planning, KPI scoring, and execution logging.
-- New `.tekton.day68-self-hosted-reference.yaml` self-hosted pipeline reference with identity, policy, and rollback controls.
+- New `templates/ci/tekton/day68-self-hosted-reference.yaml` self-hosted pipeline reference with identity, policy, and rollback controls.
 
 ## Validation flow
 

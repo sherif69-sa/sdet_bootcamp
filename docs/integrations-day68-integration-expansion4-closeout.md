@@ -12,7 +12,7 @@ Day 68 closes with a major integration upgrade that converts Day 67 outputs into
 
 - `docs/artifacts/day67-integration-expansion3-closeout-pack/day67-integration-expansion3-closeout-summary.json`
 - `docs/artifacts/day67-integration-expansion3-closeout-pack/day67-delivery-board.md`
-- `.tekton.day68-self-hosted-reference.yaml`
+- `templates/ci/tekton/day68-self-hosted-reference.yaml`
 
 ## Day 68 command lane
 
