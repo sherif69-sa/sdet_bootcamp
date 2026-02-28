@@ -223,6 +223,126 @@
       "line": 171,
       "path": "tests/test_ops_workflows.py",
       "rule_id": "SEC_POTENTIAL_PATH_TRAVERSAL"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day62-community-program-closeout-pack/day62-community-program-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day63-onboarding-activation-closeout-pack/day63-onboarding-activation-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day64-integration-expansion-closeout-pack/day64-integration-expansion-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day65-weekly-review-closeout-pack/day65-weekly-review-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day67-integration-expansion3-closeout-pack/day67-integration-expansion3-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day68-integration-expansion4-closeout-pack/day68-integration-expansion4-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day69-case-study-prep1-closeout-pack/day69-case-study-prep1-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day76-contributor-recognition-closeout-pack/day76-contributor-recognition-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day78-ecosystem-priorities-closeout-pack/day78-ecosystem-priorities-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day86-launch-readiness-closeout-pack/day86-launch-readiness-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day87-governance-handoff-closeout-pack/day87-governance-handoff-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "docs/artifacts/day89-governance-scale-closeout-pack/day89-governance-scale-closeout-summary.json"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day62_community_program_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day63_onboarding_activation_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day64_integration_expansion_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day65_weekly_review_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day67_integration_expansion3_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day68_integration_expansion4_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day69_case_study_prep1_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day72_case_study_prep4_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day73_case_study_launch_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day74_distribution_scaling_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day75_trust_assets_refresh_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day76_contributor_recognition_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day78_ecosystem_priorities_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day79_scale_upgrade_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day82_integration_feedback_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day83_trust_faq_expansion_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day84_evidence_narrative_closeout.py"
+    },
+    {
+      "rule_id": "SEC_HIGH_ENTROPY_STRING",
+      "path": "src/sdetkit/day85_release_prioritization_closeout.py"
     }
   ],
   "version": 1
