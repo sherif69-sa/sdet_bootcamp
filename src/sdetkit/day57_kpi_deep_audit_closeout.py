@@ -14,7 +14,7 @@ _DAY56_SUMMARY_PATH = (
     "docs/artifacts/day56-stabilization-closeout-pack/day56-stabilization-closeout-summary.json"
 )
 _DAY56_BOARD_PATH = "docs/artifacts/day56-stabilization-closeout-pack/day56-delivery-board.md"
-_SECTION_HEADER = "# Day 57 \u2014 KPI deep audit closeout lane"
+_unused_SECTION_HEADER = "# Day 57 \u2014 KPI deep audit closeout lane"
 _REQUIRED_SECTIONS = [
     "## Why Day 57 matters",
     "## Required inputs (Day 56)",
