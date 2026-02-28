@@ -101,10 +101,10 @@ def main(argv: list[str]) -> int:
 
     if cmd == "list":
         entries = load_manifest()
-        for e in entries:
-            r = "R" if e.report_path else "-"
-            p = "P" if e.plan_path else "-"
-            print(f"{e.day:02d} {r} {p}")
+        for entry in entries:
+            r = "R" if entry.report_path else "-"
+            p = "P" if entry.plan_path else "-"
+            print(f"{entry.day:02d} {r} {p}")
         return 0
 
     if cmd in {"show", "open"}:
