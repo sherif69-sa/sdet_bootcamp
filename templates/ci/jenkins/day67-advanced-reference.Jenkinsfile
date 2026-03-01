@@ -4,8 +4,12 @@ pipeline {
   stages {
     stage('Lint') {
       steps {
-        sh 'python -m pip install -r requirements-test.txt'
-        sh 'ruff check src tests'
+        sh '''
+          set -euo pipefail
+          bash scripts/bootstrap.sh
+          . .venv/bin/activate
+          ruff check src tests
+        '''
       }
     }
 
@@ -20,8 +24,12 @@ pipeline {
         stages {
           stage('Run Unit Tests') {
             steps {
-              sh "echo Running against ${PYTHON_VERSION}"
-              sh 'pytest -q'
+              sh '''
+                set -euo pipefail
+                bash scripts/bootstrap.sh
+                . .venv/bin/activate
+                pytest -q
+              '''
             }
           }
         }
@@ -32,12 +40,22 @@ pipeline {
       parallel {
         stage('Contract') {
           steps {
-            sh 'python scripts/check_day67_integration_expansion3_closeout_contract.py --skip-evidence'
+            sh '''
+              set -euo pipefail
+              bash scripts/bootstrap.sh
+              . .venv/bin/activate
+              python scripts/check_day67_integration_expansion3_closeout_contract.py --skip-evidence
+            '''
           }
         }
         stage('Security') {
           steps {
-            sh './security.sh'
+            sh '''
+              set -euo pipefail
+              bash scripts/bootstrap.sh
+              . .venv/bin/activate
+              ./security.sh
+            '''
           }
         }
       }
@@ -47,6 +65,7 @@ pipeline {
   post {
     always {
       archiveArtifacts artifacts: 'docs/artifacts/day67-integration-expansion3-closeout-pack/**', allowEmptyArchive: true
+      archiveArtifacts artifacts: 'build/security.sarif', allowEmptyArchive: true
     }
     unsuccessful {
       echo 'Trigger rollback runbook for Day 67 integration expansion lane.'
