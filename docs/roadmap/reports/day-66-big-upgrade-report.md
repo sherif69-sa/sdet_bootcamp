@@ -10,7 +10,7 @@ Close Day 66 with a high-signal integration lane that converts Day 65 weekly rev
 - New Day 66 integration guide with command lane, contract lock, quality checklist, and delivery board.
 - New Day 66 contract checker script for CI and local execution gating.
 - New integration artifact pack outputs for pipeline blueprinting, matrix planning, KPI scoring, and execution logging.
-- New `.gitlab-ci.day66-advanced-reference.yml` GitLab reference pipeline with stage/rules/cache/parallel-matrix controls.
+- New `templates/ci/gitlab/day66-advanced-reference.yml` GitLab reference pipeline with stage/rules/cache/parallel-matrix controls.
 
 ## Validation flow
 

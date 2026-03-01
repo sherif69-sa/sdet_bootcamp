@@ -10,7 +10,7 @@ Close Day 67 with a high-signal integration lane that converts Day 66 outputs in
 - New Day 67 integration guide with command lane, contract lock, quality checklist, and delivery board.
 - New Day 67 contract checker script for CI and local execution gating.
 - New integration artifact pack outputs for Jenkins blueprinting, matrix planning, KPI scoring, and execution logging.
-- New `.jenkins.day67-advanced-reference.Jenkinsfile` Jenkins reference pipeline with stages/post/matrix/parallel controls.
+- New `templates/ci/jenkins/day67-advanced-reference.Jenkinsfile` Jenkins reference pipeline with stages/post/matrix/parallel controls.
 
 ## Validation flow
 

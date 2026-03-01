@@ -12,7 +12,7 @@ Day 66 closes with a major integration upgrade that converts Day 65 weekly revie
 
 - `docs/artifacts/day65-weekly-review-closeout-pack/day65-weekly-review-closeout-summary.json`
 - `docs/artifacts/day65-weekly-review-closeout-pack/day65-delivery-board.md`
-- `.gitlab-ci.day66-advanced-reference.yml`
+- `templates/ci/gitlab/day66-advanced-reference.yml`
 
 ## Day 66 command lane
 
