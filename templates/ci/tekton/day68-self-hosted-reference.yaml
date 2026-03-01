@@ -21,6 +21,7 @@ spec:
           - name: policy-check
             image: python:3.12
             script: |
+              set -e
               echo "Running policy checks"
     - name: integration-test
       runAfter: ["policy-preflight"]
@@ -29,7 +30,17 @@ spec:
           - name: run-tests
             image: python:3.12
             script: |
-              echo "Executing integration tests"
+              set -e
+              bash scripts/bootstrap.sh
+              . .venv/bin/activate
+              bash ci.sh
+          - name: security
+            image: python:3.12
+            script: |
+              set -e
+              bash scripts/bootstrap.sh
+              . .venv/bin/activate
+              bash security.sh
   finally:
     - name: rollback-guard
       taskSpec:
@@ -37,6 +48,7 @@ spec:
           - name: rollback-decision
             image: alpine:3.20
             script: |
+              set -e
               echo "Evaluate rollback trigger and notify recovery owner"
   taskRunTemplate:
     serviceAccountName: self-hosted-runner-sa
