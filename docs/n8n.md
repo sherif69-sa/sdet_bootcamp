@@ -105,7 +105,8 @@ Use this as a minimum gate before enabling broad automations:
 
 1. Dependency bootstrap is explicit and repeatable:
    - `python -m pip install -U pip`
-   - `python -m pip install -e .[dev,test,docs]`
+   - `bash scripts/bootstrap.sh
+. .venv/bin/activate`
 2. Core validation passes cleanly:
    - `pytest -q`
    - `bash quality.sh cov`
