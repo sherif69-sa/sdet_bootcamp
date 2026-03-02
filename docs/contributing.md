@@ -18,7 +18,8 @@ Quick start:
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -U pip
-python -m pip install -e .[dev,test,docs]
+bash scripts/bootstrap.sh
+. .venv/bin/activate
 pre-commit install
 pre-commit run -a
 bash quality.sh cov

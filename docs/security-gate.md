@@ -48,3 +48,8 @@ Not auto-applied:
 
 - risky/ambiguous subprocess rewrites
 - dynamic code execution transforms
+
+## Info-level findings
+
+By default, `sdetkit security check` excludes info-level findings from `new_findings` and summaries.
+Use `--include-info` to include them (for example, to surface `SEC_DEBUG_PRINT` notes).

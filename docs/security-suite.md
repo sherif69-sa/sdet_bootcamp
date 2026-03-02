@@ -74,3 +74,8 @@ allowlist = [
   { rule_id = "SEC_SECRETS_TEST_FIXTURES_ALLOW", path = "tests/fixtures/id_rsa" }
 ]
 ```
+
+## Info-level findings
+
+By default, `sdetkit security check` excludes info-level findings from `new_findings` and summaries.
+Use `--include-info` to include them (for example, to surface `SEC_DEBUG_PRINT` notes).
