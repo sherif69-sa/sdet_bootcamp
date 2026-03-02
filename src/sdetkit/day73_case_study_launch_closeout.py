@@ -24,14 +24,14 @@ _REQUIRED_SECTIONS = [
     "## Scoring model",
 ]
 _REQUIRED_COMMANDS = [
-    "python -m sdetkit day73-case-study-launch-closeout --format json --strict",
-    "python -m sdetkit day73-case-study-launch-closeout --emit-pack-dir docs/artifacts/day73-case-study-launch-closeout-pack --format json --strict",
-    "python -m sdetkit day73-case-study-launch-closeout --execute --evidence-dir docs/artifacts/day73-case-study-launch-closeout-pack/evidence --format json --strict",
+    "python -m sdetkit case-study-launch-closeout --format json --strict",
+    "python -m sdetkit case-study-launch-closeout --emit-pack-dir docs/artifacts/day73-case-study-launch-closeout-pack --format json --strict",
+    "python -m sdetkit case-study-launch-closeout --execute --evidence-dir docs/artifacts/day73-case-study-launch-closeout-pack/evidence --format json --strict",
     "python scripts/check_day73_case_study_launch_closeout_contract.py",
 ]
 _EXECUTION_COMMANDS = [
-    "python -m sdetkit day73-case-study-launch-closeout --format json --strict",
-    "python -m sdetkit day73-case-study-launch-closeout --emit-pack-dir docs/artifacts/day73-case-study-launch-closeout-pack --format json --strict",
+    "python -m sdetkit case-study-launch-closeout --format json --strict",
+    "python -m sdetkit case-study-launch-closeout --emit-pack-dir docs/artifacts/day73-case-study-launch-closeout-pack --format json --strict",
     "python scripts/check_day73_case_study_launch_closeout_contract.py --skip-evidence",
 ]
 _REQUIRED_CONTRACT_LINES = [
@@ -82,9 +82,9 @@ Day 73 closes with a major upgrade that turns Day 72 publication-quality prep in
 ## Day 73 command lane
 
 ```bash
-python -m sdetkit day73-case-study-launch-closeout --format json --strict
-python -m sdetkit day73-case-study-launch-closeout --emit-pack-dir docs/artifacts/day73-case-study-launch-closeout-pack --format json --strict
-python -m sdetkit day73-case-study-launch-closeout --execute --evidence-dir docs/artifacts/day73-case-study-launch-closeout-pack/evidence --format json --strict
+python -m sdetkit case-study-launch-closeout --format json --strict
+python -m sdetkit case-study-launch-closeout --emit-pack-dir docs/artifacts/day73-case-study-launch-closeout-pack --format json --strict
+python -m sdetkit case-study-launch-closeout --execute --evidence-dir docs/artifacts/day73-case-study-launch-closeout-pack/evidence --format json --strict
 python scripts/check_day73_case_study_launch_closeout_contract.py
 ```
 
@@ -174,7 +174,10 @@ def build_day73_case_study_launch_closeout_summary(root: Path) -> dict[str, Any]
         {
             "check_id": "readme_day73_command",
             "weight": 7,
-            "passed": ("day73-case-study-launch-closeout" in readme_text),
+            "passed": (
+                "case-study-launch-closeout" in readme_text
+                or "day73-case-study-launch-closeout" in readme_text
+            ),
             "evidence": "README day73 command lane",
         },
         {

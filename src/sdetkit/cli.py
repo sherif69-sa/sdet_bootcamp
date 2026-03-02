@@ -359,19 +359,22 @@ def main(argv: Sequence[str] | None = None) -> int:
     if argv and argv[0] == "day71-case-study-prep3-closeout":
         return day71_case_study_prep3_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] == "day72-case-study-prep4-closeout":
+    if argv and argv[0] in {"day72-case-study-prep4-closeout", "case-study-prep4-closeout"}:
         return day72_case_study_prep4_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] == "day73-case-study-launch-closeout":
+    if argv and argv[0] in {"day73-case-study-launch-closeout", "case-study-launch-closeout"}:
         return day73_case_study_launch_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] == "day74-distribution-scaling-closeout":
+    if argv and argv[0] in {"day74-distribution-scaling-closeout", "distribution-scaling-closeout"}:
         return day74_distribution_scaling_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] == "day75-trust-assets-refresh-closeout":
+    if argv and argv[0] in {"day75-trust-assets-refresh-closeout", "trust-assets-refresh-closeout"}:
         return day75_trust_assets_refresh_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] == "day76-contributor-recognition-closeout":
+    if argv and argv[0] in {
+        "day76-contributor-recognition-closeout",
+        "contributor-recognition-closeout",
+    }:
         return day76_contributor_recognition_closeout.main(list(argv[1:]))
 
     if argv and argv[0] == "day77-community-touchpoint-closeout":
@@ -711,15 +714,26 @@ Run: sdetkit playbooks
     d70.add_argument("args", nargs=argparse.REMAINDER)
     d71 = sub.add_parser("day71-case-study-prep3-closeout")
     d71.add_argument("args", nargs=argparse.REMAINDER)
-    d72 = sub.add_parser("day72-case-study-prep4-closeout")
+    d72 = sub.add_parser("case-study-prep4-closeout", aliases=["day72-case-study-prep4-closeout"])
+    d72.set_defaults(cmd="day72-case-study-prep4-closeout")
     d72.add_argument("args", nargs=argparse.REMAINDER)
-    d73 = sub.add_parser("day73-case-study-launch-closeout")
+    d73 = sub.add_parser("case-study-launch-closeout", aliases=["day73-case-study-launch-closeout"])
+    d73.set_defaults(cmd="day73-case-study-launch-closeout")
     d73.add_argument("args", nargs=argparse.REMAINDER)
-    d74 = sub.add_parser("day74-distribution-scaling-closeout")
+    d74 = sub.add_parser(
+        "distribution-scaling-closeout", aliases=["day74-distribution-scaling-closeout"]
+    )
+    d74.set_defaults(cmd="day74-distribution-scaling-closeout")
     d74.add_argument("args", nargs=argparse.REMAINDER)
-    d75 = sub.add_parser("day75-trust-assets-refresh-closeout")
+    d75 = sub.add_parser(
+        "trust-assets-refresh-closeout", aliases=["day75-trust-assets-refresh-closeout"]
+    )
+    d75.set_defaults(cmd="day75-trust-assets-refresh-closeout")
     d75.add_argument("args", nargs=argparse.REMAINDER)
-    d76 = sub.add_parser("day76-contributor-recognition-closeout")
+    d76 = sub.add_parser(
+        "contributor-recognition-closeout", aliases=["day76-contributor-recognition-closeout"]
+    )
+    d76.set_defaults(cmd="day76-contributor-recognition-closeout")
     d76.add_argument("args", nargs=argparse.REMAINDER)
     d77 = sub.add_parser("day77-community-touchpoint-closeout")
     d77.add_argument("args", nargs=argparse.REMAINDER)

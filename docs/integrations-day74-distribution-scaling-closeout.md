@@ -17,9 +17,9 @@ Day 74 closes with a major upgrade that turns Day 73 published case-study outcom
 ## Day 74 command lane
 
 ```bash
-python -m sdetkit day74-distribution-scaling-closeout --format json --strict
-python -m sdetkit day74-distribution-scaling-closeout --emit-pack-dir docs/artifacts/day74-distribution-scaling-closeout-pack --format json --strict
-python -m sdetkit day74-distribution-scaling-closeout --execute --evidence-dir docs/artifacts/day74-distribution-scaling-closeout-pack/evidence --format json --strict
+python -m sdetkit distribution-scaling-closeout --format json --strict
+python -m sdetkit distribution-scaling-closeout --emit-pack-dir docs/artifacts/day74-distribution-scaling-closeout-pack --format json --strict
+python -m sdetkit distribution-scaling-closeout --execute --evidence-dir docs/artifacts/day74-distribution-scaling-closeout-pack/evidence --format json --strict
 python scripts/check_day74_distribution_scaling_closeout_contract.py
 ```
 
