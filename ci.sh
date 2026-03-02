@@ -1,5 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
+
+ensure_venv() {
+  if [[ -n "${VIRTUAL_ENV:-}" ]]; then
+    return 0
+  fi
+
+  if [[ -f ".venv/bin/activate" ]]; then
+    . .venv/bin/activate
+    return 0
+  fi
+
+  bash scripts/bootstrap.sh
+  . .venv/bin/activate
+}
+
+ensure_venv
 python3 scripts/check_repo_layout.py
 
 mode="${1:-all}"
