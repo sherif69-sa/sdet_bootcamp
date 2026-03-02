@@ -24,14 +24,14 @@ _REQUIRED_SECTIONS = [
     "## Scoring model",
 ]
 _REQUIRED_COMMANDS = [
-    "python -m sdetkit day74-distribution-scaling-closeout --format json --strict",
-    "python -m sdetkit day74-distribution-scaling-closeout --emit-pack-dir docs/artifacts/day74-distribution-scaling-closeout-pack --format json --strict",
-    "python -m sdetkit day74-distribution-scaling-closeout --execute --evidence-dir docs/artifacts/day74-distribution-scaling-closeout-pack/evidence --format json --strict",
+    "python -m sdetkit distribution-scaling-closeout --format json --strict",
+    "python -m sdetkit distribution-scaling-closeout --emit-pack-dir docs/artifacts/day74-distribution-scaling-closeout-pack --format json --strict",
+    "python -m sdetkit distribution-scaling-closeout --execute --evidence-dir docs/artifacts/day74-distribution-scaling-closeout-pack/evidence --format json --strict",
     "python scripts/check_day74_distribution_scaling_closeout_contract.py",
 ]
 _EXECUTION_COMMANDS = [
-    "python -m sdetkit day74-distribution-scaling-closeout --format json --strict",
-    "python -m sdetkit day74-distribution-scaling-closeout --emit-pack-dir docs/artifacts/day74-distribution-scaling-closeout-pack --format json --strict",
+    "python -m sdetkit distribution-scaling-closeout --format json --strict",
+    "python -m sdetkit distribution-scaling-closeout --emit-pack-dir docs/artifacts/day74-distribution-scaling-closeout-pack --format json --strict",
     "python scripts/check_day74_distribution_scaling_closeout_contract.py --skip-evidence",
 ]
 _REQUIRED_CONTRACT_LINES = [
@@ -82,9 +82,9 @@ Day 74 closes with a major upgrade that turns Day 73 published case-study outcom
 ## Day 74 command lane
 
 ```bash
-python -m sdetkit day74-distribution-scaling-closeout --format json --strict
-python -m sdetkit day74-distribution-scaling-closeout --emit-pack-dir docs/artifacts/day74-distribution-scaling-closeout-pack --format json --strict
-python -m sdetkit day74-distribution-scaling-closeout --execute --evidence-dir docs/artifacts/day74-distribution-scaling-closeout-pack/evidence --format json --strict
+python -m sdetkit distribution-scaling-closeout --format json --strict
+python -m sdetkit distribution-scaling-closeout --emit-pack-dir docs/artifacts/day74-distribution-scaling-closeout-pack --format json --strict
+python -m sdetkit distribution-scaling-closeout --execute --evidence-dir docs/artifacts/day74-distribution-scaling-closeout-pack/evidence --format json --strict
 python scripts/check_day74_distribution_scaling_closeout_contract.py
 ```
 
@@ -174,7 +174,10 @@ def build_day74_distribution_scaling_closeout_summary(root: Path) -> dict[str, A
         {
             "check_id": "readme_day74_command",
             "weight": 7,
-            "passed": ("day74-distribution-scaling-closeout" in readme_text),
+            "passed": (
+                "distribution-scaling-closeout" in readme_text
+                or "day74-distribution-scaling-closeout" in readme_text
+            ),
             "evidence": "README day74 command lane",
         },
         {

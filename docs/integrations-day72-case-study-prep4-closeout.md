@@ -17,9 +17,9 @@ Day 72 closes with a major upgrade that turns Day 71 escalation-quality outputs 
 ## Day 72 command lane
 
 ```bash
-python -m sdetkit day72-case-study-prep4-closeout --format json --strict
-python -m sdetkit day72-case-study-prep4-closeout --emit-pack-dir docs/artifacts/day72-case-study-prep4-closeout-pack --format json --strict
-python -m sdetkit day72-case-study-prep4-closeout --execute --evidence-dir docs/artifacts/day72-case-study-prep4-closeout-pack/evidence --format json --strict
+python -m sdetkit case-study-prep4-closeout --format json --strict
+python -m sdetkit case-study-prep4-closeout --emit-pack-dir docs/artifacts/day72-case-study-prep4-closeout-pack --format json --strict
+python -m sdetkit case-study-prep4-closeout --execute --evidence-dir docs/artifacts/day72-case-study-prep4-closeout-pack/evidence --format json --strict
 python scripts/check_day72_case_study_prep4_closeout_contract.py
 ```
 

@@ -17,9 +17,9 @@ Day 75 closes with a major upgrade that turns Day 74 distribution outcomes into 
 ## Day 75 command lane
 
 ```bash
-python -m sdetkit day75-trust-assets-refresh-closeout --format json --strict
-python -m sdetkit day75-trust-assets-refresh-closeout --emit-pack-dir docs/artifacts/day75-trust-assets-refresh-closeout-pack --format json --strict
-python -m sdetkit day75-trust-assets-refresh-closeout --execute --evidence-dir docs/artifacts/day75-trust-assets-refresh-closeout-pack/evidence --format json --strict
+python -m sdetkit trust-assets-refresh-closeout --format json --strict
+python -m sdetkit trust-assets-refresh-closeout --emit-pack-dir docs/artifacts/day75-trust-assets-refresh-closeout-pack --format json --strict
+python -m sdetkit trust-assets-refresh-closeout --execute --evidence-dir docs/artifacts/day75-trust-assets-refresh-closeout-pack/evidence --format json --strict
 python scripts/check_day75_trust_assets_refresh_closeout_contract.py
 ```
 

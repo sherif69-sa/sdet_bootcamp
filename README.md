@@ -81,9 +81,9 @@ This runs formatting/linting, typing, and tests using the repo's pinned tooling.
 ## Closeout lanes (Days 72-76)
 
 ```bash
-python -m sdetkit day72-case-study-prep4-closeout --format json --strict
-python -m sdetkit day73-case-study-launch-closeout --format json --strict
-python -m sdetkit day74-distribution-scaling-closeout --format json --strict
-python -m sdetkit day75-trust-assets-refresh-closeout --format json --strict
-python -m sdetkit day76-contributor-recognition-closeout --format json --strict
+python -m sdetkit case-study-prep4-closeout --format json --strict
+python -m sdetkit case-study-launch-closeout --format json --strict
+python -m sdetkit distribution-scaling-closeout --format json --strict
+python -m sdetkit trust-assets-refresh-closeout --format json --strict
+python -m sdetkit contributor-recognition-closeout --format json --strict
 ```
