@@ -30,6 +30,7 @@ Examples:
 - `sdetkit doctor --ascii`
 - `sdetkit doctor --all`
 - `sdetkit doctor --all --json`
+- `sdetkit doctor --repo --format markdown`
 - `sdetkit doctor --dev --ci --deps --clean-tree --pr`
 
 See: doctor.md

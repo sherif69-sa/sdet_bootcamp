@@ -25,6 +25,7 @@ sdetkit doctor --all --json
 - `--clean-tree`: fails if `git status --porcelain` is not empty.
 - `--dev`: validates local dev setup including required tools and active virtual environment.
 - `--pyproject`: parses `pyproject.toml` early to catch TOML syntax issues before CI.
+- `--repo`: validates repo readiness (gate scripts exist, repo layout check script exists and passes, CI templates are present, and pre-commit includes ruff/ruff-format/mypy hooks).
 
 Convenience flags:
 

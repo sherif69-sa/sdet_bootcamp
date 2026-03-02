@@ -24,6 +24,7 @@ SUPPORTED_POLICY_CHECKS = {
     "clean_tree",
     "deps",
     "pre_commit",
+    "repo_readiness",
 }
 
 
@@ -93,6 +94,14 @@ def _baseline_checks() -> dict[str, dict[str, Any]]:
             summary="pre-commit check not requested",
             skipped=True,
             fix=["Run doctor with --pre-commit."],
+        ),
+        "repo_readiness": _make_check(
+            ok=True,
+            summary="repo readiness check not requested",
+            skipped=True,
+            fix=[
+                "Run doctor with --repo to validate gate scripts, templates, and pre-commit hooks."
+            ],
         ),
     }
 
@@ -240,6 +249,51 @@ def _check_clean_tree(root: Path) -> bool:
     if rc != 0:
         return False
     return out.strip() == ""
+
+
+def _check_repo_readiness(root: Path) -> tuple[list[dict[str, Any]], list[str]]:
+    required = [
+        "scripts/bootstrap.sh",
+        "ci.sh",
+        "quality.sh",
+        "security.sh",
+        "scripts/check_repo_layout.py",
+        ".pre-commit-config.yaml",
+    ]
+    missing: list[str] = []
+    evidence: list[dict[str, Any]] = []
+    for rel in required:
+        if not (root / rel).exists():
+            missing.append(rel)
+            evidence.append(
+                {"type": "missing_file", "message": f"missing required file: {rel}", "path": rel}
+            )
+
+    layout = root / "scripts" / "check_repo_layout.py"
+    if layout.exists():
+        rc, out, err = _run([sys.executable, "scripts/check_repo_layout.py"], cwd=root)
+        if rc != 0:
+            missing.append("scripts/check_repo_layout.py:failed")
+            msg = (err.strip() or out.strip() or "repo layout check failed").splitlines()[0]
+            evidence.append(
+                {"type": "repo_layout", "message": msg, "path": "scripts/check_repo_layout.py"}
+            )
+
+    pc = root / ".pre-commit-config.yaml"
+    if pc.exists():
+        content = pc.read_text(encoding="utf-8", errors="replace")
+        for hook_id in ("ruff", "ruff-format", "mypy"):
+            if f"id: {hook_id}" not in content:
+                missing.append(f"pre-commit hook: {hook_id}")
+                evidence.append(
+                    {
+                        "type": "pre_commit_hook",
+                        "message": f"missing pre-commit hook id: {hook_id}",
+                        "path": ".pre-commit-config.yaml",
+                    }
+                )
+
+    return evidence, missing
 
 
 def _check_tools() -> tuple[list[str], list[str]]:
@@ -481,13 +535,14 @@ def _evaluate_gate(checks: dict[str, dict[str, Any]], threshold: str) -> tuple[b
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="doctor")
     parser.add_argument("--json", action="store_true")
-    parser.add_argument("--format", choices=["text", "json", "md"], default="text")
+    parser.add_argument("--format", choices=["text", "json", "md", "markdown"], default="text")
     parser.add_argument("--verbose", action="store_true")
     parser.add_argument("--ascii", action="store_true")
     parser.add_argument("--ci", action="store_true")
     parser.add_argument("--pre-commit", dest="pre_commit", action="store_true")
     parser.add_argument("--deps", action="store_true")
     parser.add_argument("--clean-tree", dest="clean_tree", action="store_true")
+    parser.add_argument("--repo", "--repo-readiness", dest="repo_readiness", action="store_true")
     parser.add_argument("--dev", action="store_true")
     parser.add_argument("--pyproject", action="store_true")
     parser.add_argument("--pr", action="store_true", help="print a PR-ready markdown summary")
@@ -499,6 +554,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--out", default=None)
 
     ns = parser.parse_args(list(argv) if argv is not None else None)
+    if ns.format == "markdown":
+        ns.format = "md"
     if ns.format == "json":
         ns.json = True
     root = Path.cwd()
@@ -511,6 +568,7 @@ def main(argv: list[str] | None = None) -> int:
         ns.clean_tree = True
         ns.dev = True
         ns.pyproject = True
+        ns.repo_readiness = True
 
     if ns.dev and (ns.ci or ns.deps or ns.clean_tree):
         ns.pyproject = True
@@ -715,6 +773,26 @@ def main(argv: list[str] | None = None) -> int:
             skipped=False,
         )
         score_items.append(ct_ok)
+
+    if ns.repo_readiness:
+        rr_evidence, rr_missing = _check_repo_readiness(root)
+        data["repo_readiness_missing"] = rr_missing
+        rr_ok = not bool(rr_missing)
+        data["checks"]["repo_readiness"] = _make_check(
+            ok=rr_ok,
+            severity="high",
+            summary="repo readiness checks passed" if rr_ok else "repo readiness issues detected",
+            evidence=rr_evidence,
+            fix=[]
+            if rr_ok
+            else [
+                "Add missing gate scripts and required templates.",
+                "Ensure scripts/check_repo_layout.py passes.",
+                "Add required pre-commit hooks: ruff, ruff-format, mypy.",
+            ],
+            skipped=False,
+        )
+        score_items.append(rr_ok)
 
     policy = _load_policy(root, ns.policy)
     if policy.get("_error"):
