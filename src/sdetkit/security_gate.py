@@ -1051,8 +1051,17 @@ def main(argv: list[str] | None = None) -> int:
     chk = sub.add_parser("check", parents=[common])
     chk.add_argument("--baseline", default=str(DEFAULT_BASELINE_PATH))
 
-    sub.add_parser("baseline", parents=[common])
-
+    chk.add_argument(
+        "--include-info",
+        action="store_true",
+        help="Include info-level findings in new_findings and SARIF/text summaries.",
+    )
+    base = sub.add_parser("baseline", parents=[common])
+    base.add_argument(
+        "--include-info",
+        action="store_true",
+        help="Include info-level findings in baseline entries.",
+    )
     fixp = sub.add_parser("fix")
     fixp.add_argument("--root", default=".")
     fixp.add_argument("--allowlist", default=str(DEFAULT_ALLOWLIST_PATH))
@@ -1075,7 +1084,10 @@ def main(argv: list[str] | None = None) -> int:
                 online=bool(getattr(ns, "online", False)),
                 sbom_output=None,
             )
-            entries = _make_baseline_entries(findings)
+            baseline_findings = (
+                findings if ns.include_info else [f for f in findings if f.severity != "info"]
+            )
+            entries = _make_baseline_entries(baseline_findings)
             baseline_payload = {"version": 1, "entries": entries}
             if not ns.output:
                 raise SecurityScanError("baseline requires --output <path>")
@@ -1148,6 +1160,8 @@ def main(argv: list[str] | None = None) -> int:
                 new_findings = _filter_new(findings, baseline_entries)
             else:
                 new_findings = findings
+            if not ns.include_info:
+                new_findings = [f for f in new_findings if f.severity != "info"]
             rendered = _render(findings, ns.format, new_only=new_findings, sbom=sbom)
             _write_output(rendered, ns.output)
             return 1 if _severity_trips(new_findings, ns.fail_on) else 0
