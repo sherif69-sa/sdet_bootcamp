@@ -1,0 +1,6 @@
+{
+  "command": "python scripts/check_day75_trust_assets_refresh_closeout_contract.py --skip-evidence",
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "day75-trust-assets-refresh-closeout contract check failed:\n- activation_score too low: 58\n- strict_pass is false\n- failed checks: ['readme_day75_command', 'day74_summary_present', 'day74_delivery_board_present', 'day74_quality_floor', 'day74_board_integrity']\n"
+}

@@ -77,3 +77,13 @@ This runs formatting/linting, typing, and tests using the repo's pinned tooling.
   - `source .venv/bin/activate`
 - Run the local quality gate before opening a PR:
   - `bash quality.sh all`
+
+## Closeout lanes (Days 72-76)
+
+```bash
+python -m sdetkit day72-case-study-prep4-closeout --format json --strict
+python -m sdetkit day73-case-study-launch-closeout --format json --strict
+python -m sdetkit day74-distribution-scaling-closeout --format json --strict
+python -m sdetkit day75-trust-assets-refresh-closeout --format json --strict
+python -m sdetkit day76-contributor-recognition-closeout --format json --strict
+```

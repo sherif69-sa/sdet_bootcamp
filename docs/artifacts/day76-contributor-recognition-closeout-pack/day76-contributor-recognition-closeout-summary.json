@@ -13,7 +13,7 @@
     {
       "check_id": "readme_day76_command",
       "weight": 7,
-      "passed": true,
+      "passed": false,
       "evidence": "README day76 command lane"
     },
     {
@@ -32,20 +32,20 @@
       "check_id": "day75_summary_present",
       "weight": 10,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day75-trust-assets-refresh-closeout-pack/day75-trust-assets-refresh-closeout-summary.json"
+      "evidence": "/home/sherif/DevS69-sdetkit/docs/artifacts/day75-trust-assets-refresh-closeout-pack/day75-trust-assets-refresh-closeout-summary.json"
     },
     {
       "check_id": "day75_delivery_board_present",
       "weight": 7,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day75-trust-assets-refresh-closeout-pack/day75-delivery-board.md"
+      "evidence": "/home/sherif/DevS69-sdetkit/docs/artifacts/day75-trust-assets-refresh-closeout-pack/day75-delivery-board.md"
     },
     {
       "check_id": "day75_quality_floor",
       "weight": 13,
       "passed": false,
       "evidence": {
-        "day75_score": 65,
+        "day75_score": 58,
         "strict_pass": false,
         "day75_checks": 14
       }
@@ -103,14 +103,14 @@
     }
   ],
   "rollup": {
-    "day75_activation_score": 65,
+    "day75_activation_score": 58,
     "day75_checks": 14,
     "day75_delivery_board_items": 5
   },
   "summary": {
-    "activation_score": 87,
-    "passed_checks": 13,
-    "failed_checks": 1,
+    "activation_score": 80,
+    "passed_checks": 12,
+    "failed_checks": 2,
     "critical_failures": [
       "day75_strict_baseline"
     ],

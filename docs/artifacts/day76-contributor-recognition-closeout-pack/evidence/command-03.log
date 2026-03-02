@@ -1,0 +1,6 @@
+{
+  "command": "python scripts/check_day76_contributor_recognition_closeout_contract.py --skip-evidence",
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "day76-contributor-recognition-closeout contract check failed:\n- activation_score too low: 80\n- strict_pass is false\n- failed checks: ['readme_day76_command', 'day75_quality_floor']\n"
+}
