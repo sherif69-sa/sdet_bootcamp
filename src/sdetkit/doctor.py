@@ -475,13 +475,14 @@ def _baseline_cmd(argv: list[str]) -> int:
         "--ci",
         "--deps",
         "--repo",
-        "--skip",
-        "clean_tree",
         "--fail-on",
         "high",
         "--format",
         "json",
     ]
+    # Keep baseline snapshots stable by default, but never conflict with caller filters.
+    if "--only" not in extra and "--skip" not in extra:
+        base.extend(["--skip", "clean_tree"])
     if ns.action == "write":
         return main(base + ["--snapshot", str(snap)] + list(extra))
     return main(base + ["--diff-snapshot", str(snap)] + list(extra))
