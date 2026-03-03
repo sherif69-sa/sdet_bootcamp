@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import importlib.util
 import json
 import os
@@ -462,32 +463,92 @@ def _treatments(root: Path) -> list[dict[str, Any]]:
     steps: list[dict[str, Any]] = []
 
     cmd = [sys.executable, "-m", "ruff", "check", "--fix", "."]
-    rc, out, err = _run(cmd, cwd=root)
+    rc, stdout_text, stderr_text = _run(cmd, cwd=root)
     steps.append(
         {
             "id": "ruff_fix",
             "cmd": cmd,
             "rc": rc,
             "ok": rc == 0,
-            "stdout": out,
-            "stderr": err,
+            "stdout": stdout_text,
+            "stderr": stderr_text,
         }
     )
 
     cmd = [sys.executable, "-m", "ruff", "format", "."]
-    rc, out, err = _run(cmd, cwd=root)
+    rc, stdout_text, stderr_text = _run(cmd, cwd=root)
     steps.append(
         {
             "id": "ruff_format_apply",
             "cmd": cmd,
             "rc": rc,
             "ok": rc == 0,
-            "stdout": out,
-            "stderr": err,
+            "stdout": stdout_text,
+            "stderr": stderr_text,
         }
     )
 
     return steps
+
+
+def _plan_id(payload: dict[str, Any]) -> str:
+    raw = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode(
+        "utf-8"
+    )
+    return hashlib.sha256(raw).hexdigest()[:12]
+
+
+def _build_plan(ns, is_selected) -> dict[str, Any]:
+    actions: list[dict[str, Any]] = []
+    actions.append(
+        {
+            "id": "ruff_fix",
+            "cmd": [sys.executable, "-m", "ruff", "check", "--fix", "."],
+            "reason": "Apply safe autofixes.",
+            "affects_checks": [],
+        }
+    )
+    actions.append(
+        {
+            "id": "ruff_format_apply",
+            "cmd": [sys.executable, "-m", "ruff", "format", "."],
+            "reason": "Normalize formatting.",
+            "affects_checks": [],
+        }
+    )
+    if getattr(ns, "pre_commit", False) and is_selected("pre_commit"):
+        actions.append(
+            {
+                "id": "pre_commit_run",
+                "cmd": [sys.executable, "-m", "pre_commit", "run", "-a"],
+                "reason": "Apply repo hooks consistently.",
+                "affects_checks": ["pre_commit"],
+            }
+        )
+    plan: dict[str, Any] = {"actions": actions}
+    plan["plan_id"] = _plan_id(plan)
+    return plan
+
+
+def _apply_plan(plan: dict[str, Any], root: Path) -> tuple[list[dict[str, Any]], bool]:
+    steps: list[dict[str, Any]] = []
+    for a in plan.get("actions", []):
+        cmd = a.get("cmd")
+        if not isinstance(cmd, list) or not cmd:
+            continue
+        rc, stdout_text, stderr_text = _run(cmd, cwd=root)
+        steps.append(
+            {
+                "id": a.get("id"),
+                "cmd": cmd,
+                "rc": rc,
+                "ok": rc == 0,
+                "stdout": stdout_text,
+                "stderr": stderr_text,
+            }
+        )
+    ok = all(bool(s.get("ok")) for s in steps)
+    return steps, ok
 
 
 def _recommendations(data: dict[str, Any]) -> list[str]:
@@ -728,6 +789,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--out", default=None)
     parser.add_argument("--treat", action="store_true")
     parser.add_argument("--treat-only", dest="treat_only", action="store_true")
+    parser.add_argument("--plan", action="store_true")
+    parser.add_argument("--apply-plan", dest="apply_plan", default=None)
     parser.add_argument("--list-checks", action="store_true")
     parser.add_argument("--only", default=None)
     parser.add_argument("--skip", default=None)
@@ -793,6 +856,36 @@ def main(argv: list[str] | None = None) -> int:
 
     release_any = bool(ns.release or getattr(ns, "release_full", False))
 
+    plan = _build_plan(ns, _is_selected)
+
+    if getattr(ns, "plan", False):
+        payload = {"ok": True, "plan": plan}
+        rendered = json.dumps(payload) + "\n"
+        if ns.out:
+            Path(ns.out).write_text(rendered, encoding="utf-8")
+        else:
+            sys.stdout.write(rendered)
+        return 0
+
+    plan_steps: list[dict[str, Any]] = []
+    plan_ok = True
+    if isinstance(getattr(ns, "apply_plan", None), str) and ns.apply_plan:
+        if ns.apply_plan != plan.get("plan_id"):
+            payload = {
+                "ok": False,
+                "error": "plan_id_mismatch",
+                "expected": plan.get("plan_id"),
+                "provided": ns.apply_plan,
+                "plan": plan,
+            }
+            rendered = json.dumps(payload) + "\n"
+            if ns.out:
+                Path(ns.out).write_text(rendered, encoding="utf-8")
+            else:
+                sys.stdout.write(rendered)
+            return 2
+        plan_steps, plan_ok = _apply_plan(plan, root)
+
     if ns.all:
         ns.ascii = True
         ns.ci = True
@@ -842,6 +935,11 @@ def main(argv: list[str] | None = None) -> int:
     if ns.treat:
         data["treatments"] = treat_steps
         data["treatments_ok"] = data_treat_ok
+
+    if isinstance(getattr(ns, "apply_plan", None), str) and ns.apply_plan:
+        data["plan"] = plan
+        data["plan_steps"] = plan_steps
+        data["plan_ok"] = plan_ok
 
     score_items: list[bool] = []
 
@@ -1141,6 +1239,8 @@ def main(argv: list[str] | None = None) -> int:
     data["ok"] = bool(gate_ok)
     if failed_checks:
         data["failed_checks"] = failed_checks
+    if isinstance(getattr(ns, "apply_plan", None), str) and ns.apply_plan:
+        data["post_plan_ok"] = bool(data.get("ok")) and bool(data.get("plan_ok"))
 
     if ns.format == "json" or ns.json:
         output = json.dumps(data, sort_keys=True) + "\n"

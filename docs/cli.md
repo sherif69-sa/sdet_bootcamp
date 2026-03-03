@@ -39,6 +39,8 @@ See: doctor.md
 - `sdetkit doctor --skip deps,pre_commit --format json`
 - `sdetkit doctor --treat --format json`
 - `sdetkit doctor --treat-only --format json`
+- `sdetkit doctor --plan --format json`
+- `sdetkit doctor --apply-plan <plan_id> --format json`
 
 ## ci
 
