@@ -623,3 +623,11 @@ Examples:
 - `sdetkit kpi-audit --execute --evidence-dir docs/artifacts/day27-kpi-pack/evidence --format json --strict`
 
 Useful flags: `--root`, `--readme`, `--docs-index`, `--top10`, `--baseline`, `--current`, `--write-defaults`, `--emit-pack-dir`, `--execute`, `--evidence-dir`, `--timeout-sec`, `--min-score`, `--strict`, `--format`.
+
+## security
+
+Examples (scan once, reuse results):
+
+- `sdetkit security scan --format json --out build/security-scan.json --fail-on none`
+- `sdetkit security check --scan-json build/security-scan.json --baseline tools/security.baseline.json --fail-on high --format text`
+- `sdetkit security report --scan-json build/security-scan.json --format sarif --out build/security.sarif`
