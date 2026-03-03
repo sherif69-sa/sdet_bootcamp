@@ -458,6 +458,38 @@ def _calculate_score(checks: list[bool]) -> int:
     return round((passed / len(checks)) * 100)
 
 
+def _treatments(root: Path) -> list[dict[str, Any]]:
+    steps: list[dict[str, Any]] = []
+
+    cmd = [sys.executable, "-m", "ruff", "check", "--fix", "."]
+    rc, out, err = _run(cmd, cwd=root)
+    steps.append(
+        {
+            "id": "ruff_fix",
+            "cmd": cmd,
+            "rc": rc,
+            "ok": rc == 0,
+            "stdout": out,
+            "stderr": err,
+        }
+    )
+
+    cmd = [sys.executable, "-m", "ruff", "format", "."]
+    rc, out, err = _run(cmd, cwd=root)
+    steps.append(
+        {
+            "id": "ruff_format_apply",
+            "cmd": cmd,
+            "rc": rc,
+            "ok": rc == 0,
+            "stdout": out,
+            "stderr": err,
+        }
+    )
+
+    return steps
+
+
 def _recommendations(data: dict[str, Any]) -> list[str]:
     recs: list[str] = []
     if data.get("venv_ok") is False:
@@ -694,6 +726,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--fail-on", choices=["low", "medium", "high"])
     parser.add_argument("--strict", action="store_true")
     parser.add_argument("--out", default=None)
+    parser.add_argument("--treat", action="store_true")
+    parser.add_argument("--treat-only", dest="treat_only", action="store_true")
     parser.add_argument("--list-checks", action="store_true")
     parser.add_argument("--only", default=None)
     parser.add_argument("--skip", default=None)
@@ -780,11 +814,35 @@ def main(argv: list[str] | None = None) -> int:
     if ns.dev and (ns.ci or ns.deps or ns.clean_tree):
         ns.pyproject = True
 
+    treat_steps: list[dict[str, Any]] = []
+    data_treat_ok = True
+
+    if ns.treat or getattr(ns, "treat_only", False):
+        treat_steps = _treatments(root)
+        data_treat_ok = all(bool(s.get("ok")) for s in treat_steps)
+        if getattr(ns, "treat_only", False):
+            payload = {
+                "ok": data_treat_ok,
+                "treatments": treat_steps,
+                "treatments_ok": data_treat_ok,
+                "post_treat_ok": data_treat_ok,
+            }
+            rendered = json.dumps(payload) + "\n"
+            if ns.out:
+                Path(ns.out).write_text(rendered, encoding="utf-8")
+            else:
+                sys.stdout.write(rendered)
+            return 0 if data_treat_ok else 2
+
     data: dict[str, Any] = {
         "python": _python_info(),
         "package": _package_info(),
         "checks": _baseline_checks(),
     }
+    if ns.treat:
+        data["treatments"] = treat_steps
+        data["treatments_ok"] = data_treat_ok
+
     score_items: list[bool] = []
 
     if _is_selected("stdlib_shadowing"):

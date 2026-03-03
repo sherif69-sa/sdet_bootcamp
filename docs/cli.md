@@ -37,6 +37,8 @@ See: doctor.md
 - `sdetkit doctor --list-checks`
 - `sdetkit doctor --only pyproject,clean_tree --format json`
 - `sdetkit doctor --skip deps,pre_commit --format json`
+- `sdetkit doctor --treat --format json`
+- `sdetkit doctor --treat-only --format json`
 
 ## ci
 
