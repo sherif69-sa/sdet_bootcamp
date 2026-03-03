@@ -9,7 +9,6 @@ from typing import Any
 _TEMPLATE_SPECS: dict[str, dict[str, Any]] = {
     "gitlab": {
         "path": "templates/ci/gitlab/gitlab-advanced-reference.yml",
-        "legacy_paths": ["templates/ci/gitlab/day66-advanced-reference.yml"],
         "markers": [
             "bash scripts/bootstrap.sh",
             ". .venv/bin/activate",
@@ -19,7 +18,6 @@ _TEMPLATE_SPECS: dict[str, dict[str, Any]] = {
     },
     "jenkins": {
         "path": "templates/ci/jenkins/jenkins-advanced-reference.Jenkinsfile",
-        "legacy_paths": ["templates/ci/jenkins/day67-advanced-reference.Jenkinsfile"],
         "markers": [
             "bash scripts/bootstrap.sh",
             ". .venv/bin/activate",
@@ -30,7 +28,6 @@ _TEMPLATE_SPECS: dict[str, dict[str, Any]] = {
     },
     "tekton": {
         "path": "templates/ci/tekton/tekton-self-hosted-reference.yaml",
-        "legacy_paths": ["templates/ci/tekton/day68-self-hosted-reference.yaml"],
         "markers": [
             "bash scripts/bootstrap.sh",
             ". .venv/bin/activate",
@@ -53,7 +50,7 @@ def _validate_templates(root: Path) -> dict[str, Any]:
     for template_id in sorted(_TEMPLATE_SPECS):
         spec = _TEMPLATE_SPECS[template_id]
         rel = str(spec["path"])
-        candidate_paths = [rel, *[str(x) for x in spec.get("legacy_paths", [])]]
+        candidate_paths = [rel]
         p = next((root / c for c in candidate_paths if (root / c).exists()), None)
 
         if p is None:

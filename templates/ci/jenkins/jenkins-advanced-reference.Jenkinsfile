@@ -44,7 +44,7 @@ pipeline {
               set -euo pipefail
               bash scripts/bootstrap.sh
               . .venv/bin/activate
-              python scripts/check_day67_integration_expansion3_closeout_contract.py --skip-evidence
+              python scripts/check_repo_layout.py
             '''
           }
         }
@@ -64,11 +64,11 @@ pipeline {
 
   post {
     always {
-      archiveArtifacts artifacts: 'docs/artifacts/day67-integration-expansion3-closeout-pack/**', allowEmptyArchive: true
+      archiveArtifacts artifacts: 'docs/artifacts/**', allowEmptyArchive: true
       archiveArtifacts artifacts: 'build/security.sarif', allowEmptyArchive: true
     }
     unsuccessful {
-      echo 'Trigger rollback runbook for Day 67 integration expansion lane.'
+      echo 'Trigger rollback runbook for advanced integration lane.'
     }
   }
 }
