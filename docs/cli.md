@@ -654,5 +654,10 @@ Examples:
 - `sdetkit gate fast --no-pytest --format json`
 - `sdetkit gate fast --fix`
 - `sdetkit gate fast --fix-only --format json`
+- `sdetkit gate fast --list-steps`
+- `sdetkit gate fast --only ci_templates --format json`
+- `sdetkit gate fast --skip pytest --format json`
 - `sdetkit gate baseline write`
 - `sdetkit gate baseline check`
+
+Useful flags: `--root`, `--format`, `--out`/`--output`, `--strict`, `--fix`, `--fix-only`, `--list-steps`, `--only`, `--skip`, `--no-doctor`, `--no-ci-templates`, `--no-ruff`, `--no-mypy`, `--no-pytest`, `--mypy-args`, `--pytest-args`.
