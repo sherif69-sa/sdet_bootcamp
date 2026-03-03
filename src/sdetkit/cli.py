@@ -183,6 +183,11 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         return _doctor_main(argv[1:])
 
+    if argv and argv[0] == "gate":
+        from .gate import main as _gate_main
+
+        return _gate_main(list(argv[1:]))
+
     if argv and argv[0] == "ci":
         from .ci import main as _ci_main
 
@@ -488,6 +493,7 @@ Command groups:
     apiget
     cassette-get
     doctor
+    gate
     ci
     patch
     repo
@@ -549,6 +555,9 @@ Run: sdetkit playbooks
 
     doc = sub.add_parser("doctor")
     doc.add_argument("args", nargs=argparse.REMAINDER)
+
+    gt = sub.add_parser("gate")
+    gt.add_argument("args", nargs=argparse.REMAINDER)
 
     ci = sub.add_parser("ci")
     ci.add_argument("args", nargs=argparse.REMAINDER)
