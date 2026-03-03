@@ -13,9 +13,9 @@ legacy_root = [
 bad.extend([f"forbidden: {p}" for p in legacy_root if Path(p).exists()])
 
 required_templates = [
-    "templates/ci/gitlab/day66-advanced-reference.yml",
-    "templates/ci/jenkins/day67-advanced-reference.Jenkinsfile",
-    "templates/ci/tekton/day68-self-hosted-reference.yaml",
+    "templates/ci/gitlab/gitlab-advanced-reference.yml",
+    "templates/ci/jenkins/jenkins-advanced-reference.Jenkinsfile",
+    "templates/ci/tekton/tekton-self-hosted-reference.yaml",
 ]
 bad.extend([f"missing: {p}" for p in required_templates if not Path(p).exists()])
 

@@ -9,6 +9,25 @@ import time
 from pathlib import Path
 from typing import Any
 
+AVAILABLE_STEPS = [
+    "ruff_fix",
+    "ruff_format_apply",
+    "doctor",
+    "ci_templates",
+    "ruff",
+    "ruff_format",
+    "mypy",
+    "pytest",
+]
+
+FAST_DEFAULT_PYTEST_ARGS = [
+    "-q",
+    "tests/test_gate_fast.py",
+    "tests/test_gate_baseline.py",
+    "tests/test_doctor_surgical.py",
+    "tests/test_baseline_umbrella.py",
+]
+
 
 def _normalize_gate_payload(payload: dict[str, object]) -> dict[str, object]:
     out: dict[str, object] = dict(payload)
@@ -22,6 +41,8 @@ def _normalize_gate_payload(payload: dict[str, object]) -> dict[str, object]:
             if isinstance(s, dict):
                 sd: dict[str, object] = dict(s)
                 sd.pop("duration_ms", None)
+                sd.pop("stdout", None)
+                sd.pop("stderr", None)
                 cmd = sd.get("cmd")
                 if isinstance(cmd, list):
                     new_cmd: list[object] = []
@@ -75,6 +96,13 @@ def _write_output(text: str, out: str | None) -> None:
         sys.stdout.write(text)
 
 
+def _parse_step_filter(raw: str | None) -> set[str]:
+    if not raw:
+        return set()
+    items = [part.strip() for part in raw.split(",")]
+    return {item for item in items if item}
+
+
 def _format_text(payload: dict[str, Any]) -> str:
     ok = bool(payload.get("ok"))
     lines: list[str] = []
@@ -115,16 +143,33 @@ def _format_md(payload: dict[str, Any]) -> str:
 
 def _run_fast(ns: argparse.Namespace) -> int:
     root = Path(ns.root).resolve()
+    only = _parse_step_filter(ns.only)
+    skip = _parse_step_filter(ns.skip)
+
+    unknown = sorted((only | skip) - set(AVAILABLE_STEPS))
+    if unknown:
+        sys.stderr.write(f"gate: unknown step id(s): {', '.join(unknown)}\n")
+        return 2
+
+    if ns.list_steps:
+        sys.stdout.write("\n".join(AVAILABLE_STEPS) + "\n")
+        return 0
+
+    def should_run(step_id: str) -> bool:
+        if only and step_id not in only:
+            return False
+        return step_id not in skip
 
     steps: list[dict[str, Any]] = []
 
-    if ns.fix or ns.fix_only:
+    if (ns.fix or ns.fix_only) and should_run("ruff_fix"):
         steps.append(
             {
                 "id": "ruff_fix",
                 **_run([sys.executable, "-m", "ruff", "check", "--fix", "."], cwd=root),
             }
         )
+    if (ns.fix or ns.fix_only) and should_run("ruff_format_apply"):
         steps.append(
             {
                 "id": "ruff_format_apply",
@@ -138,7 +183,7 @@ def _run_fast(ns: argparse.Namespace) -> int:
             ns.no_mypy = True
             ns.no_pytest = True
 
-    if not ns.no_doctor:
+    if not ns.no_doctor and should_run("doctor"):
         fail_on = "medium" if ns.strict else "high"
         steps.append(
             {
@@ -164,7 +209,7 @@ def _run_fast(ns: argparse.Namespace) -> int:
             }
         )
 
-    if not ns.no_ci_templates:
+    if not ns.no_ci_templates and should_run("ci_templates"):
         steps.append(
             {
                 "id": "ci_templates",
@@ -186,13 +231,14 @@ def _run_fast(ns: argparse.Namespace) -> int:
             }
         )
 
-    if not ns.no_ruff:
+    if not ns.no_ruff and should_run("ruff"):
         steps.append(
             {
                 "id": "ruff",
                 **_run([sys.executable, "-m", "ruff", "check", "."], cwd=root),
             }
         )
+    if not ns.no_ruff and should_run("ruff_format"):
         steps.append(
             {
                 "id": "ruff_format",
@@ -200,7 +246,7 @@ def _run_fast(ns: argparse.Namespace) -> int:
             }
         )
 
-    if not ns.no_mypy:
+    if not ns.no_mypy and should_run("mypy"):
         mypy_args = ["src"]
         if ns.mypy_args:
             mypy_args = shlex.split(ns.mypy_args)
@@ -211,8 +257,10 @@ def _run_fast(ns: argparse.Namespace) -> int:
             }
         )
 
-    if not ns.no_pytest:
-        pytest_args = ["-q"]
+    if not ns.no_pytest and should_run("pytest"):
+        pytest_args = list(FAST_DEFAULT_PYTEST_ARGS)
+        if ns.full_pytest:
+            pytest_args = ["-q"]
         if ns.pytest_args:
             pytest_args = shlex.split(ns.pytest_args)
         steps.append(
@@ -290,14 +338,17 @@ def main(argv: list[str] | None = None) -> int:
 
         snap_text = _read_text(snap) if snap.exists() else ""
         diff_ok = snap_text == cur_text
+        out_obj: dict[str, object] | None = None
         try:
-            out_obj = json.loads(cur_text)
-            if isinstance(out_obj, dict):
-                out_obj["snapshot_diff_ok"] = diff_ok
-                out_obj["snapshot_diff_summary"] = [] if diff_ok else ["snapshot drift detected"]
-                cur_text = _stable_json(out_obj)
-        except Exception:
-            pass
+            parsed = json.loads(cur_text)
+        except json.JSONDecodeError:
+            parsed = None
+        if isinstance(parsed, dict):
+            out_obj = parsed
+        if out_obj is not None:
+            out_obj["snapshot_diff_ok"] = diff_ok
+            out_obj["snapshot_diff_summary"] = [] if diff_ok else ["snapshot drift detected"]
+            cur_text = _stable_json(out_obj)
         sys.stdout.write(cur_text)
         return 0 if diff_ok else 2
 
@@ -309,6 +360,9 @@ def main(argv: list[str] | None = None) -> int:
     fast.add_argument("--format", choices=["text", "json", "md"], default="text")
     fast.add_argument("--out", "--output", default=None)
     fast.add_argument("--strict", action="store_true")
+    fast.add_argument("--list-steps", action="store_true")
+    fast.add_argument("--only", default=None)
+    fast.add_argument("--skip", default=None)
 
     fast.add_argument("--fix", action="store_true")
     fast.add_argument("--fix-only", dest="fix_only", action="store_true")
@@ -320,6 +374,7 @@ def main(argv: list[str] | None = None) -> int:
     fast.add_argument("--no-pytest", action="store_true")
 
     fast.add_argument("--pytest-args", default=None)
+    fast.add_argument("--full-pytest", action="store_true")
     fast.add_argument("--mypy-args", default=None)
 
     ns = parser.parse_args(list(argv) if argv is not None else None)
