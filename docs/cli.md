@@ -631,3 +631,11 @@ Examples (scan once, reuse results):
 - `sdetkit security scan --format json --out build/security-scan.json --fail-on none`
 - `sdetkit security check --scan-json build/security-scan.json --baseline tools/security.baseline.json --fail-on high --format text`
 - `sdetkit security report --scan-json build/security-scan.json --format sarif --out build/security.sarif`
+
+## gate
+
+Examples:
+
+- `sdetkit gate fast`
+- `sdetkit gate fast --format json | python -m json.tool >/dev/null`
+- `sdetkit gate fast --no-pytest --format json`
