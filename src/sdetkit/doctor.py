@@ -759,8 +759,6 @@ def main(argv: list[str] | None = None) -> int:
 
     release_any = bool(ns.release or getattr(ns, "release_full", False))
 
-    release_any = False
-
     if ns.all:
         ns.ascii = True
         ns.ci = True
