@@ -54,13 +54,13 @@ def test_doctor_repo_readiness_passes_with_minimal_files(tmp_path: Path) -> None
     (tmp_path / "quality.sh").write_text("#!/usr/bin/env bash\necho ok\n", encoding="utf-8")
     (tmp_path / "security.sh").write_text("#!/usr/bin/env bash\necho ok\n", encoding="utf-8")
 
-    (tmp_path / "templates" / "ci" / "gitlab" / "day66-advanced-reference.yml").write_text(
+    (tmp_path / "templates" / "ci" / "gitlab" / "gitlab-advanced-reference.yml").write_text(
         "x: 1\n", encoding="utf-8"
     )
-    (tmp_path / "templates" / "ci" / "jenkins" / "day67-advanced-reference.Jenkinsfile").write_text(
-        "x\n", encoding="utf-8"
-    )
-    (tmp_path / "templates" / "ci" / "tekton" / "day68-self-hosted-reference.yaml").write_text(
+    (
+        tmp_path / "templates" / "ci" / "jenkins" / "jenkins-advanced-reference.Jenkinsfile"
+    ).write_text("x\n", encoding="utf-8")
+    (tmp_path / "templates" / "ci" / "tekton" / "tekton-self-hosted-reference.yaml").write_text(
         "x: 1\n", encoding="utf-8"
     )
 
@@ -69,9 +69,9 @@ def test_doctor_repo_readiness_passes_with_minimal_files(tmp_path: Path) -> None
         "from pathlib import Path\n"
         "bad=[]\n"
         "req=[\n"
-        "  'templates/ci/gitlab/day66-advanced-reference.yml',\n"
-        "  'templates/ci/jenkins/day67-advanced-reference.Jenkinsfile',\n"
-        "  'templates/ci/tekton/day68-self-hosted-reference.yaml',\n"
+        "  'templates/ci/gitlab/gitlab-advanced-reference.yml',\n"
+        "  'templates/ci/jenkins/jenkins-advanced-reference.Jenkinsfile',\n"
+        "  'templates/ci/tekton/tekton-self-hosted-reference.yaml',\n"
         "]\n"
         "bad.extend([f'missing: {p}' for p in req if not Path(p).exists()])\n"
         "if bad:\n"

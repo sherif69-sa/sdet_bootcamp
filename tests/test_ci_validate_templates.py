@@ -46,12 +46,12 @@ def test_ci_validate_templates_missing_file_fails(tmp_path: Path) -> None:
     (tmp_path / "templates" / "ci" / "jenkins").mkdir(parents=True)
     (tmp_path / "templates" / "ci" / "tekton").mkdir(parents=True)
 
-    (tmp_path / "templates" / "ci" / "gitlab" / "day66-advanced-reference.yml").write_text(
+    (tmp_path / "templates" / "ci" / "gitlab" / "gitlab-advanced-reference.yml").write_text(
         "stages: [test]\n", encoding="utf-8"
     )
-    (tmp_path / "templates" / "ci" / "jenkins" / "day67-advanced-reference.Jenkinsfile").write_text(
-        "pipeline {}\n", encoding="utf-8"
-    )
+    (
+        tmp_path / "templates" / "ci" / "jenkins" / "jenkins-advanced-reference.Jenkinsfile"
+    ).write_text("pipeline {}\n", encoding="utf-8")
 
     proc = _run_sdetkit(
         repo_root,
@@ -69,7 +69,7 @@ def test_ci_validate_templates_missing_file_fails(tmp_path: Path) -> None:
     assert data.get("ok") is False
     missing = data.get("missing")
     assert isinstance(missing, list)
-    assert any("templates/ci/tekton/day68-self-hosted-reference.yaml" in m for m in missing)
+    assert any("templates/ci/tekton/tekton-self-hosted-reference.yaml" in m for m in missing)
 
 
 def test_ci_validate_templates_detects_missing_required_markers(tmp_path: Path) -> None:
@@ -78,13 +78,13 @@ def test_ci_validate_templates_detects_missing_required_markers(tmp_path: Path) 
     (tmp_path / "templates" / "ci" / "jenkins").mkdir(parents=True)
     (tmp_path / "templates" / "ci" / "tekton").mkdir(parents=True)
 
-    (tmp_path / "templates" / "ci" / "gitlab" / "day66-advanced-reference.yml").write_text(
+    (tmp_path / "templates" / "ci" / "gitlab" / "gitlab-advanced-reference.yml").write_text(
         "stages: [test]\n", encoding="utf-8"
     )
-    (tmp_path / "templates" / "ci" / "jenkins" / "day67-advanced-reference.Jenkinsfile").write_text(
-        "pipeline {}\n", encoding="utf-8"
-    )
-    (tmp_path / "templates" / "ci" / "tekton" / "day68-self-hosted-reference.yaml").write_text(
+    (
+        tmp_path / "templates" / "ci" / "jenkins" / "jenkins-advanced-reference.Jenkinsfile"
+    ).write_text("pipeline {}\n", encoding="utf-8")
+    (tmp_path / "templates" / "ci" / "tekton" / "tekton-self-hosted-reference.yaml").write_text(
         "apiVersion: tekton.dev/v1\nkind: Pipeline\n", encoding="utf-8"
     )
 

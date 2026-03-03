@@ -41,6 +41,8 @@ def _normalize_gate_payload(payload: dict[str, object]) -> dict[str, object]:
             if isinstance(s, dict):
                 sd: dict[str, object] = dict(s)
                 sd.pop("duration_ms", None)
+                sd.pop("stdout", None)
+                sd.pop("stderr", None)
                 cmd = sd.get("cmd")
                 if isinstance(cmd, list):
                     new_cmd: list[object] = []

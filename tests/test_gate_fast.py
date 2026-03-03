@@ -37,15 +37,17 @@ def test_gate_fast_can_run_ci_templates_only(tmp_path: Path) -> None:
     (tmp_path / "templates" / "ci" / "jenkins").mkdir(parents=True)
     (tmp_path / "templates" / "ci" / "tekton").mkdir(parents=True)
 
-    (tmp_path / "templates" / "ci" / "gitlab" / "day66-advanced-reference.yml").write_text(
+    (tmp_path / "templates" / "ci" / "gitlab" / "gitlab-advanced-reference.yml").write_text(
         "bash scripts/bootstrap.sh\n. .venv/bin/activate\npython -m sdetkit\nCI_COMMIT_REF_SLUG\n",
         encoding="utf-8",
     )
-    (tmp_path / "templates" / "ci" / "jenkins" / "day67-advanced-reference.Jenkinsfile").write_text(
+    (
+        tmp_path / "templates" / "ci" / "jenkins" / "jenkins-advanced-reference.Jenkinsfile"
+    ).write_text(
         "bash scripts/bootstrap.sh\n. .venv/bin/activate\npytest -q\nsecurity.sh\nPYTHON_VERSION\n",
         encoding="utf-8",
     )
-    (tmp_path / "templates" / "ci" / "tekton" / "day68-self-hosted-reference.yaml").write_text(
+    (tmp_path / "templates" / "ci" / "tekton" / "tekton-self-hosted-reference.yaml").write_text(
         "bash scripts/bootstrap.sh\n. .venv/bin/activate\nbash ci.sh\nbash security.sh\n$(params.branch)\n",
         encoding="utf-8",
     )
@@ -144,15 +146,17 @@ def test_gate_fast_only_runs_selected_step(tmp_path: Path) -> None:
     (tmp_path / "templates" / "ci" / "jenkins").mkdir(parents=True)
     (tmp_path / "templates" / "ci" / "tekton").mkdir(parents=True)
 
-    (tmp_path / "templates" / "ci" / "gitlab" / "day66-advanced-reference.yml").write_text(
+    (tmp_path / "templates" / "ci" / "gitlab" / "gitlab-advanced-reference.yml").write_text(
         "bash scripts/bootstrap.sh\n. .venv/bin/activate\npython -m sdetkit\nCI_COMMIT_REF_SLUG\n",
         encoding="utf-8",
     )
-    (tmp_path / "templates" / "ci" / "jenkins" / "day67-advanced-reference.Jenkinsfile").write_text(
+    (
+        tmp_path / "templates" / "ci" / "jenkins" / "jenkins-advanced-reference.Jenkinsfile"
+    ).write_text(
         "bash scripts/bootstrap.sh\n. .venv/bin/activate\npytest -q\nsecurity.sh\nPYTHON_VERSION\n",
         encoding="utf-8",
     )
-    (tmp_path / "templates" / "ci" / "tekton" / "day68-self-hosted-reference.yaml").write_text(
+    (tmp_path / "templates" / "ci" / "tekton" / "tekton-self-hosted-reference.yaml").write_text(
         "bash scripts/bootstrap.sh\n. .venv/bin/activate\nbash ci.sh\nbash security.sh\n$(params.branch)\n",
         encoding="utf-8",
     )
