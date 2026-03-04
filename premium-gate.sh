@@ -167,6 +167,7 @@ emit_step_index() {
   python3 - "$STEP_INDEX_JSON" <<'PY'
 import json
 import os
+import sys
 from pathlib import Path
 
 step_file = Path(os.environ["STEP_RESULTS_NDJSON"])
