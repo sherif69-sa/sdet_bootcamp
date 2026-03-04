@@ -29,6 +29,8 @@ FAST_DEFAULT_PYTEST_ARGS = [
     "tests/test_baseline_umbrella.py",
 ]
 
+RELEASE_STEPS = ["doctor_release", "playbooks_validate", "gate_fast"]
+
 
 def _normalize_gate_payload(payload: dict[str, object]) -> dict[str, object]:
     out: dict[str, object] = dict(payload)
@@ -295,6 +297,93 @@ def _run_fast(ns: argparse.Namespace) -> int:
     return 2
 
 
+def _format_release_text(payload: dict[str, Any]) -> str:
+    lines = [f"gate release: {'OK' if payload.get('ok') else 'FAIL'}"]
+    for step in payload.get("steps", []):
+        status = "DRY" if step.get("dry_run") else ("OK" if step.get("ok") else "FAIL")
+        lines.append(f"[{status}] {step.get('id')} rc={step.get('rc')}")
+    if payload.get("failed_steps"):
+        lines.append("failed_steps:")
+        for item in payload["failed_steps"]:
+            lines.append(f"- {item}")
+    return "\n".join(lines) + "\n"
+
+
+def _run_release(ns: argparse.Namespace) -> int:
+    root = Path(ns.root).resolve()
+    doctor_cmd = [sys.executable, "-m", "sdetkit", "doctor", "--release", "--format", "json"]
+    if ns.release_full:
+        doctor_cmd = [
+            sys.executable,
+            "-m",
+            "sdetkit",
+            "doctor",
+            "--release-full",
+            "--format",
+            "json",
+        ]
+
+    commands: list[tuple[str, list[str]]] = [
+        ("doctor_release", doctor_cmd),
+        (
+            "playbooks_validate",
+            [
+                sys.executable,
+                "-m",
+                "sdetkit",
+                "playbooks",
+                "validate",
+                "--recommended",
+                "--format",
+                "json",
+            ],
+        ),
+        (
+            "gate_fast",
+            [
+                sys.executable,
+                "-m",
+                "sdetkit",
+                "gate",
+                "fast",
+                "--root",
+                str(root),
+                "--format",
+                "json",
+            ],
+        ),
+    ]
+
+    steps: list[dict[str, Any]] = []
+    for step_id, cmd in commands:
+        if ns.dry_run:
+            steps.append({"id": step_id, "cmd": cmd, "dry_run": True, "rc": None, "ok": True})
+        else:
+            steps.append({"id": step_id, **_run(cmd, cwd=root)})
+
+    failed = [s["id"] for s in steps if not s.get("ok", False)]
+    payload = {
+        "profile": "release",
+        "root": str(root),
+        "dry_run": bool(ns.dry_run),
+        "ok": not bool(failed),
+        "failed_steps": failed,
+        "steps": steps,
+    }
+
+    rendered = (
+        json.dumps(payload, sort_keys=True) + "\n"
+        if ns.format == "json"
+        else _format_release_text(payload)
+    )
+    _write_output(rendered, ns.out)
+
+    if payload["ok"]:
+        return 0
+    sys.stderr.write("gate: problems found\n")
+    return 2
+
+
 def main(argv: list[str] | None = None) -> int:
     raw = list(argv) if argv is not None else None
     args0 = raw if raw is not None else list(sys.argv[1:])
@@ -415,10 +504,19 @@ def main(argv: list[str] | None = None) -> int:
     fast.add_argument("--full-pytest", action="store_true")
     fast.add_argument("--mypy-args", default=None)
 
+    release = sub.add_parser("release")
+    release.add_argument("--root", default=".")
+    release.add_argument("--format", choices=["text", "json"], default="text")
+    release.add_argument("--out", "--output", default=None)
+    release.add_argument("--dry-run", action="store_true")
+    release.add_argument("--release-full", action="store_true")
+
     ns = parser.parse_args(list(argv) if argv is not None else None)
 
     if ns.cmd == "fast":
         return _run_fast(ns)
+    if ns.cmd == "release":
+        return _run_release(ns)
 
     sys.stderr.write("unknown gate command\n")
     return 2

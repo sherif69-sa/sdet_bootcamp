@@ -295,6 +295,83 @@ def _cmd_run(ns: argparse.Namespace) -> int:
     return int(fn(args))
 
 
+def _selected_playbooks(ns: argparse.Namespace, all_names: list[str]) -> list[str]:
+    if ns.all:
+        return all_names
+    if ns.recommended:
+        return sorted([n for n in RECOMMENDED_PLAYBOOKS if n in all_names])
+    if ns.legacy:
+        return [n for n in all_names if n.startswith("day") or n.endswith("-closeout")]
+    if ns.aliases:
+        return [
+            n
+            for n in all_names
+            if not (n.startswith("day") or n.endswith("-closeout"))
+            and n not in RECOMMENDED_PLAYBOOKS
+        ]
+
+    explicit = sorted(set(ns.name or []))
+    if explicit:
+        return explicit
+    return sorted([n for n in RECOMMENDED_PLAYBOOKS if n in all_names])
+
+
+def _cmd_validate(ns: argparse.Namespace) -> int:
+    pkg_dir = _pkg_dir()
+    cmd_to_mod, alias_to_canonical = _build_registry(pkg_dir)
+    all_names = sorted(cmd_to_mod.keys())
+    selected = _selected_playbooks(ns, all_names)
+
+    for name in selected:
+        if name not in cmd_to_mod:
+            sys.stderr.write("playbooks: unknown name\n")
+            return 2
+
+    results: list[dict[str, object]] = []
+    failed: list[str] = []
+    for name in selected:
+        mod_name = cmd_to_mod[name]
+        error: str | None = None
+        ok = True
+        try:
+            module = import_module(f"sdetkit.{mod_name}")
+            fn = getattr(module, "main", None)
+            if not callable(fn):
+                ok = False
+                error = "missing callable main"
+        except Exception as exc:  # pragma: no cover - defensive fallback
+            ok = False
+            error = str(exc)
+        if not ok:
+            failed.append(name)
+        results.append(
+            {
+                "name": name,
+                "module": mod_name,
+                "canonical": alias_to_canonical.get(name, name),
+                "ok": ok,
+                "error": error,
+            }
+        )
+
+    payload = {
+        "ok": not bool(failed),
+        "counts": {"selected": len(selected), "failed": len(failed)},
+        "failed": failed,
+        "results": results,
+    }
+
+    if ns.format == "json":
+        sys.stdout.write(json.dumps(payload, sort_keys=True, indent=2) + "\n")
+    else:
+        sys.stdout.write(f"playbooks validate: {'OK' if payload['ok'] else 'FAIL'}\n")
+        for item in results:
+            marker = "OK" if item["ok"] else "FAIL"
+            sys.stdout.write(f"[{marker}] {item['name']} -> {item['module']}\n")
+
+    return 0 if payload["ok"] else 2
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     if argv is None:
         argv = sys.argv[1:]
@@ -318,6 +395,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     runp.add_argument("name")
     runp.add_argument("args", nargs=argparse.REMAINDER)
     runp.set_defaults(_handler=_cmd_run)
+
+    validatep = sub.add_parser("validate")
+    validatep.add_argument("--format", choices=["text", "json"], default="text")
+    group = validatep.add_mutually_exclusive_group()
+    group.add_argument("--recommended", action="store_true")
+    group.add_argument("--legacy", action="store_true")
+    group.add_argument("--aliases", action="store_true")
+    group.add_argument("--all", action="store_true")
+    validatep.add_argument("--name", action="append", default=[])
+    validatep.set_defaults(_handler=_cmd_validate)
 
     ns = p.parse_args(argv)
     h = getattr(ns, "_handler", None)

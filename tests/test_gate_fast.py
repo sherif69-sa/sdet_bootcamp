@@ -28,6 +28,7 @@ def test_gate_help_includes_fast() -> None:
     assert proc.returncode == 0
     assert "usage: gate" in proc.stdout
     assert "fast" in proc.stdout
+    assert "release" in proc.stdout
 
 
 def test_gate_fast_can_run_ci_templates_only(tmp_path: Path) -> None:

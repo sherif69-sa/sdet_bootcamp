@@ -660,8 +660,12 @@ Examples:
 - `sdetkit gate fast --full-pytest`
 - `sdetkit gate baseline write`
 - `sdetkit gate baseline check`
+- `sdetkit gate release --dry-run --format json`
+- `sdetkit gate release --format json`
 
-Useful flags: `--root`, `--format`, `--out`/`--output`, `--strict`, `--fix`, `--fix-only`, `--list-steps`, `--only`, `--skip`, `--no-doctor`, `--no-ci-templates`, `--no-ruff`, `--no-mypy`, `--no-pytest`, `--mypy-args`, `--pytest-args`, `--full-pytest`.
+Useful flags (`gate fast`): `--root`, `--format`, `--out`/`--output`, `--strict`, `--fix`, `--fix-only`, `--list-steps`, `--only`, `--skip`, `--no-doctor`, `--no-ci-templates`, `--no-ruff`, `--no-mypy`, `--no-pytest`, `--mypy-args`, `--pytest-args`, `--full-pytest`.
+
+Useful flags (`gate release`): `--root`, `--format`, `--out`/`--output`, `--dry-run`, `--release-full`.
 
 Note: `gate fast` uses a default smoke pytest subset for speed. Use `--full-pytest` or explicit `--pytest-args` to run the full test suite.
 
@@ -693,5 +697,10 @@ Some legacy "dayXX-*" and case-study flows are available under the playbooks gro
 - Run a playbook:
 
   python -m sdetkit playbooks run day28-weekly-review -- --root . --format text
+
+- Validate playbooks are importable and expose callable `main()`:
+
+  python -m sdetkit playbooks validate --recommended --format json
+  python -m sdetkit playbooks validate --name onboarding --name weekly-review --format json
 
 - Legacy direct names still work, but prefer playbooks run for discoverability.
