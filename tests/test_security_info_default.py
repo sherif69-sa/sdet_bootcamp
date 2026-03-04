@@ -120,3 +120,148 @@ def test_security_baseline_include_info_flag_includes_info(tmp_path: Path) -> No
     data = json.loads(out.read_text(encoding="utf-8"))
     assert len(data["entries"]) == 1
     assert data["entries"][0]["rule_id"] == "SEC_DEBUG_PRINT"
+
+
+def test_security_scan_sarif_excludes_info_by_default(tmp_path: Path) -> None:
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src" / "x.py").write_text("print('x')\n", encoding="utf-8")
+    out = tmp_path / "scan.sarif"
+
+    _run(
+        [
+            sys.executable,
+            "-m",
+            "sdetkit",
+            "security",
+            "scan",
+            "--root",
+            str(tmp_path),
+            "--format",
+            "sarif",
+            "--output",
+            str(out),
+            "--fail-on",
+            "none",
+        ]
+    )
+
+    data = json.loads(out.read_text(encoding="utf-8"))
+    assert data["runs"][0]["results"] == []
+
+
+def test_security_scan_sarif_include_info_restores_info_findings(tmp_path: Path) -> None:
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src" / "x.py").write_text("print('x')\n", encoding="utf-8")
+    out = tmp_path / "scan.sarif"
+
+    _run(
+        [
+            sys.executable,
+            "-m",
+            "sdetkit",
+            "security",
+            "scan",
+            "--root",
+            str(tmp_path),
+            "--format",
+            "sarif",
+            "--include-info",
+            "--output",
+            str(out),
+            "--fail-on",
+            "none",
+        ]
+    )
+
+    data = json.loads(out.read_text(encoding="utf-8"))
+    results = data["runs"][0]["results"]
+    assert len(results) == 1
+    assert results[0]["ruleId"] == "SEC_DEBUG_PRINT"
+
+
+def test_security_report_sarif_excludes_info_by_default(tmp_path: Path) -> None:
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src" / "x.py").write_text("print('x')\n", encoding="utf-8")
+    out = tmp_path / "report.sarif"
+
+    _run(
+        [
+            sys.executable,
+            "-m",
+            "sdetkit",
+            "security",
+            "report",
+            "--root",
+            str(tmp_path),
+            "--format",
+            "sarif",
+            "--output",
+            str(out),
+            "--fail-on",
+            "none",
+        ]
+    )
+
+    data = json.loads(out.read_text(encoding="utf-8"))
+    assert data["runs"][0]["results"] == []
+
+
+def test_security_report_sarif_include_info_restores_info_findings(tmp_path: Path) -> None:
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src" / "x.py").write_text("print('x')\n", encoding="utf-8")
+    out = tmp_path / "report.sarif"
+
+    _run(
+        [
+            sys.executable,
+            "-m",
+            "sdetkit",
+            "security",
+            "report",
+            "--root",
+            str(tmp_path),
+            "--format",
+            "sarif",
+            "--include-info",
+            "--output",
+            str(out),
+            "--fail-on",
+            "none",
+        ]
+    )
+
+    data = json.loads(out.read_text(encoding="utf-8"))
+    results = data["runs"][0]["results"]
+    assert len(results) == 1
+    assert results[0]["ruleId"] == "SEC_DEBUG_PRINT"
+
+
+def test_security_check_sarif_excludes_info_by_default(tmp_path: Path) -> None:
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src" / "x.py").write_text("print('x')\n", encoding="utf-8")
+    baseline = tmp_path / "baseline.json"
+    baseline.write_text('{"version": 1, "entries": []}\n', encoding="utf-8")
+    out = tmp_path / "check.sarif"
+
+    _run(
+        [
+            sys.executable,
+            "-m",
+            "sdetkit",
+            "security",
+            "check",
+            "--root",
+            str(tmp_path),
+            "--baseline",
+            str(baseline),
+            "--format",
+            "sarif",
+            "--output",
+            str(out),
+            "--fail-on",
+            "none",
+        ]
+    )
+
+    data = json.loads(out.read_text(encoding="utf-8"))
+    assert data["runs"][0]["results"] == []

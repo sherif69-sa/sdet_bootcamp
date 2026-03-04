@@ -108,6 +108,8 @@ def test_premium_gate_script_smoke_contains_commands() -> None:
     assert "Head-5 Intelligence Brain" in text
     assert "premium-step-index.json" in text
     assert "premium-step-results.ndjson" in text
+    assert "emit_step_index()" in text
+    assert "import sys" in text
 
 
 def test_scan_online_mode_without_cmd_falls_back(tmp_path: Path, capsys) -> None:
