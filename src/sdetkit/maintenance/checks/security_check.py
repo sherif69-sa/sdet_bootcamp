@@ -124,9 +124,10 @@ def run(ctx: MaintenanceContext) -> CheckResult:
         _run_security_check(ctx) if not initial_ok else (initial_ok, initial_details)
     )
 
-    active_fingerprints = {
-        str(item) for item in follow_up_details.get("fingerprints", []) if isinstance(item, str)
-    }
+    raw_fingerprints = follow_up_details.get("fingerprints")
+    active_fingerprints: set[str] = set()
+    if isinstance(raw_fingerprints, list):
+        active_fingerprints = {str(item) for item in raw_fingerprints if isinstance(item, str)}
     _save_fingerprints(state_path, active_fingerprints)
 
     repeated = bool(active_fingerprints & previous_fingerprints)
