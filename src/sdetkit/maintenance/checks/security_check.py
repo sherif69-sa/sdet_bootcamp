@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+from collections import Counter
 from pathlib import Path
+from typing import Any
 
 from ..types import CheckAction, CheckResult, MaintenanceContext
 from ..utils import run_cmd
@@ -28,6 +30,51 @@ def _save_fingerprints(path: Path, fingerprints: set[str]) -> None:
     path.write_text(json.dumps(payload, sort_keys=True, indent=2) + "\n", encoding="utf-8")
 
 
+def _build_findings_digest(findings: list[dict[str, Any]]) -> dict[str, object]:
+    severity_counts: dict[str, int] = {"error": 0, "warn": 0, "info": 0}
+    rule_counts: Counter[str] = Counter()
+    path_counts: Counter[str] = Counter()
+    sample: list[dict[str, object]] = []
+
+    fingerprints: set[str] = set()
+    for item in findings:
+        sev = str(item.get("severity", "info")).lower()
+        if sev in severity_counts:
+            severity_counts[sev] += 1
+        else:
+            severity_counts["info"] += 1
+
+        rule_id = str(item.get("rule_id", "UNKNOWN"))
+        path = str(item.get("path", "<unknown>"))
+        rule_counts[rule_id] += 1
+        path_counts[path] += 1
+
+        if sev in {"error", "warn"} and item.get("fingerprint"):
+            fingerprints.add(str(item["fingerprint"]))
+
+        if len(sample) < 5:
+            sample.append(
+                {
+                    "severity": sev,
+                    "rule_id": rule_id,
+                    "path": path,
+                    "line": item.get("line"),
+                    "message": item.get("message", ""),
+                }
+            )
+
+    return {
+        "counts": severity_counts,
+        "fingerprints": sorted(fingerprints),
+        "findings_total": len(findings),
+        "top_rules": [
+            {"rule_id": rule, "count": count} for rule, count in rule_counts.most_common(5)
+        ],
+        "top_paths": [{"path": path, "count": count} for path, count in path_counts.most_common(5)],
+        "sample_findings": sample,
+    }
+
+
 def _run_security_check(ctx: MaintenanceContext) -> tuple[bool, dict[str, object]]:
     cmd = [
         ctx.python_exe,
@@ -45,39 +92,40 @@ def _run_security_check(ctx: MaintenanceContext) -> tuple[bool, dict[str, object
         cmd.extend(["--baseline", str(baseline)])
     result = run_cmd(cmd, cwd=ctx.repo_root)
 
-    payload: dict[str, object] = {}
+    payload: dict[str, Any] = {}
     try:
         payload = json.loads(result.stdout) if result.stdout.strip() else {}
     except json.JSONDecodeError:
         payload = {}
 
     findings = payload.get("findings", []) if isinstance(payload, dict) else []
+    source = "findings"
     if (
         baseline.exists()
         and isinstance(payload, dict)
         and isinstance(payload.get("new_findings"), list)
     ):
         findings = payload.get("new_findings", [])
+        source = "new_findings"
 
-    counts = {"error": 0, "warn": 0, "info": 0}
-    fingerprints: set[str] = set()
-    if isinstance(findings, list):
-        for item in findings:
-            if not isinstance(item, dict):
-                continue
-            sev = str(item.get("severity", "info")).lower()
-            if sev in counts:
-                counts[sev] += 1
-            else:
-                counts["info"] += 1
-            if sev in {"error", "warn"} and item.get("fingerprint"):
-                fingerprints.add(str(item["fingerprint"]))
+    normalized_findings: list[dict[str, Any]] = [
+        item for item in findings if isinstance(item, dict)
+    ]
+    digest = _build_findings_digest(normalized_findings)
+    counts = digest["counts"] if isinstance(digest.get("counts"), dict) else {}
+    error_count = int(counts.get("error", 0))
+    warn_count = int(counts.get("warn", 0))
 
-    ok = result.returncode == 0 and counts["error"] == 0 and counts["warn"] == 0
+    ok = result.returncode == 0 and error_count == 0 and warn_count == 0
     details: dict[str, object] = {
         "returncode": result.returncode,
+        "source": source,
         "counts": counts,
-        "fingerprints": sorted(fingerprints),
+        "fingerprints": digest.get("fingerprints", []),
+        "findings_total": digest.get("findings_total", 0),
+        "top_rules": digest.get("top_rules", []),
+        "top_paths": digest.get("top_paths", []),
+        "sample_findings": digest.get("sample_findings", []),
         "stdout": result.stdout,
         "stderr": result.stderr,
     }
@@ -130,14 +178,25 @@ def run(ctx: MaintenanceContext) -> CheckResult:
         active_fingerprints = {str(item) for item in raw_fingerprints if isinstance(item, str)}
     _save_fingerprints(state_path, active_fingerprints)
 
-    repeated = bool(active_fingerprints & previous_fingerprints)
+    repeated_fingerprints = sorted(active_fingerprints & previous_fingerprints)
+    repeated = bool(repeated_fingerprints)
     ok = follow_up_ok or not repeated
+
+    top_rules = follow_up_details.get("top_rules")
+    top_rule = ""
+    if isinstance(top_rules, list) and top_rules and isinstance(top_rules[0], dict):
+        top_rule = str(top_rules[0].get("rule_id", "")).strip()
+
     if not initial_ok and follow_up_ok:
         summary = "security check recovered after auto-fix/retry"
     elif not follow_up_ok and not repeated:
         summary = "security check found non-repeated warnings (recorded for next run)"
+        if top_rule:
+            summary += f"; top rule: {top_rule}"
     elif not follow_up_ok:
         summary = "security check reported error/warn findings (reproduced)"
+        if repeated_fingerprints:
+            summary += f"; repeated fingerprints: {', '.join(repeated_fingerprints[:3])}"
 
     return CheckResult(
         ok=ok,
@@ -148,6 +207,7 @@ def run(ctx: MaintenanceContext) -> CheckResult:
             "follow_up": follow_up_details,
             "previous_fingerprints": sorted(previous_fingerprints),
             "repeated": repeated,
+            "repeated_fingerprints": repeated_fingerprints,
             "state_path": str(state_path.relative_to(ctx.repo_root)),
             "auto_fix_enabled": auto_fix_enabled,
         },
