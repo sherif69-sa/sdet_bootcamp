@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import types
 from pathlib import Path
 
 from sdetkit import playbooks_cli as pc
@@ -48,3 +49,40 @@ def test_main_default_list_json(monkeypatch, capsys) -> None:
     )
     assert pc.main(["list", "--format", "json"]) == 0
     assert "recommended" in capsys.readouterr().out
+
+
+def test_cmd_run_success_and_validate_json(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(pc, "_pkg_dir", lambda: Path("/tmp/none"))
+    monkeypatch.setattr(
+        pc,
+        "_build_registry",
+        lambda pkg: ({"alias": "demo_mod", "broken": "broken_mod"}, {"alias": "demo"}),
+    )
+
+    good_mod = types.SimpleNamespace(main=lambda argv: 7)
+    broken_mod = types.SimpleNamespace(main="not-callable")
+
+    def _fake_import(name: str):
+        if name == "sdetkit.demo_mod":
+            return good_mod
+        if name == "sdetkit.broken_mod":
+            return broken_mod
+        raise RuntimeError("boom")
+
+    monkeypatch.setattr(pc, "import_module", _fake_import)
+
+    run_ns = argparse.Namespace(name="alias", args=["--", "--flag"])
+    assert pc._cmd_run(run_ns) == 7
+
+    json_ns = argparse.Namespace(
+        all=False,
+        recommended=False,
+        legacy=False,
+        aliases=False,
+        name=["alias", "broken"],
+        format="json",
+    )
+    assert pc._cmd_validate(json_ns) == 2
+    out = capsys.readouterr().out
+    assert '"failed": [' in out
+    assert '"canonical": "demo"' in out
