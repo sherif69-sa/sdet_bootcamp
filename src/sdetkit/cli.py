@@ -163,11 +163,29 @@ def _print_playbooks(sub) -> None:
     print("Tip: these commands still run directly, e.g. sdetkit <name> --help")
 
 
+def _resolve_non_day_playbook_alias(cmd: str) -> str:
+    """Resolve hidden day* playbook aliases like `weekly-review-closeout`."""
+    try:
+        from . import playbooks_cli
+
+        cmd_to_mod, alias_to_canonical = playbooks_cli._build_registry(playbooks_cli._pkg_dir())
+    except Exception:
+        return cmd
+
+    if cmd in alias_to_canonical and cmd in cmd_to_mod:
+        return alias_to_canonical[cmd]
+    return cmd
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     import sys
 
     if argv is None:
         argv = sys.argv[1:]
+
+    if argv:
+        argv = list(argv)
+        argv[0] = _resolve_non_day_playbook_alias(str(argv[0]))
 
     if argv and argv[0] == "playbooks":
         from .playbooks_cli import main as _playbooks_main
@@ -313,7 +331,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         return day47_reliability_closeout.main(list(argv[1:]))
     if argv and argv[0] == "day48-objection-closeout":
         return day48_objection_closeout.main(list(argv[1:]))
-    if argv and argv[0] == "day49-weekly-review-closeout":
+    if argv and argv[0] in {
+        "day49-weekly-review-closeout",
+        "day49-advanced-weekly-review-control-tower",
+    }:
         return day49_weekly_review_closeout.main(list(argv[1:]))
     if argv and argv[0] == "day50-execution-prioritization-closeout":
         return day50_execution_prioritization_closeout.main(list(argv[1:]))
@@ -683,6 +704,8 @@ Run: sdetkit playbooks
     d48.add_argument("args", nargs=argparse.REMAINDER)
     d49 = sub.add_parser("day49-weekly-review-closeout")
     d49.add_argument("args", nargs=argparse.REMAINDER)
+    d49_adv = sub.add_parser("day49-advanced-weekly-review-control-tower")
+    d49_adv.add_argument("args", nargs=argparse.REMAINDER)
     d50 = sub.add_parser("day50-execution-prioritization-closeout")
     d50.add_argument("args", nargs=argparse.REMAINDER)
     d51 = sub.add_parser("day51-case-snippet-closeout")
@@ -1027,7 +1050,7 @@ Run: sdetkit playbooks
         return day47_reliability_closeout.main(ns.args)
     if ns.cmd == "day48-objection-closeout":
         return day48_objection_closeout.main(ns.args)
-    if ns.cmd == "day49-weekly-review-closeout":
+    if ns.cmd in {"day49-weekly-review-closeout", "day49-advanced-weekly-review-control-tower"}:
         return day49_weekly_review_closeout.main(ns.args)
     if ns.cmd == "day50-execution-prioritization-closeout":
         return day50_execution_prioritization_closeout.main(ns.args)

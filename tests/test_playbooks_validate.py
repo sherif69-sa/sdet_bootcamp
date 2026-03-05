@@ -46,6 +46,14 @@ def test_playbooks_validate_aliases_are_only_alias_names(capsys) -> None:
     assert all(item["canonical"].startswith("day") for item in payload["results"])
 
 
+def test_playbooks_validate_aliases_include_non_closeout_day_aliases(capsys) -> None:
+    rc = playbooks_cli.main(["validate", "--aliases", "--format", "json"])
+    assert rc == 0
+    payload = json.loads(capsys.readouterr().out)
+    names = [item["name"] for item in payload["results"]]
+    assert "phase1-hardening" in names
+
+
 def test_playbooks_validate_all_includes_multiple_groups(capsys) -> None:
     rc = playbooks_cli.main(["validate", "--all", "--format", "json"])
     assert rc == 0
