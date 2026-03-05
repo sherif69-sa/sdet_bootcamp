@@ -33,6 +33,8 @@ need_cmd() {
 run_fmt()     { need_cmd ruff; python -m ruff format .; }
 run_lint()    { need_cmd ruff; python -m ruff check .; }
 run_type()    { need_cmd mypy; python -m mypy --config-file pyproject.toml src; }
+run_gate_fast() { python -m sdetkit gate fast; }
+run_full_test() { need_cmd pytest; python -m pytest -q -o addopts=; }
 run_test()    { need_cmd pytest; python -m pytest; }
 run_cov()     { need_cmd pytest; python -m pytest --cov=sdetkit --cov-report=term-missing --cov-fail-under="$cov_fail_under"; }
 run_mut()     { need_cmd mutmut; mutmut run; }
@@ -42,8 +44,9 @@ case "$mode" in
   fmt) run_fmt ;;
   lint) run_lint ;;
   type) run_type ;;
-  test) run_test ;;
+  test) run_gate_fast ;;
   cov) run_cov ;;
+  full-test) run_full_test ;;
   mut) run_mut ;;
   muthtml) run_muthtml ;;
   all)
@@ -54,7 +57,7 @@ case "$mode" in
     run_cov
     ;;
   *)
-    echo "Usage: bash quality.sh {all|fmt|lint|type|test|cov|mut|muthtml}" >&2
+    echo "Usage: bash quality.sh {all|fmt|lint|type|test|full-test|cov|mut|muthtml}" >&2
     exit 2
     ;;
 esac
