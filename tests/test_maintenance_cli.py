@@ -4,11 +4,20 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
 from sdetkit.maintenance import cli
-from sdetkit.maintenance.checks import lint_check, security_check
+from sdetkit.maintenance.checks import (
+    clean_tree_check,
+    custom_example_check,
+    deps_check,
+    doctor_check,
+    lint_check,
+    security_check,
+    tests_check,
+)
 from sdetkit.maintenance.types import MaintenanceContext
 from sdetkit.security import SecurityError
 
@@ -99,6 +108,139 @@ def test_fix_mode_records_actions() -> None:
     payload = json.loads(proc.stdout)
     lint_actions = payload["checks"]["lint_check"]["actions"]
     assert lint_actions
+
+
+def test_doctor_check_handles_empty_output(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(doctor_check.doctor, "main", lambda _args: 2)
+    ctx = MaintenanceContext(
+        repo_root=tmp_path,
+        python_exe=sys.executable,
+        mode="quick",
+        fix=False,
+        env={},
+        logger=object(),
+    )
+
+    result = doctor_check.run(ctx)
+    assert result.ok is False
+    assert result.summary == "doctor returned no JSON output"
+
+
+def test_doctor_check_full_mode_and_bad_json(monkeypatch, tmp_path: Path, capsys) -> None:
+    def _fake_main(args: list[str]) -> int:
+        print("not-json")
+        assert args == ["--format", "json", "--all"]
+        return 3
+
+    monkeypatch.setattr(doctor_check.doctor, "main", _fake_main)
+    ctx = MaintenanceContext(
+        repo_root=tmp_path,
+        python_exe=sys.executable,
+        mode="full",
+        fix=False,
+        env={},
+        logger=object(),
+    )
+
+    result = doctor_check.run(ctx)
+    assert result.ok is False
+    assert result.summary == "doctor output was not valid JSON"
+    capsys.readouterr()
+
+
+def test_deps_check_deterministic_and_conflict_paths(monkeypatch, tmp_path: Path) -> None:
+    pip_conflict = SimpleNamespace(returncode=1, stdout="", stderr="broken")
+    monkeypatch.setattr(deps_check, "run_cmd", lambda _cmd, cwd: pip_conflict)
+
+    deterministic_ctx = MaintenanceContext(
+        repo_root=tmp_path,
+        python_exe=sys.executable,
+        mode="quick",
+        fix=False,
+        env={"SDETKIT_DETERMINISTIC": "1"},
+        logger=object(),
+    )
+    deterministic = deps_check.run(deterministic_ctx)
+    assert deterministic.ok is False
+    assert deterministic.details["outdated"]["note"] == "skipped in deterministic mode"
+
+    calls: list[list[str]] = []
+
+    def _run(cmd: list[str], *, cwd: Path):
+        calls.append(cmd)
+        if cmd[-1] == "check":
+            return SimpleNamespace(returncode=0, stdout="ok", stderr="")
+        return SimpleNamespace(returncode=1, stdout="fallback", stderr="")
+
+    monkeypatch.setattr(deps_check, "run_cmd", _run)
+    ctx = MaintenanceContext(
+        repo_root=tmp_path,
+        python_exe=sys.executable,
+        mode="quick",
+        fix=False,
+        env={},
+        logger=object(),
+    )
+    nondeterministic = deps_check.run(ctx)
+    assert nondeterministic.ok is True
+    assert nondeterministic.details["outdated"]["ok"] is False
+    assert any("--outdated" in c for cmd in calls for c in cmd)
+
+
+def test_clean_tree_check_paths(monkeypatch, tmp_path: Path) -> None:
+    ctx = MaintenanceContext(
+        repo_root=tmp_path,
+        python_exe=sys.executable,
+        mode="quick",
+        fix=False,
+        env={},
+        logger=object(),
+    )
+
+    monkeypatch.setattr(clean_tree_check.shutil, "which", lambda _tool: None)
+    missing = clean_tree_check.run(ctx)
+    assert missing.summary == "git is not available"
+
+    monkeypatch.setattr(clean_tree_check.shutil, "which", lambda _tool: "/usr/bin/git")
+    monkeypatch.setattr(
+        clean_tree_check,
+        "run_cmd",
+        lambda _cmd, cwd: SimpleNamespace(returncode=1, stdout="", stderr="boom"),
+    )
+    failed = clean_tree_check.run(ctx)
+    assert failed.summary == "git status failed"
+
+    monkeypatch.setattr(
+        clean_tree_check,
+        "run_cmd",
+        lambda _cmd, cwd: SimpleNamespace(returncode=0, stdout=" M foo.py\n", stderr=""),
+    )
+    dirty = clean_tree_check.run(ctx)
+    assert dirty.ok is False
+    assert dirty.details["count"] == 1
+
+
+def test_custom_example_and_tests_check(monkeypatch, tmp_path: Path) -> None:
+    ctx = MaintenanceContext(
+        repo_root=tmp_path,
+        python_exe=sys.executable,
+        mode="full",
+        fix=False,
+        env={},
+        logger=object(),
+    )
+    custom = custom_example_check.run(ctx)
+    assert custom.ok is True
+    assert custom.details["mode"] == "full"
+
+    monkeypatch.setattr(
+        tests_check,
+        "run_cmd",
+        lambda _cmd, cwd: SimpleNamespace(returncode=1, stdout="", stderr="failed"),
+    )
+    failed = tests_check.run(ctx)
+    assert failed.ok is False
+    assert failed.summary == "pytest reported failures"
 
 
 def test_render_markdown_escapes_table_breaking_content() -> None:

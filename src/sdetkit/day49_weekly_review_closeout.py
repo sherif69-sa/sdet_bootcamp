@@ -319,11 +319,12 @@ def build_day49_weekly_review_closeout_summary(root: Path) -> dict[str, Any]:
 
     if not failed and not critical_failures:
         wins.append(
-            "Day 49 weekly review closeout lane is fully complete and ready for Day 50 execution lane."
+            "Day 49 advanced weekly review control tower is fully complete and ready for Day 50 execution lane."
         )
 
     return {
-        "name": "day49-weekly-review-closeout",
+        "name": "day49-advanced-weekly-review-control-tower",
+        "legacy_name": "day49-weekly-review-closeout",
         "inputs": {
             "readme": readme_path,
             "docs_index": docs_index_path,
@@ -357,7 +358,7 @@ def build_day49_weekly_review_closeout_summary(root: Path) -> dict[str, Any]:
 
 def _render_text(payload: dict[str, Any]) -> str:
     lines = [
-        "Day 49 weekly review closeout summary",
+        "Day 49 advanced weekly review control tower summary",
         f"- Activation score: {payload['summary']['activation_score']}",
         f"- Passed checks: {payload['summary']['passed_checks']}",
         f"- Failed checks: {payload['summary']['failed_checks']}",
@@ -415,6 +416,31 @@ def _emit_pack(root: Path, payload: dict[str, Any], pack_dir: Path) -> None:
         + "\n",
     )
     _write(
+        target / "day49-advanced-priority-matrix.json",
+        json.dumps(
+            {
+                "priority_model": "weighted-weekly-review",
+                "inputs": {
+                    "passed_checks": payload["summary"]["passed_checks"],
+                    "failed_checks": payload["summary"]["failed_checks"],
+                    "critical_failures": payload["summary"]["critical_failures"],
+                },
+                "priorities": [
+                    {
+                        "lane": "stability",
+                        "score": max(0, 100 - payload["summary"]["failed_checks"] * 10),
+                    },
+                    {
+                        "lane": "delivery",
+                        "score": max(0, 100 - len(payload["summary"]["critical_failures"]) * 25),
+                    },
+                ],
+            },
+            indent=2,
+        )
+        + "\n",
+    )
+    _write(
         target / "day49-execution-log.md",
         "# Day 49 Execution Log\n\n- [ ] 2026-03-17: Record misses, wins, and Day 50 execution priorities.\n",
     )
@@ -452,7 +478,9 @@ def _execute_commands(root: Path, evidence_dir: Path) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Day 49 weekly review closeout checks")
+    parser = argparse.ArgumentParser(
+        description="Day 49 advanced weekly review control tower checks"
+    )
     parser.add_argument("--root", default=".")
     parser.add_argument("--format", choices=["text", "json"], default="text")
     parser.add_argument("--strict", action="store_true")

@@ -113,6 +113,18 @@ def _alias_for_day_closeout(mod: str) -> str | None:
     return alias_cmd
 
 
+def _alias_for_day_module(mod: str) -> str | None:
+    if not _DAY_PREFIX.match(mod):
+        return None
+    alias_mod = _DAY_PREFIX.sub("", mod, count=1)
+    if not alias_mod:
+        return None
+    alias_cmd = _mod_to_cmd(alias_mod)
+    if alias_cmd in RESERVED_NAMES:
+        return None
+    return alias_cmd
+
+
 def _build_registry(pkg_dir: Path) -> tuple[dict[str, str], dict[str, str]]:
     cmd_to_mod: dict[str, str] = {}
     alias_to_canonical: dict[str, str] = {}
@@ -130,6 +142,11 @@ def _build_registry(pkg_dir: Path) -> tuple[dict[str, str], dict[str, str]]:
         if alias and alias not in cmd_to_mod:
             cmd_to_mod[alias] = mod
             alias_to_canonical[alias] = canonical
+
+        generic_alias = _alias_for_day_module(mod)
+        if generic_alias and generic_alias not in cmd_to_mod:
+            cmd_to_mod[generic_alias] = mod
+            alias_to_canonical[generic_alias] = canonical
 
     return cmd_to_mod, alias_to_canonical
 
