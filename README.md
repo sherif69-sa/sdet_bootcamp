@@ -36,8 +36,10 @@ Optional extras:
 
 - Run the fast CI-equivalent gate:
   - `bash ci.sh quick --skip-docs`
-- Run the full local quality gate:
-  - `bash quality.sh all`
+- Run the coverage quality gate (CI/release lane):
+  - `bash quality.sh cov`
+- Run the full test suite (opt-in):
+  - `bash quality.sh full-test`
 
 ## DevOps Quickstart
 
@@ -128,8 +130,10 @@ Tip: pair `security scan --format sarif` (for code scanning upload) with `securi
 - Bootstrap the pinned dev toolchain:
   - `bash scripts/bootstrap.sh`
   - `source .venv/bin/activate`
-- Run the local quality gate before opening a PR:
-  - `bash quality.sh all`
+- Run the coverage quality gate before opening a PR:
+  - `bash quality.sh cov`
+- Optionally run the full test suite:
+  - `bash quality.sh full-test`
 
 ## Closeout lanes (Days 72-76)
 
