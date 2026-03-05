@@ -42,6 +42,6 @@ jobs:
 
       - name: Tests
         env:
-          COV_FAIL_UNDER: "70"
+          COV_FAIL_UNDER: "95"
         run: |
           bash quality.sh cov
