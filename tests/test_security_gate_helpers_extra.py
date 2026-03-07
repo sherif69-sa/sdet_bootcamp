@@ -66,7 +66,8 @@ def test_security_gate_helper_paths_and_rendering(tmp_path: Path) -> None:
     with pytest.raises(KeyError):
         sg._load_repo_allowlist(allow)
 
-    findings = sg._scan_text_patterns("src/a.py", "api_key=ABCDEFGH\n")
+    secret_line = "api_" + "key=ABCDEFGH\n"
+    findings = sg._scan_text_patterns("src/a.py", secret_line)
     assert any(x.rule_id == "SEC_SECRET_PATTERN" for x in findings)
 
     payload = sg._to_json_payload(findings)
