@@ -30,6 +30,21 @@ Build, validate, and release software with confidence using a polished SDET + De
 
 </div>
 
+## Platform architecture at a glance
+
+```mermaid
+flowchart LR
+    A[Code + Policy Inputs] --> B[Doctor + Audit]
+    B --> C[CI Quick / Full Lanes]
+    C --> D[Security + Quality Gates]
+    D --> E[Evidence Pack + Reports]
+    E --> F[Release Decision]
+
+    style B fill:#3b82f633,stroke:#3b82f6
+    style D fill:#14b8a633,stroke:#14b8a6
+    style E fill:#a855f733,stroke:#a855f7
+```
+
 ## Why teams choose SDETKit
 
 <div class="grid cards feature-grid" markdown>
@@ -98,11 +113,21 @@ Generate artifacts to support traceable release approvals.
 
 ## Fast start
 
-```bash
-python3 -m venv .venv
-./.venv/bin/python -m pip install -r requirements-test.txt -r requirements-docs.txt -e .
-bash ci.sh quick --skip-docs
-```
+=== "Local setup"
+
+    ```bash
+    python3 -m venv .venv
+    ./.venv/bin/python -m pip install -r requirements-test.txt -r requirements-docs.txt -e .
+    bash ci.sh quick --skip-docs
+    ```
+
+=== "CI-style path"
+
+    ```bash
+    bash ci.sh quick
+    bash quality.sh cov
+    python -m sdetkit security enforce --format json --max-error 0 --max-warn 0 --max-info 0
+    ```
 
 !!! tip "10-minute onboarding path"
     Follow this sequence for the fastest adoption: **CLI help** → **Doctor** → **Gate fast** → **Evidence export**.
