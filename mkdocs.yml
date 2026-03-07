@@ -1,4 +1,72 @@
-site_name: DevS69 sdetkit
+site_name: DevS69 SDETKit
+site_description: Production-ready SDET + DevOps toolkit with deterministic quality, security, and release workflows.
+site_url: https://sherif69-sa.github.io/DevS69-sdetkit/
+repo_name: sherif69-sa/DevS69-sdetkit
+repo_url: https://github.com/sherif69-sa/DevS69-sdetkit
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  logo: assets/logo-mark.svg
+  favicon: assets/logo-mark.svg
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.instant
+    - navigation.expand
+    - content.code.copy
+    - search.suggest
+    - search.highlight
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: cyan
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: cyan
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.details
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+  - Home: index.md
+  - Product:
+      - CLI commands: cli.md
+      - Production readiness: production-readiness.md
+      - Security gate: security-gate.md
+      - Evidence: evidence.md
+  - Architecture:
+      - Repo tour: repo-tour.md
+      - Project structure: project-structure.md
+      - Design: design.md
+      - Monorepo projects: monorepo-projects.md
+  - Integrations:
+      - API: api.md
+      - n8n: n8n.md
+      - Patch harness: patch-harness.md
+  - Delivery:
+      - Contributing: contributing.md
+      - Security policy: security.md
+      - Releasing: releasing.md
+      - Changelog: changelog.md
 
 exclude_docs: |
   artifacts/**
