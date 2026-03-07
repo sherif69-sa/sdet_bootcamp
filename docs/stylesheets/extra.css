@@ -8,12 +8,15 @@
 
 .hero-panel {
   border-radius: 18px;
-  padding: 1.3rem 1.4rem;
-  margin: 0.4rem 0 1.1rem;
+  padding: 1.5rem;
+  margin: 0.4rem 0 1rem;
   border: 1px solid color-mix(in srgb, var(--md-primary-fg-color) 35%, transparent);
-  background: linear-gradient(145deg,
-    color-mix(in srgb, var(--md-primary-fg-color) 10%, var(--md-default-bg-color) 90%),
-    color-mix(in srgb, var(--md-accent-fg-color) 8%, var(--md-default-bg-color) 92%));
+  background: radial-gradient(circle at top right,
+      color-mix(in srgb, var(--md-accent-fg-color) 20%, transparent),
+      transparent 45%),
+    linear-gradient(145deg,
+      color-mix(in srgb, var(--md-primary-fg-color) 10%, var(--md-default-bg-color) 90%),
+      color-mix(in srgb, var(--md-accent-fg-color) 8%, var(--md-default-bg-color) 92%));
   box-shadow: var(--md-shadow-z1);
 }
 
@@ -23,17 +26,27 @@
 }
 
 .hero-panel p {
-  margin: 0;
+  margin: 0.3rem 0 0;
   opacity: 0.95;
 }
 
-.quick-jump {
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.kpi-strip {
   border-radius: 12px;
   border: 1px dashed color-mix(in srgb, var(--md-accent-fg-color) 42%, transparent);
-  padding: 0.7rem 0.9rem;
+  padding: 0.7rem 1rem;
   margin: 0.2rem 0 1rem;
-  font-weight: 600;
   background: color-mix(in srgb, var(--md-accent-fg-color) 8%, var(--md-default-bg-color));
+}
+
+.kpi-strip ul {
+  margin: 0;
 }
 
 .grid.cards ul {
