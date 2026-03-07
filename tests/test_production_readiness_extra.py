@@ -22,3 +22,27 @@ def test_main_emit_pack_and_strict_failure(tmp_path: Path, capsys) -> None:
     assert payload["summary"]["strict_pass"] is False
     assert (out / "production-readiness-summary.json").exists()
     assert (out / "production-readiness-report.md").exists()
+
+
+def test_render_text_includes_check_status_lines(tmp_path: Path) -> None:
+    payload = pr.build_production_readiness_summary(tmp_path)
+
+    text = pr._render_text(payload)
+
+    assert text.startswith("production-readiness\n")
+    assert "checks:" in text
+    assert "- [FAIL] governance_core_docs" in text
+
+
+def test_main_markdown_and_text_output_modes(tmp_path: Path, capsys) -> None:
+    markdown_rc = pr.main(["--root", str(tmp_path), "--format", "markdown"])
+    markdown_out = capsys.readouterr().out
+
+    assert markdown_rc == 0
+    assert markdown_out.startswith("# Production readiness report")
+
+    text_rc = pr.main(["--root", str(tmp_path), "--format", "text"])
+    text_out = capsys.readouterr().out
+
+    assert text_rc == 0
+    assert text_out.startswith("production-readiness")
