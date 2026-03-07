@@ -142,8 +142,23 @@
   font-size: 0.72rem;
 }
 
-.md-typeset .admonition.tip {
+.md-typeset .admonition.tip,
+.md-typeset .tabbed-set {
   border-radius: 12px;
+}
+
+.md-typeset table:not([class]) {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--md-default-fg-color) 14%, transparent);
+}
+
+.md-typeset .mermaid {
+  border: 1px solid color-mix(in srgb, var(--md-primary-fg-color) 24%, transparent);
+  border-radius: 14px;
+  padding: 0.9rem;
+  background: color-mix(in srgb, var(--md-primary-fg-color) 4%, var(--md-default-bg-color));
+  box-shadow: var(--md-shadow-z1);
 }
 
 .md-header {
