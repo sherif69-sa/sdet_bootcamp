@@ -1148,13 +1148,13 @@ def _inject_requests_timeout(text: str, timeout: int) -> str:
         col_offset = getattr(node, "col_offset", None)
         end_lineno = getattr(node, "end_lineno", None)
         end_col_offset = getattr(node, "end_col_offset", None)
-        if not isinstance(lineno, int):
+        if not isinstance(lineno, int) or not isinstance(col_offset, int):
             continue
-        if not isinstance(col_offset, int):
+        if not isinstance(end_lineno, int) or not isinstance(end_col_offset, int):
             continue
-        if not isinstance(end_lineno, int):
+        if lineno <= 0 or end_lineno <= 0:
             continue
-        if not isinstance(end_col_offset, int):
+        if lineno >= len(line_offsets) or end_lineno >= len(line_offsets):
             continue
 
         start = line_offsets[lineno - 1] + col_offset
