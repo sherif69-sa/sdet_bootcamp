@@ -11,7 +11,9 @@ from typing import Any
 _PAGE_PATH = "docs/integrations-day91-continuous-upgrade-closeout.md"
 _TOP10_PATH = "docs/top-10-github-strategy.md"
 _DAY90_SUMMARY_PATH = "docs/artifacts/day90-phase3-wrap-publication-closeout-pack/day90-phase3-wrap-publication-closeout-summary.json"
-_DAY90_BOARD_PATH = "docs/artifacts/day90-phase3-wrap-publication-closeout-pack/day90-delivery-board.md"
+_DAY90_BOARD_PATH = (
+    "docs/artifacts/day90-phase3-wrap-publication-closeout-pack/day90-delivery-board.md"
+)
 _PLAN_PATH = "docs/roadmap/plans/day91-continuous-upgrade-plan.json"
 _SECTION_HEADER = "# Day 91 \u2014 Continuous upgrade closeout lane"
 _REQUIRED_SECTIONS = [
@@ -288,9 +290,7 @@ def build_day91_continuous_upgrade_closeout_summary(root: Path) -> dict[str, Any
         handoff_actions.append("Repair Day 90 delivery board entries to include Day 90 anchors.")
 
     if not missing_plan_keys:
-        wins.append(
-            "Day 91 continuous upgrade dataset is available for governance execution."
-        )
+        wins.append("Day 91 continuous upgrade dataset is available for governance execution.")
     else:
         misses.append("Day 91 continuous upgrade dataset is missing required keys.")
         handoff_actions.append(
@@ -359,13 +359,9 @@ def _emit_pack(root: Path, pack_dir: Path, payload: dict[str, Any]) -> None:
         target / "day91-continuous-upgrade-closeout-summary.json",
         json.dumps(payload, indent=2) + "\n",
     )
-    _write(
-        target / "day91-continuous-upgrade-closeout-summary.md", _render_text(payload) + "\n"
-    )
+    _write(target / "day91-continuous-upgrade-closeout-summary.md", _render_text(payload) + "\n")
     _write(target / "day91-evidence-brief.md", "# Day 91 continuous upgrade brief\n")
-    _write(
-        target / "day91-continuous-upgrade-plan.md", "# Day 91 continuous upgrade plan\n"
-    )
+    _write(target / "day91-continuous-upgrade-plan.md", "# Day 91 continuous upgrade plan\n")
     _write(
         target / "day91-upgrade-template-upgrade-ledger.json",
         json.dumps({"upgrades": []}, indent=2) + "\n",
