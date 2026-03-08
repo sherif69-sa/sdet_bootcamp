@@ -72,6 +72,7 @@ from . import (
     day89_governance_scale_closeout,
     day90_phase3_wrap_publication_closeout,
     day91_continuous_upgrade_closeout,
+    day92_continuous_upgrade_cycle2_closeout,
     demo,
     docs_navigation,
     docs_qa,
@@ -459,6 +460,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     if argv and argv[0] == "day91-continuous-upgrade-closeout":
         return day91_continuous_upgrade_closeout.main(list(argv[1:]))
 
+    if argv and argv[0] == "day92-continuous-upgrade-cycle2-closeout":
+        return day92_continuous_upgrade_cycle2_closeout.main(list(argv[1:]))
+
     if argv and argv[0] == "faq-objections":
         return faq_objections.main(list(argv[1:]))
 
@@ -817,6 +821,8 @@ Run: sdetkit playbooks
     d90.add_argument("args", nargs=argparse.REMAINDER)
     d91 = sub.add_parser("day91-continuous-upgrade-closeout")
     d91.add_argument("args", nargs=argparse.REMAINDER)
+    d92 = sub.add_parser("day92-continuous-upgrade-cycle2-closeout")
+    d92.add_argument("args", nargs=argparse.REMAINDER)
 
     fqo = sub.add_parser("faq-objections")
     fqo.add_argument("args", nargs=argparse.REMAINDER)
@@ -1173,6 +1179,9 @@ Run: sdetkit playbooks
 
     if ns.cmd == "day91-continuous-upgrade-closeout":
         return day91_continuous_upgrade_closeout.main(ns.args)
+
+    if ns.cmd == "day92-continuous-upgrade-cycle2-closeout":
+        return day92_continuous_upgrade_cycle2_closeout.main(ns.args)
 
     if ns.cmd == "faq-objections":
         return faq_objections.main(ns.args)
