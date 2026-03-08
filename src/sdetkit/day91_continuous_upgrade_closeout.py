@@ -11,7 +11,9 @@ from typing import Any
 _PAGE_PATH = "docs/integrations-day91-continuous-upgrade-closeout.md"
 _TOP10_PATH = "docs/top-10-github-strategy.md"
 _DAY90_SUMMARY_PATH = "docs/artifacts/day90-phase3-wrap-publication-closeout-pack/day90-phase3-wrap-publication-closeout-summary.json"
-_DAY90_BOARD_PATH = "docs/artifacts/day90-phase3-wrap-publication-closeout-pack/day90-delivery-board.md"
+_DAY90_BOARD_PATH = (
+    "docs/artifacts/day90-phase3-wrap-publication-closeout-pack/day90-delivery-board.md"
+)
 _PLAN_PATH = "docs/roadmap/plans/day91-continuous-upgrade-plan.json"
 _SECTION_HEADER = "# Day 91 \u2014 Continuous upgrade closeout lane"
 _REQUIRED_SECTIONS = [
@@ -288,9 +290,7 @@ def build_day91_continuous_upgrade_closeout_summary(root: Path) -> dict[str, Any
         handoff_actions.append("Repair Day 90 delivery board entries to include Day 90 anchors.")
 
     if not missing_plan_keys:
-        wins.append(
-            "Day 91 continuous upgrade dataset is available for governance execution."
-        )
+        wins.append("Day 91 continuous upgrade dataset is available for governance execution.")
     else:
         misses.append("Day 91 continuous upgrade dataset is missing required keys.")
         handoff_actions.append(
@@ -359,13 +359,9 @@ def _emit_pack(root: Path, pack_dir: Path, payload: dict[str, Any]) -> None:
         target / "day91-continuous-upgrade-closeout-summary.json",
         json.dumps(payload, indent=2) + "\n",
     )
-    _write(
-        target / "day91-continuous-upgrade-closeout-summary.md", _render_text(payload) + "\n"
-    )
+    _write(target / "day91-continuous-upgrade-closeout-summary.md", _render_text(payload) + "\n")
     _write(target / "day91-evidence-brief.md", "# Day 91 continuous upgrade brief\n")
-    _write(
-        target / "day91-continuous-upgrade-plan.md", "# Day 91 continuous upgrade plan\n"
-    )
+    _write(target / "day91-continuous-upgrade-plan.md", "# Day 91 continuous upgrade plan\n")
     _write(
         target / "day91-upgrade-template-upgrade-ledger.json",
         json.dumps({"upgrades": []}, indent=2) + "\n",
@@ -386,7 +382,7 @@ def _emit_pack(root: Path, pack_dir: Path, payload: dict[str, Any]) -> None:
     )
 
 
-def _execute_commands(root: Path, evidence_dir: Path) -> None:
+def _execute_commands(root: Path, evidence_dir: Path) -> dict[str, Any]:
     events: list[dict[str, Any]] = []
     out_dir = evidence_dir if evidence_dir.is_absolute() else root / evidence_dir
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -403,10 +399,18 @@ def _execute_commands(root: Path, evidence_dir: Path) -> None:
         }
         events.append(event)
         _write(out_dir / f"command-{idx:02d}.log", json.dumps(event, indent=2) + "\n")
+    failed_commands = [event for event in events if int(event["returncode"]) != 0]
+    summary = {
+        "total_commands": len(events),
+        "failed_commands": len(failed_commands),
+        "strict_pass": not failed_commands,
+        "commands": events,
+    }
     _write(
         out_dir / "day91-execution-summary.json",
-        json.dumps({"total_commands": len(events), "commands": events}, indent=2) + "\n",
+        json.dumps(summary, indent=2) + "\n",
     )
+    return summary
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -434,10 +438,16 @@ def main(argv: list[str] | None = None) -> int:
             if ns.evidence_dir
             else Path("docs/artifacts/day91-continuous-upgrade-closeout-pack/evidence")
         )
-        _execute_commands(root, evidence_dir)
+        execution_summary = _execute_commands(root, evidence_dir)
+        payload["execution"] = execution_summary
 
     print(json.dumps(payload, indent=2) if ns.format == "json" else _render_text(payload))
-    return 1 if ns.strict and not payload["summary"]["strict_pass"] else 0
+    strict_failed = not payload["summary"]["strict_pass"]
+    if ns.execute:
+        strict_failed = strict_failed or not bool(
+            payload.get("execution", {}).get("strict_pass", True)
+        )
+    return 1 if ns.strict and strict_failed else 0
 
 
 if __name__ == "__main__":
