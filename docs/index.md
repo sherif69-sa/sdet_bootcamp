@@ -30,6 +30,22 @@ Build, validate, and release software with confidence using a polished SDET + De
 
 </div>
 
+
+
+<div class="quick-jump" markdown>
+
+[⚡ Fast start](#fast-start) · [🚀 Phase-1 daily plan](top-10-github-strategy.md#phase-1-days-1-30-positioning-conversion-daily-execution) · [✅ Day 10 ultra report](day-10-ultra-upgrade-report.md) · [🧭 Day 11 ultra report](day-11-ultra-upgrade-report.md) · [🧭 Repo tour](repo-tour.md) · [📈 Top-10 strategy](top-10-github-strategy.md) · [🤖 AgentOS](agentos-foundation.md) · [🍳 Cookbook](agentos-cookbook.md) · [🛠 CLI commands](cli.md) · [🩺 Doctor checks](doctor.md) · [🤝 Contribute](contributing.md)
+
+</div>
+
+## Day 11 ultra upgrades (docs navigation tune-up)
+
+### Day 11 top journeys
+
+- Run first command in under 60 seconds
+- Validate docs links and anchors before publishing
+- Ship a first contribution with deterministic quality gates
+
 ## Platform architecture at a glance
 
 ```mermaid
