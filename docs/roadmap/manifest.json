@@ -472,6 +472,18 @@
       "plan_path": "docs/roadmap/phase3/plans/day91-continuous-upgrade-plan.json",
       "report_path": "docs/roadmap/reports/day-91-big-upgrade-report.md",
       "report_title": "Day 91 big upgrade report"
+    },
+    {
+      "day": 92,
+      "plan_path": "docs/roadmap/phase3/plans/day92-continuous-upgrade-cycle2-plan.json",
+      "report_path": "docs/roadmap/reports/day-92-big-upgrade-report.md",
+      "report_title": "Day 92 big upgrade report"
+    },
+    {
+      "day": 93,
+      "plan_path": "docs/roadmap/phase3/plans/day93-continuous-upgrade-cycle3-plan.json",
+      "report_path": "docs/roadmap/reports/day-93-big-upgrade-report.md",
+      "report_title": "Day 93 big upgrade report"
     }
   ]
 }
