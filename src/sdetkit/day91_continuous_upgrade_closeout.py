@@ -382,7 +382,7 @@ def _emit_pack(root: Path, pack_dir: Path, payload: dict[str, Any]) -> None:
     )
 
 
-def _execute_commands(root: Path, evidence_dir: Path) -> None:
+def _execute_commands(root: Path, evidence_dir: Path) -> dict[str, Any]:
     events: list[dict[str, Any]] = []
     out_dir = evidence_dir if evidence_dir.is_absolute() else root / evidence_dir
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -399,10 +399,18 @@ def _execute_commands(root: Path, evidence_dir: Path) -> None:
         }
         events.append(event)
         _write(out_dir / f"command-{idx:02d}.log", json.dumps(event, indent=2) + "\n")
+    failed_commands = [event for event in events if int(event["returncode"]) != 0]
+    summary = {
+        "total_commands": len(events),
+        "failed_commands": len(failed_commands),
+        "strict_pass": not failed_commands,
+        "commands": events,
+    }
     _write(
         out_dir / "day91-execution-summary.json",
-        json.dumps({"total_commands": len(events), "commands": events}, indent=2) + "\n",
+        json.dumps(summary, indent=2) + "\n",
     )
+    return summary
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -430,10 +438,16 @@ def main(argv: list[str] | None = None) -> int:
             if ns.evidence_dir
             else Path("docs/artifacts/day91-continuous-upgrade-closeout-pack/evidence")
         )
-        _execute_commands(root, evidence_dir)
+        execution_summary = _execute_commands(root, evidence_dir)
+        payload["execution"] = execution_summary
 
     print(json.dumps(payload, indent=2) if ns.format == "json" else _render_text(payload))
-    return 1 if ns.strict and not payload["summary"]["strict_pass"] else 0
+    strict_failed = not payload["summary"]["strict_pass"]
+    if ns.execute:
+        strict_failed = strict_failed or not bool(
+            payload.get("execution", {}).get("strict_pass", True)
+        )
+    return 1 if ns.strict and strict_failed else 0
 
 
 if __name__ == "__main__":

@@ -32,6 +32,14 @@ def _seed_repo(root: Path) -> None:
         d91._DAY91_DEFAULT_PAGE, encoding="utf-8"
     )
     (root / "docs/day-91-big-upgrade-report.md").write_text("# Day 91 report\n", encoding="utf-8")
+    (root / "scripts").mkdir(parents=True, exist_ok=True)
+    (root / "scripts/check_day91_continuous_upgrade_closeout_contract.py").write_text(
+        "from __future__ import annotations\n"
+        "\n"
+        "if __name__ == '__main__':\n"
+        "    raise SystemExit(0)\n",
+        encoding="utf-8",
+    )
 
     summary = (
         root
@@ -121,7 +129,33 @@ def test_day91_emit_pack_and_execute(tmp_path: Path) -> None:
     assert (tmp_path / "artifacts/day91-pack/day91-execution-log.md").exists()
     assert (tmp_path / "artifacts/day91-pack/day91-delivery-board.md").exists()
     assert (tmp_path / "artifacts/day91-pack/day91-validation-commands.md").exists()
-    assert (tmp_path / "artifacts/day91-pack/evidence/day91-execution-summary.json").exists()
+    execution_summary = tmp_path / "artifacts/day91-pack/evidence/day91-execution-summary.json"
+    assert execution_summary.exists()
+    execution_data = json.loads(execution_summary.read_text(encoding="utf-8"))
+    assert execution_data["failed_commands"] == 0
+    assert execution_data["strict_pass"] is True
+
+
+def test_day91_execute_strict_fails_on_command_error(tmp_path: Path, monkeypatch) -> None:
+    _seed_repo(tmp_path)
+    monkeypatch.setattr(d91, "_EXECUTION_COMMANDS", ['python -c "import sys; sys.exit(3)"'])
+    rc = d91.main(
+        [
+            "--root",
+            str(tmp_path),
+            "--execute",
+            "--evidence-dir",
+            "artifacts/day91-pack/evidence",
+            "--format",
+            "json",
+            "--strict",
+        ]
+    )
+    assert rc == 1
+    execution_summary = tmp_path / "artifacts/day91-pack/evidence/day91-execution-summary.json"
+    execution_data = json.loads(execution_summary.read_text(encoding="utf-8"))
+    assert execution_data["failed_commands"] == 1
+    assert execution_data["strict_pass"] is False
 
 
 def test_day91_strict_fails_without_day90(tmp_path: Path) -> None:
