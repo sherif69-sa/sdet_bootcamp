@@ -490,6 +490,12 @@
       "plan_path": "docs/roadmap/phase3/plans/day95-continuous-upgrade-cycle5-plan.json",
       "report_path": "docs/roadmap/reports/day-95-big-upgrade-report.md",
       "report_title": "Day 95 big upgrade report"
+    },
+    {
+      "day": 97,
+      "plan_path": "docs/roadmap/phase3/plans/day97-continuous-upgrade-cycle7-plan.json",
+      "report_path": "docs/roadmap/reports/day-97-big-upgrade-report.md",
+      "report_title": "Day 97 big upgrade report"
     }
   ]
 }
