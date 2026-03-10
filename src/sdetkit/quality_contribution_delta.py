@@ -160,25 +160,64 @@ def _render_text(payload: dict[str, Any]) -> str:
     qd = payload["quality"]["deltas"]
     cd = payload["contributions"]["deltas"]
     cp = payload["contributions"]["delta_percent"]
+    inputs = payload.get("inputs", {})
+    thresholds = payload.get("thresholds", {})
+    strict_failures = payload.get("strict_failures", [])
+    actions = payload.get("actions", {})
+
     lines = [
-        "Day 17 quality + contribution delta pack",
+        "Quality contribution delta report",
+        f"Quality stability score: {payload['quality']['stability_score']}",
+        f"Contribution velocity score: {payload['contributions']['velocity_score']}",
         "",
-        "Quality week-over-week deltas:",
+        "Inputs:",
+        f"- Current signals: {inputs.get('current_signals_file', '')}",
+        f"- Previous signals: {inputs.get('previous_signals_file', '')}",
+        "",
+        "Quality deltas:",
         f"- Completion rate delta: {qd['completion_rate_percent']:+d}",
         f"- Artifact coverage delta: {qd['artifact_coverage']:+d}",
         f"- Runnable commands delta: {qd['runnable_commands']:+d}",
-        f"- Stability score: {payload['quality']['stability_score']}",
         "",
-        "Contribution week-over-week deltas:",
+        "Contribution deltas:",
         f"- Traffic delta: {cd['traffic']:+d} ({cp['traffic']:+.2f}%)",
         f"- Stars delta: {cd['stars']:+d} ({cp['stars']:+.2f}%)",
         f"- Discussions delta: {cd['discussions']:+d} ({cp['discussions']:+.2f}%)",
         f"- Blocker fixes delta: {cd['blocker_fixes']:+d} ({cp['blocker_fixes']:+.2f}%)",
-        f"- Contribution velocity score: {payload['contributions']['velocity_score']}",
-        "",
-        "Recommendations:",
     ]
+
+    lines.extend(
+        [
+            "",
+            "Strict thresholds:",
+            f"- Traffic delta minimum: {thresholds.get('traffic', 0):+d}",
+            f"- Stars delta minimum: {thresholds.get('stars', 0):+d}",
+            f"- Discussions delta minimum: {thresholds.get('discussions', 0):+d}",
+            f"- Blocker fixes delta minimum: {thresholds.get('blocker_fixes', 0):+d}",
+        ]
+    )
+
+    if payload.get("pack_files"):
+        lines.extend(["", "Emitted pack files:"])
+        for item in payload["pack_files"]:
+            lines.append(f"- {item}")
+
+    if strict_failures:
+        lines.extend(["", "Strict delta failures:"])
+        for item in strict_failures:
+            lines.append(f"- {item}")
+    else:
+        lines.extend(["", "Strict delta failures: none"])
+
+    lines.extend(["", "Recommendations:"])
     lines.extend(f"- {item}" for item in payload["recommendations"])
+
+    lines.extend(["", "Actions:"])
+    lines.append(f"- Validate: {actions.get('validate', '')}")
+    lines.append(f"- Validate thresholds: {actions.get('validate_thresholds', '')}")
+    lines.append(f"- Export artifact: {actions.get('artifact', '')}")
+    lines.append(f"- Emit pack: {actions.get('emit_pack', '')}")
+
     return "\n".join(lines) + "\n"
 
 
@@ -186,15 +225,27 @@ def _render_markdown(payload: dict[str, Any]) -> str:
     qd = payload["quality"]["deltas"]
     cd = payload["contributions"]["deltas"]
     cp = payload["contributions"]["delta_percent"]
+    inputs = payload.get("inputs", {})
+    thresholds = payload.get("thresholds", {})
+    strict_failures = payload.get("strict_failures", [])
+    actions = payload.get("actions", {})
+
     lines = [
-        "# Day 17 quality + contribution delta pack",
+        "# Quality contribution delta report",
+        "",
+        f"- Quality stability score: **{payload['quality']['stability_score']}**",
+        f"- Contribution velocity score: **{payload['contributions']['velocity_score']}**",
+        "",
+        "## Inputs",
+        "",
+        f"- Current signals: `{inputs.get('current_signals_file', '')}`",
+        f"- Previous signals: `{inputs.get('previous_signals_file', '')}`",
         "",
         "## Quality deltas",
         "",
         f"- Completion rate delta: **{qd['completion_rate_percent']:+d}**",
         f"- Artifact coverage delta: **{qd['artifact_coverage']:+d}**",
         f"- Runnable commands delta: **{qd['runnable_commands']:+d}**",
-        f"- Stability score: **{payload['quality']['stability_score']}**",
         "",
         "## Contribution deltas",
         "",
@@ -202,12 +253,36 @@ def _render_markdown(payload: dict[str, Any]) -> str:
         f"- Stars delta: **{cd['stars']:+d} ({cp['stars']:+.2f}%)**",
         f"- Discussions delta: **{cd['discussions']:+d} ({cp['discussions']:+.2f}%)**",
         f"- Blocker fixes delta: **{cd['blocker_fixes']:+d} ({cp['blocker_fixes']:+.2f}%)**",
-        f"- Contribution velocity score: **{payload['contributions']['velocity_score']}**",
         "",
-        "## Recommendations",
+        "## Strict thresholds",
         "",
+        f"- Traffic delta minimum: `{thresholds.get('traffic', 0):+d}`",
+        f"- Stars delta minimum: `{thresholds.get('stars', 0):+d}`",
+        f"- Discussions delta minimum: `{thresholds.get('discussions', 0):+d}`",
+        f"- Blocker fixes delta minimum: `{thresholds.get('blocker_fixes', 0):+d}`",
     ]
+
+    if payload.get("pack_files"):
+        lines.extend(["", "## Emitted pack files", ""])
+        for item in payload["pack_files"]:
+            lines.append(f"- `{item}`")
+
+    lines.extend(["", "## Strict delta failures", ""])
+    if strict_failures:
+        for item in strict_failures:
+            lines.append(f"- `{item}`")
+    else:
+        lines.append("- none")
+
+    lines.extend(["", "## Recommendations", ""])
     lines.extend(f"- {item}" for item in payload["recommendations"])
+
+    lines.extend(["", "## Actions", ""])
+    lines.append(f"- Validate: `{actions.get('validate', '')}`")
+    lines.append(f"- Validate thresholds: `{actions.get('validate_thresholds', '')}`")
+    lines.append(f"- Export artifact: `{actions.get('artifact', '')}`")
+    lines.append(f"- Emit pack: `{actions.get('emit_pack', '')}`")
+
     return "\n".join(lines) + "\n"
 
 
@@ -276,28 +351,40 @@ def _emit_pack(repo_root: Path, out_dir: str, payload: dict[str, Any]) -> list[s
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="sdetkit quality-contribution-delta",
-        description="Build Day 17 week-over-week quality and contribution delta evidence.",
+        description="Build a quality contribution delta report.",
     )
     p.add_argument("--root", default=".", help="Repository root path.")
     p.add_argument(
-        "--current-signals-file", required=True, help="Current-week growth signal JSON file."
+        "--current-signals-file",
+        required=True,
+        help="Current growth-signal JSON file.",
     )
     p.add_argument(
-        "--previous-signals-file", required=True, help="Previous-week growth signal JSON file."
+        "--previous-signals-file",
+        required=True,
+        help="Previous growth-signal JSON file.",
     )
     p.add_argument(
         "--emit-pack-dir",
         default="",
-        help="Optional output directory for Day 17 evidence pack files.",
+        help="Optional directory to also write the quality contribution delta pack.",
     )
     p.add_argument(
-        "--strict", action="store_true", help="Return non-zero when strict delta gates fail."
+        "--strict",
+        action="store_true",
+        help="Return non-zero when strict delta gates fail.",
     )
     p.add_argument(
-        "--min-traffic-delta", type=int, default=0, help="Strict gate minimum for traffic delta."
+        "--min-traffic-delta",
+        type=int,
+        default=0,
+        help="Strict gate minimum for traffic delta.",
     )
     p.add_argument(
-        "--min-stars-delta", type=int, default=0, help="Strict gate minimum for stars delta."
+        "--min-stars-delta",
+        type=int,
+        default=0,
+        help="Strict gate minimum for stars delta.",
     )
     p.add_argument(
         "--min-discussions-delta",
@@ -309,19 +396,34 @@ def _build_parser() -> argparse.ArgumentParser:
         "--min-blocker-fixes-delta",
         type=int,
         default=0,
-        help="Strict gate minimum for blocker_fixes delta.",
+        help="Strict gate minimum for blocker fixes delta.",
     )
-    p.add_argument("--format", choices=["text", "json", "markdown"], default="text")
-    p.add_argument("--output", default=None, help="Optional output path for rendered report.")
+    p.add_argument(
+        "--format",
+        choices=["text", "json", "markdown"],
+        default="text",
+        help="Output format.",
+    )
+    p.add_argument(
+        "--output",
+        default=None,
+        help="Optional file path to also write the rendered quality contribution delta report.",
+    )
     return p
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
-    repo_root = Path(args.root).resolve()
+
+    repo_root = Path(args.root)
     current = _load_signals(args.current_signals_file)
     previous = _load_signals(args.previous_signals_file)
+
     payload = build_delta_report(repo_root, current, previous)
+    payload["inputs"] = {
+        "current_signals_file": args.current_signals_file,
+        "previous_signals_file": args.previous_signals_file,
+    }
 
     thresholds = {
         "traffic": args.min_traffic_delta,
@@ -329,9 +431,38 @@ def main(argv: list[str] | None = None) -> int:
         "discussions": args.min_discussions_delta,
         "blocker_fixes": args.min_blocker_fixes_delta,
     }
-    strict_failures = _evaluate_gates(payload, thresholds)
-    if strict_failures:
-        payload["strict_failures"] = strict_failures
+    payload["thresholds"] = thresholds
+    payload["strict_failures"] = _evaluate_gates(payload, thresholds)
+    payload["actions"] = {
+        "validate": (
+            f"sdetkit quality-contribution-delta "
+            f"--current-signals-file {args.current_signals_file} "
+            f"--previous-signals-file {args.previous_signals_file} "
+            f"--format json --strict"
+        ),
+        "validate_thresholds": (
+            f"sdetkit quality-contribution-delta "
+            f"--current-signals-file {args.current_signals_file} "
+            f"--previous-signals-file {args.previous_signals_file} "
+            f"--min-traffic-delta {args.min_traffic_delta} "
+            f"--min-stars-delta {args.min_stars_delta} "
+            f"--min-discussions-delta {args.min_discussions_delta} "
+            f"--min-blocker-fixes-delta {args.min_blocker_fixes_delta} "
+            f"--format json --strict"
+        ),
+        "artifact": (
+            f"sdetkit quality-contribution-delta "
+            f"--current-signals-file {args.current_signals_file} "
+            f"--previous-signals-file {args.previous_signals_file} "
+            f"--format markdown --output docs/artifacts/day17-quality-contribution-delta-sample.md"
+        ),
+        "emit_pack": (
+            f"sdetkit quality-contribution-delta "
+            f"--current-signals-file {args.current_signals_file} "
+            f"--previous-signals-file {args.previous_signals_file} "
+            f"--emit-pack-dir docs/artifacts/day17-delta-pack --format json --strict"
+        ),
+    }
 
     if args.emit_pack_dir:
         payload["pack_files"] = _emit_pack(repo_root, args.emit_pack_dir, payload)
@@ -344,11 +475,13 @@ def main(argv: list[str] | None = None) -> int:
         rendered = _render_text(payload)
 
     if args.output:
-        Path(args.output).write_text(rendered, encoding="utf-8")
+        out = Path(args.output)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(rendered, encoding="utf-8")
     else:
         print(rendered, end="")
 
-    if args.strict and strict_failures:
+    if args.strict and payload["strict_failures"]:
         return 1
     return 0
 

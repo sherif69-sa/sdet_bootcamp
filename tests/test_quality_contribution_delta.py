@@ -1,4 +1,5 @@
 import json
+import re
 
 from sdetkit import cli, quality_contribution_delta
 
@@ -9,6 +10,76 @@ def _write_signals(tmp_path, current: str, previous: str):
     current_path.write_text(current, encoding="utf-8")
     previous_path.write_text(previous, encoding="utf-8")
     return current_path, previous_path
+
+
+def _normalize_ws(text: str) -> str:
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def test_day17_delta_text_output_is_productized(tmp_path, capsys):
+    current, previous = _write_signals(
+        tmp_path,
+        '{"traffic": 2200, "stars": 112, "discussions": 31, "blocker_fixes": 9}\n',
+        '{"traffic": 1800, "stars": 90, "discussions": 24, "blocker_fixes": 7}\n',
+    )
+
+    rc = quality_contribution_delta.main(
+        [
+            "--root",
+            ".",
+            "--current-signals-file",
+            str(current),
+            "--previous-signals-file",
+            str(previous),
+            "--format",
+            "text",
+        ]
+    )
+    assert rc == 0
+    out = capsys.readouterr().out
+    assert "Quality contribution delta report" in out
+    assert "Inputs:" in out
+    assert "Quality deltas:" in out
+    assert "Contribution deltas:" in out
+    assert "Actions:" in out
+
+
+def test_day17_delta_help_output_is_productized():
+    out = _normalize_ws(quality_contribution_delta._build_parser().format_help())
+    assert "Build a quality contribution delta report." in out
+    assert "--format {text,json,markdown} Output format." in out
+    assert "--output OUTPUT" in out
+    assert "Optional file path to also write the rendered" in out
+
+
+def test_day17_delta_markdown_output_uses_productized_headings(tmp_path, capsys):
+    current, previous = _write_signals(
+        tmp_path,
+        '{"traffic": 2200, "stars": 112, "discussions": 31, "blocker_fixes": 9}\n',
+        '{"traffic": 1800, "stars": 90, "discussions": 24, "blocker_fixes": 7}\n',
+    )
+
+    rc = quality_contribution_delta.main(
+        [
+            "--root",
+            ".",
+            "--current-signals-file",
+            str(current),
+            "--previous-signals-file",
+            str(previous),
+            "--format",
+            "markdown",
+        ]
+    )
+    assert rc == 0
+    out = capsys.readouterr().out
+    assert "# Quality contribution delta report" in out
+    assert "## Inputs" in out
+    assert "## Quality deltas" in out
+    assert "## Contribution deltas" in out
+    assert "## Strict delta failures" in out
+    assert "## Recommendations" in out
+    assert "## Actions" in out
 
 
 def test_day17_delta_default_json(tmp_path, capsys):
@@ -112,5 +183,5 @@ def test_day17_cli_dispatch(tmp_path, capsys):
     )
     assert rc == 0
     out = capsys.readouterr().out
-    assert "Day 17 quality + contribution delta pack" in out
+    assert "Quality contribution delta report" in out
     assert "Recommendations:" in out
