@@ -80,13 +80,13 @@ _PRODUCT_CANONICAL_BY_DAY_MODULE: dict[str, str] = {
 }
 
 
-
 _DISABLED_DAY_CLOSEOUT_ALIAS_MODULES: set[str] = {
     "day42_optimization_closeout",
 }
 _DISABLED_DAY_GENERIC_ALIAS_MODULES: set[str] = {
     "day42_optimization_closeout",
 }
+
 
 def _cmd_to_mod(cmd: str) -> str:
     return cmd.replace("-", "_")
@@ -158,19 +158,32 @@ def _build_registry(pkg_dir: Path) -> tuple[dict[str, str], dict[str, str]]:
             cmd_to_mod[cmd] = mod
 
     for mod in _discover_legacy_modules(pkg_dir):
-        canonical = _PRODUCT_CANONICAL_BY_DAY_MODULE.get(mod, _mod_to_cmd(mod))
+        canonical = _PRODUCT_CANONICAL_BY_DAY_MODULE.get(mod)
+        if canonical is None:
+            canonical = _alias_for_day_module(mod) or _mod_to_cmd(mod)
+
+        if canonical in cmd_to_mod and cmd_to_mod[canonical] != mod:
+            canonical = _mod_to_cmd(mod)
+
         cmd_to_mod[canonical] = mod
 
         day_cmd = _mod_to_cmd(mod)
-        if day_cmd != canonical and day_cmd not in alias_to_canonical:
-            alias_to_canonical[day_cmd] = canonical
+        if day_cmd != canonical:
+            if day_cmd not in cmd_to_mod:
+                cmd_to_mod[day_cmd] = mod
+            if day_cmd not in alias_to_canonical:
+                alias_to_canonical[day_cmd] = canonical
 
-        alias = None if mod in _DISABLED_DAY_CLOSEOUT_ALIAS_MODULES else _alias_for_day_closeout(mod)
+        alias = (
+            None if mod in _DISABLED_DAY_CLOSEOUT_ALIAS_MODULES else _alias_for_day_closeout(mod)
+        )
         if alias and alias not in cmd_to_mod:
             cmd_to_mod[alias] = mod
             alias_to_canonical[alias] = canonical
 
-        generic_alias = None if mod in _DISABLED_DAY_GENERIC_ALIAS_MODULES else _alias_for_day_module(mod)
+        generic_alias = (
+            None if mod in _DISABLED_DAY_GENERIC_ALIAS_MODULES else _alias_for_day_module(mod)
+        )
         if generic_alias and generic_alias not in cmd_to_mod:
             cmd_to_mod[generic_alias] = mod
             alias_to_canonical[generic_alias] = canonical
@@ -224,7 +237,8 @@ def _list_payload(
             continue
         if c in alias_to_canonical:
             continue
-        if c.startswith("day") or c.endswith("-closeout"):
+        mod = cmd_to_mod.get(c, "")
+        if isinstance(mod, str) and _is_legacy_module(mod):
             legacy.append(c)
     legacy = sorted(_apply_search_list(legacy, search))
 

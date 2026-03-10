@@ -1,8 +1,8 @@
-# Day 95 — Continuous upgrade closeout lane
+# Continuous Upgrade Cycle 5 Closeout — Continuous upgrade closeout lane
 
 Day 95 starts the next cycle by converting Day 94 publication outcomes into a deterministic continuous-upgrade lane.
 
-## Why Day 95 matters
+## Why Continuous Upgrade Cycle 5 matters
 
 - Converts Day 94 publication artifacts into a repeatable execution loop for ongoing repository upgrades.
 - Protects quality with strict contract coverage, runnable commands, KPI thresholds, and rollback safety.
@@ -14,18 +14,19 @@ Day 95 starts the next cycle by converting Day 94 publication outcomes into a de
 - `docs/artifacts/day94-continuous-upgrade-cycle4-closeout-pack/day94-delivery-board.md`
 - `docs/roadmap/plans/day95-continuous-upgrade-cycle5-plan.json`
 
-## Day 95 command lane
+## Command lane
 
 ```bash
-python -m sdetkit day95-continuous-upgrade-cycle5-closeout --format json --strict
-python -m sdetkit day95-continuous-upgrade-cycle5-closeout --emit-pack-dir docs/artifacts/day95-continuous-upgrade-cycle5-closeout-pack --format json --strict
-python -m sdetkit day95-continuous-upgrade-cycle5-closeout --execute --evidence-dir docs/artifacts/day95-continuous-upgrade-cycle5-closeout-pack/evidence --format json --strict
+python -m sdetkit continuous-upgrade-cycle5-closeout --format json --strict
+python -m sdetkit day95-continuous-upgrade-cycle5-closeout --format json --strict  # legacy alias
+python -m sdetkit continuous-upgrade-cycle5-closeout --emit-pack-dir docs/artifacts/day95-continuous-upgrade-cycle5-closeout-pack --format json --strict
+python -m sdetkit continuous-upgrade-cycle5-closeout --execute --evidence-dir docs/artifacts/day95-continuous-upgrade-cycle5-closeout-pack/evidence --format json --strict
 python scripts/check_day95_continuous_upgrade_cycle5_closeout_contract.py
 ```
 
 ## Continuous upgrade contract
 
-- Single owner + backup reviewer are assigned for Day 95 continuous upgrade execution and signoff.
+- Single owner + backup reviewer are assigned for continuous-upgrade execution and signoff (legacy Day 95).
 - The Day 95 lane references Day 94 outcomes, controls, and trust continuity signals.
 - Every Day 95 section includes docs/template CTA, runnable command CTA, KPI threshold, and rollback guardrail.
 - Day 95 closeout records continuous upgrade outputs, report publication status, and backlog inputs.

@@ -1,8 +1,8 @@
-# Day 96 — Continuous upgrade closeout lane
+# Continuous Upgrade Cycle 6 Closeout — Continuous upgrade closeout lane
 
-Day 96 starts the next cycle by converting Day 95 publication outcomes into a deterministic continuous-upgrade lane.
+Continuous Upgrade Cycle 6 continues the next-cycle motion by converting prior cycle publication outcomes into a deterministic continuous-upgrade lane.
 
-## Why Day 96 matters
+## Why Continuous Upgrade Cycle 6 matters
 
 - Converts Day 95 publication artifacts into a repeatable execution loop for ongoing repository upgrades.
 - Protects quality with strict contract coverage, runnable commands, KPI thresholds, and rollback safety.
@@ -14,18 +14,19 @@ Day 96 starts the next cycle by converting Day 95 publication outcomes into a de
 - `docs/artifacts/day95-continuous-upgrade-cycle5-closeout-pack/day95-delivery-board.md`
 - `docs/roadmap/plans/day96-continuous-upgrade-cycle6-plan.json`
 
-## Day 96 command lane
+## Command lane
 
 ```bash
-python -m sdetkit day96-continuous-upgrade-cycle6-closeout --format json --strict
-python -m sdetkit day96-continuous-upgrade-cycle6-closeout --emit-pack-dir docs/artifacts/day96-continuous-upgrade-cycle6-closeout-pack --format json --strict
-python -m sdetkit day96-continuous-upgrade-cycle6-closeout --execute --evidence-dir docs/artifacts/day96-continuous-upgrade-cycle6-closeout-pack/evidence --format json --strict
+python -m sdetkit continuous-upgrade-cycle6-closeout --format json --strict
+python -m sdetkit day96-continuous-upgrade-cycle6-closeout --format json --strict  # legacy alias
+python -m sdetkit continuous-upgrade-cycle6-closeout --emit-pack-dir docs/artifacts/day96-continuous-upgrade-cycle6-closeout-pack --format json --strict
+python -m sdetkit continuous-upgrade-cycle6-closeout --execute --evidence-dir docs/artifacts/day96-continuous-upgrade-cycle6-closeout-pack/evidence --format json --strict
 python scripts/check_day96_continuous_upgrade_cycle6_closeout_contract.py
 ```
 
 ## Continuous upgrade contract
 
-- Single owner + backup reviewer are assigned for Day 96 continuous upgrade execution and signoff.
+- Single owner + backup reviewer are assigned for continuous-upgrade execution and signoff (legacy Day 96).
 - The Day 96 lane references Day 95 outcomes, controls, and trust continuity signals.
 - Every Day 96 section includes docs/template CTA, runnable command CTA, KPI threshold, and rollback guardrail.
 - Day 96 closeout records continuous upgrade outputs, report publication status, and backlog inputs.

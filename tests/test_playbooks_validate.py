@@ -31,9 +31,9 @@ def test_playbooks_validate_legacy_selection_only_has_legacy(capsys) -> None:
     payload = json.loads(capsys.readouterr().out)
     assert payload["ok"] is True
     assert all(
-        item["name"].startswith("day") or item["name"].endswith("-closeout")
-        for item in payload["results"]
+        item["name"] not in {"onboarding", "weekly-review", "proof"} for item in payload["results"]
     )
+    assert any(item["name"] == "continuous-upgrade-cycle7-closeout" for item in payload["results"])
 
 
 def test_playbooks_validate_aliases_are_only_alias_names(capsys) -> None:
@@ -42,8 +42,8 @@ def test_playbooks_validate_aliases_are_only_alias_names(capsys) -> None:
     payload = json.loads(capsys.readouterr().out)
     assert payload["ok"] is True
     assert payload["results"]
-    assert all(not item["name"].startswith("day") for item in payload["results"])
-    assert all(item["canonical"].startswith("day") for item in payload["results"])
+    assert all(item["name"].startswith("day") for item in payload["results"])
+    assert all(not item["canonical"].startswith("day") for item in payload["results"])
 
 
 def test_playbooks_validate_aliases_include_non_closeout_day_aliases(capsys) -> None:
@@ -51,7 +51,7 @@ def test_playbooks_validate_aliases_include_non_closeout_day_aliases(capsys) -> 
     assert rc == 0
     payload = json.loads(capsys.readouterr().out)
     names = [item["name"] for item in payload["results"]]
-    assert "phase1-hardening" in names
+    assert "day29-phase1-hardening" in names
 
 
 def test_playbooks_validate_all_includes_multiple_groups(capsys) -> None:
@@ -61,7 +61,7 @@ def test_playbooks_validate_all_includes_multiple_groups(capsys) -> None:
     assert payload["ok"] is True
     names = [item["name"] for item in payload["results"]]
     assert "onboarding" in names
-    assert any(name.startswith("day") for name in names)
+    assert "continuous-upgrade-cycle7-closeout" in names
 
 
 def test_playbooks_validate_scan_handles_missing_main(monkeypatch, capsys) -> None:

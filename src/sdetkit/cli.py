@@ -171,7 +171,7 @@ def _print_playbooks(sub) -> None:
 
 
 def _resolve_non_day_playbook_alias(cmd: str) -> str:
-    """Resolve hidden day* playbook aliases like `weekly-review-closeout`."""
+    """Resolve product/legacy playbook names to a parser-backed command."""
     try:
         from . import playbooks_cli
 
@@ -179,8 +179,14 @@ def _resolve_non_day_playbook_alias(cmd: str) -> str:
     except Exception:
         return cmd
 
-    if cmd in alias_to_canonical and cmd in cmd_to_mod:
+    if cmd in alias_to_canonical and cmd in cmd_to_mod and not cmd.startswith("day"):
         return alias_to_canonical[cmd]
+
+    if cmd in cmd_to_mod and cmd not in alias_to_canonical:
+        mod = cmd_to_mod[cmd]
+        if isinstance(mod, str) and mod.startswith("day"):
+            return mod.replace("_", "-")
+
     return cmd
 
 
@@ -394,22 +400,37 @@ def main(argv: Sequence[str] | None = None) -> int:
     if argv and argv[0] in {"community-program-closeout", "day62-community-program-closeout"}:
         return day62_community_program_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] in {"onboarding-activation-closeout", "day63-onboarding-activation-closeout"}:
+    if argv and argv[0] in {
+        "onboarding-activation-closeout",
+        "day63-onboarding-activation-closeout",
+    }:
         return day63_onboarding_activation_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] in {"integration-expansion-closeout", "day64-integration-expansion-closeout"}:
+    if argv and argv[0] in {
+        "integration-expansion-closeout",
+        "day64-integration-expansion-closeout",
+    }:
         return day64_integration_expansion_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] in {"weekly-review-closeout", "day65-weekly-review-closeout"}:
+    if argv and argv[0] in {"day65-weekly-review-closeout"}:
         return day65_weekly_review_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] in {"integration-expansion2-closeout", "day66-integration-expansion2-closeout"}:
+    if argv and argv[0] in {
+        "integration-expansion2-closeout",
+        "day66-integration-expansion2-closeout",
+    }:
         return day66_integration_expansion2_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] in {"integration-expansion3-closeout", "day67-integration-expansion3-closeout"}:
+    if argv and argv[0] in {
+        "integration-expansion3-closeout",
+        "day67-integration-expansion3-closeout",
+    }:
         return day67_integration_expansion3_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] in {"integration-expansion4-closeout", "day68-integration-expansion4-closeout"}:
+    if argv and argv[0] in {
+        "integration-expansion4-closeout",
+        "day68-integration-expansion4-closeout",
+    }:
         return day68_integration_expansion4_closeout.main(list(argv[1:]))
 
     if argv and argv[0] in {"case-study-prep1-closeout", "day69-case-study-prep1-closeout"}:
@@ -463,7 +484,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     if argv and argv[0] in {"evidence-narrative-closeout", "day84-evidence-narrative-closeout"}:
         return day84_evidence_narrative_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] in {"release-prioritization-closeout", "day85-release-prioritization-closeout"}:
+    if argv and argv[0] in {
+        "release-prioritization-closeout",
+        "day85-release-prioritization-closeout",
+    }:
         return day85_release_prioritization_closeout.main(list(argv[1:]))
 
     if argv and argv[0] in {"launch-readiness-closeout", "day86-launch-readiness-closeout"}:
@@ -472,31 +496,55 @@ def main(argv: Sequence[str] | None = None) -> int:
     if argv and argv[0] in {"governance-handoff-closeout", "day87-governance-handoff-closeout"}:
         return day87_governance_handoff_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] in {"governance-priorities-closeout", "day88-governance-priorities-closeout"}:
+    if argv and argv[0] in {
+        "governance-priorities-closeout",
+        "day88-governance-priorities-closeout",
+    }:
         return day88_governance_priorities_closeout.main(list(argv[1:]))
 
     if argv and argv[0] in {"governance-scale-closeout", "day89-governance-scale-closeout"}:
         return day89_governance_scale_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] in {"phase3-wrap-publication-closeout", "day90-phase3-wrap-publication-closeout"}:
+    if argv and argv[0] in {
+        "phase3-wrap-publication-closeout",
+        "day90-phase3-wrap-publication-closeout",
+    }:
         return day90_phase3_wrap_publication_closeout.main(list(argv[1:]))
 
     if argv and argv[0] in {"continuous-upgrade-closeout", "day91-continuous-upgrade-closeout"}:
         return day91_continuous_upgrade_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] in {"continuous-upgrade-cycle2-closeout", "day92-continuous-upgrade-cycle2-closeout"}:
+    if argv and argv[0] in {
+        "continuous-upgrade-cycle2-closeout",
+        "day92-continuous-upgrade-cycle2-closeout",
+    }:
         return day92_continuous_upgrade_cycle2_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] in {"continuous-upgrade-cycle3-closeout", "day93-continuous-upgrade-cycle3-closeout"}:
+    if argv and argv[0] in {
+        "continuous-upgrade-cycle3-closeout",
+        "day93-continuous-upgrade-cycle3-closeout",
+    }:
         return day93_continuous_upgrade_cycle3_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] == "day94-continuous-upgrade-cycle4-closeout":
+    if argv and argv[0] in {
+        "continuous-upgrade-cycle4-closeout",
+        "day94-continuous-upgrade-cycle4-closeout",
+    }:
         return day94_continuous_upgrade_cycle4_closeout.main(list(argv[1:]))
-    if argv and argv[0] == "day95-continuous-upgrade-cycle5-closeout":
+    if argv and argv[0] in {
+        "continuous-upgrade-cycle5-closeout",
+        "day95-continuous-upgrade-cycle5-closeout",
+    }:
         return day95_continuous_upgrade_cycle5_closeout.main(list(argv[1:]))
-    if argv and argv[0] == "day96-continuous-upgrade-cycle6-closeout":
+    if argv and argv[0] in {
+        "continuous-upgrade-cycle6-closeout",
+        "day96-continuous-upgrade-cycle6-closeout",
+    }:
         return day96_continuous_upgrade_cycle6_closeout.main(list(argv[1:]))
-    if argv and argv[0] == "day97-continuous-upgrade-cycle7-closeout":
+    if argv and argv[0] in {
+        "continuous-upgrade-cycle7-closeout",
+        "day97-continuous-upgrade-cycle7-closeout",
+    }:
         return day97_continuous_upgrade_cycle7_closeout.main(list(argv[1:]))
 
     if argv and argv[0] == "faq-objections":
@@ -822,27 +870,37 @@ Run: sdetkit playbooks
     d62.set_defaults(cmd="community-program-closeout")
     d62.add_argument("args", nargs=argparse.REMAINDER)
 
-    d63 = sub.add_parser("onboarding-activation-closeout", aliases=["day63-onboarding-activation-closeout"])
+    d63 = sub.add_parser(
+        "onboarding-activation-closeout", aliases=["day63-onboarding-activation-closeout"]
+    )
     d63.set_defaults(cmd="onboarding-activation-closeout")
     d63.add_argument("args", nargs=argparse.REMAINDER)
 
-    d64 = sub.add_parser("integration-expansion-closeout", aliases=["day64-integration-expansion-closeout"])
+    d64 = sub.add_parser(
+        "integration-expansion-closeout", aliases=["day64-integration-expansion-closeout"]
+    )
     d64.set_defaults(cmd="integration-expansion-closeout")
     d64.add_argument("args", nargs=argparse.REMAINDER)
 
-    d65 = sub.add_parser("weekly-review-closeout", aliases=["day65-weekly-review-closeout"])
-    d65.set_defaults(cmd="weekly-review-closeout")
+    d65 = sub.add_parser("day65-weekly-review-closeout")
+    d65.set_defaults(cmd="day65-weekly-review-closeout")
     d65.add_argument("args", nargs=argparse.REMAINDER)
 
-    d66 = sub.add_parser("integration-expansion2-closeout", aliases=["day66-integration-expansion2-closeout"])
+    d66 = sub.add_parser(
+        "integration-expansion2-closeout", aliases=["day66-integration-expansion2-closeout"]
+    )
     d66.set_defaults(cmd="integration-expansion2-closeout")
     d66.add_argument("args", nargs=argparse.REMAINDER)
 
-    d67 = sub.add_parser("integration-expansion3-closeout", aliases=["day67-integration-expansion3-closeout"])
+    d67 = sub.add_parser(
+        "integration-expansion3-closeout", aliases=["day67-integration-expansion3-closeout"]
+    )
     d67.set_defaults(cmd="integration-expansion3-closeout")
     d67.add_argument("args", nargs=argparse.REMAINDER)
 
-    d68 = sub.add_parser("integration-expansion4-closeout", aliases=["day68-integration-expansion4-closeout"])
+    d68 = sub.add_parser(
+        "integration-expansion4-closeout", aliases=["day68-integration-expansion4-closeout"]
+    )
     d68.set_defaults(cmd="integration-expansion4-closeout")
     d68.add_argument("args", nargs=argparse.REMAINDER)
 
@@ -876,9 +934,13 @@ Run: sdetkit playbooks
     )
     d76.set_defaults(cmd="contributor-recognition-closeout")
     d76.add_argument("args", nargs=argparse.REMAINDER)
-    d77 = sub.add_parser("community-touchpoint-closeout", aliases=["day77-community-touchpoint-closeout"])
+    d77 = sub.add_parser(
+        "community-touchpoint-closeout", aliases=["day77-community-touchpoint-closeout"]
+    )
     d77.add_argument("args", nargs=argparse.REMAINDER)
-    d78 = sub.add_parser("ecosystem-priorities-closeout", aliases=["day78-ecosystem-priorities-closeout"])
+    d78 = sub.add_parser(
+        "ecosystem-priorities-closeout", aliases=["day78-ecosystem-priorities-closeout"]
+    )
     d78.add_argument("args", nargs=argparse.REMAINDER)
     d79 = sub.add_parser("scale-upgrade-closeout", aliases=["day79-scale-upgrade-closeout"])
     d79.add_argument("args", nargs=argparse.REMAINDER)
@@ -887,49 +949,81 @@ Run: sdetkit playbooks
     d81 = sub.add_parser("growth-campaign-closeout", aliases=["day81-growth-campaign-closeout"])
     d81.set_defaults(cmd="day81-growth-campaign-closeout")
     d81.add_argument("args", nargs=argparse.REMAINDER)
-    d82 = sub.add_parser("integration-feedback-closeout", aliases=["day82-integration-feedback-closeout"])
+    d82 = sub.add_parser(
+        "integration-feedback-closeout", aliases=["day82-integration-feedback-closeout"]
+    )
     d82.set_defaults(cmd="day82-integration-feedback-closeout")
     d82.add_argument("args", nargs=argparse.REMAINDER)
-    d83 = sub.add_parser("trust-faq-expansion-closeout", aliases=["day83-trust-faq-expansion-closeout"])
+    d83 = sub.add_parser(
+        "trust-faq-expansion-closeout", aliases=["day83-trust-faq-expansion-closeout"]
+    )
     d83.set_defaults(cmd="day83-trust-faq-expansion-closeout")
     d83.add_argument("args", nargs=argparse.REMAINDER)
-    d84 = sub.add_parser("evidence-narrative-closeout", aliases=["day84-evidence-narrative-closeout"])
+    d84 = sub.add_parser(
+        "evidence-narrative-closeout", aliases=["day84-evidence-narrative-closeout"]
+    )
     d84.set_defaults(cmd="day84-evidence-narrative-closeout")
     d84.add_argument("args", nargs=argparse.REMAINDER)
-    d85 = sub.add_parser("release-prioritization-closeout", aliases=["day85-release-prioritization-closeout"])
+    d85 = sub.add_parser(
+        "release-prioritization-closeout", aliases=["day85-release-prioritization-closeout"]
+    )
     d85.set_defaults(cmd="day85-release-prioritization-closeout")
     d85.add_argument("args", nargs=argparse.REMAINDER)
     d86 = sub.add_parser("launch-readiness-closeout", aliases=["day86-launch-readiness-closeout"])
     d86.set_defaults(cmd="day86-launch-readiness-closeout")
     d86.add_argument("args", nargs=argparse.REMAINDER)
-    d87 = sub.add_parser("governance-handoff-closeout", aliases=["day87-governance-handoff-closeout"])
+    d87 = sub.add_parser(
+        "governance-handoff-closeout", aliases=["day87-governance-handoff-closeout"]
+    )
     d87.set_defaults(cmd="day87-governance-handoff-closeout")
     d87.add_argument("args", nargs=argparse.REMAINDER)
-    d88 = sub.add_parser("governance-priorities-closeout", aliases=["day88-governance-priorities-closeout"])
+    d88 = sub.add_parser(
+        "governance-priorities-closeout", aliases=["day88-governance-priorities-closeout"]
+    )
     d88.set_defaults(cmd="day88-governance-priorities-closeout")
     d88.add_argument("args", nargs=argparse.REMAINDER)
     d89 = sub.add_parser("governance-scale-closeout", aliases=["day89-governance-scale-closeout"])
     d89.set_defaults(cmd="day89-governance-scale-closeout")
     d89.add_argument("args", nargs=argparse.REMAINDER)
-    d90 = sub.add_parser("phase3-wrap-publication-closeout", aliases=["day90-phase3-wrap-publication-closeout"])
+    d90 = sub.add_parser(
+        "phase3-wrap-publication-closeout", aliases=["day90-phase3-wrap-publication-closeout"]
+    )
     d90.set_defaults(cmd="day90-phase3-wrap-publication-closeout")
     d90.add_argument("args", nargs=argparse.REMAINDER)
-    d91 = sub.add_parser("continuous-upgrade-closeout", aliases=["day91-continuous-upgrade-closeout"])
+    d91 = sub.add_parser(
+        "continuous-upgrade-closeout", aliases=["day91-continuous-upgrade-closeout"]
+    )
     d91.set_defaults(cmd="day91-continuous-upgrade-closeout")
     d91.add_argument("args", nargs=argparse.REMAINDER)
-    d92 = sub.add_parser("continuous-upgrade-cycle2-closeout", aliases=["day92-continuous-upgrade-cycle2-closeout"])
+    d92 = sub.add_parser(
+        "continuous-upgrade-cycle2-closeout", aliases=["day92-continuous-upgrade-cycle2-closeout"]
+    )
     d92.set_defaults(cmd="day92-continuous-upgrade-cycle2-closeout")
     d92.add_argument("args", nargs=argparse.REMAINDER)
-    d93 = sub.add_parser("continuous-upgrade-cycle3-closeout", aliases=["day93-continuous-upgrade-cycle3-closeout"])
+    d93 = sub.add_parser(
+        "continuous-upgrade-cycle3-closeout", aliases=["day93-continuous-upgrade-cycle3-closeout"]
+    )
     d93.set_defaults(cmd="day93-continuous-upgrade-cycle3-closeout")
     d93.add_argument("args", nargs=argparse.REMAINDER)
-    d94 = sub.add_parser("day94-continuous-upgrade-cycle4-closeout")
+    d94 = sub.add_parser(
+        "continuous-upgrade-cycle4-closeout", aliases=["day94-continuous-upgrade-cycle4-closeout"]
+    )
+    d94.set_defaults(cmd="continuous-upgrade-cycle4-closeout")
     d94.add_argument("args", nargs=argparse.REMAINDER)
-    d95 = sub.add_parser("day95-continuous-upgrade-cycle5-closeout")
+    d95 = sub.add_parser(
+        "continuous-upgrade-cycle5-closeout", aliases=["day95-continuous-upgrade-cycle5-closeout"]
+    )
+    d95.set_defaults(cmd="continuous-upgrade-cycle5-closeout")
     d95.add_argument("args", nargs=argparse.REMAINDER)
-    d96 = sub.add_parser("day96-continuous-upgrade-cycle6-closeout")
+    d96 = sub.add_parser(
+        "continuous-upgrade-cycle6-closeout", aliases=["day96-continuous-upgrade-cycle6-closeout"]
+    )
+    d96.set_defaults(cmd="continuous-upgrade-cycle6-closeout")
     d96.add_argument("args", nargs=argparse.REMAINDER)
-    d97 = sub.add_parser("day97-continuous-upgrade-cycle7-closeout")
+    d97 = sub.add_parser(
+        "continuous-upgrade-cycle7-closeout", aliases=["day97-continuous-upgrade-cycle7-closeout"]
+    )
+    d97.set_defaults(cmd="continuous-upgrade-cycle7-closeout")
     d97.add_argument("args", nargs=argparse.REMAINDER)
 
     fqo = sub.add_parser("faq-objections")
@@ -1214,7 +1308,7 @@ Run: sdetkit playbooks
     if ns.cmd in {"integration-expansion-closeout", "day64-integration-expansion-closeout"}:
         return day64_integration_expansion_closeout.main(ns.args)
 
-    if ns.cmd in {"weekly-review-closeout", "day65-weekly-review-closeout"}:
+    if ns.cmd in {"day65-weekly-review-closeout"}:
         return day65_weekly_review_closeout.main(ns.args)
 
     if ns.cmd in {"integration-expansion2-closeout", "day66-integration-expansion2-closeout"}:
@@ -1301,11 +1395,13 @@ Run: sdetkit playbooks
     if ns.cmd == "day93-continuous-upgrade-cycle3-closeout":
         return day93_continuous_upgrade_cycle3_closeout.main(ns.args)
 
-    if ns.cmd == "day94-continuous-upgrade-cycle4-closeout":
+    if ns.cmd in {"continuous-upgrade-cycle4-closeout", "day94-continuous-upgrade-cycle4-closeout"}:
         return day94_continuous_upgrade_cycle4_closeout.main(ns.args)
-    if ns.cmd == "day95-continuous-upgrade-cycle5-closeout":
+    if ns.cmd in {"continuous-upgrade-cycle5-closeout", "day95-continuous-upgrade-cycle5-closeout"}:
         return day95_continuous_upgrade_cycle5_closeout.main(ns.args)
-    if ns.cmd == "day97-continuous-upgrade-cycle7-closeout":
+    if ns.cmd in {"continuous-upgrade-cycle6-closeout", "day96-continuous-upgrade-cycle6-closeout"}:
+        return day96_continuous_upgrade_cycle6_closeout.main(ns.args)
+    if ns.cmd in {"continuous-upgrade-cycle7-closeout", "day97-continuous-upgrade-cycle7-closeout"}:
         return day97_continuous_upgrade_cycle7_closeout.main(ns.args)
 
     if ns.cmd == "faq-objections":
