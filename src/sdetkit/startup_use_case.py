@@ -109,11 +109,20 @@ Move to the enterprise/regulated path once you need:
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="sdetkit startup-use-case",
-        description="Render and validate the Day 12 startup/small-team use-case landing page.",
+        description="Render and validate a startup use-case report.",
     )
-    parser.add_argument("--format", choices=["text", "markdown", "json"], default="text")
+    parser.add_argument(
+        "--format",
+        choices=["text", "markdown", "json"],
+        default="text",
+        help="Output format.",
+    )
     parser.add_argument("--root", default=".", help="Repository root where docs live.")
-    parser.add_argument("--output", default="", help="Optional output file path.")
+    parser.add_argument(
+        "--output",
+        default="",
+        help="Optional file path to also write the rendered startup use-case report.",
+    )
     parser.add_argument(
         "--strict",
         action="store_true",
@@ -122,12 +131,12 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--write-defaults",
         action="store_true",
-        help="Write or repair the Day 12 startup use-case page before validation.",
+        help="Write or repair the startup use-case page before validation.",
     )
     parser.add_argument(
         "--emit-pack-dir",
         default="",
-        help="Optional path to emit a Day 12 startup operating pack (checklist, CI recipe, risk register).",
+        help="Optional directory to also write the startup operating pack.",
     )
     return parser
 
@@ -241,35 +250,41 @@ def build_startup_use_case_status(root: str = ".") -> dict[str, Any]:
 
 def _render_text(payload: dict[str, Any]) -> str:
     lines = [
-        "Day 12 startup use-case page",
-        f"score: {payload['score']} ({payload['passed_checks']}/{payload['total_checks']})",
+        "Startup use-case report",
+        f"Score: {payload['score']} ({payload['passed_checks']}/{payload['total_checks']})",
         "",
-        f"page: {payload['page']}",
+        f"Page: {payload['page']}",
         "",
-        "required sections:",
+        "Required sections:",
     ]
     for idx, item in enumerate(payload["required_sections"], start=1):
         lines.append(f"{idx}. {item}")
-    lines.extend(["", "required commands:"])
+    lines.extend(["", "Required commands:"])
     for cmd in payload["required_commands"]:
         lines.append(f"- {cmd}")
     if payload.get("pack_files"):
-        lines.extend(["", "emitted pack files:"])
+        lines.extend(["", "Emitted pack files:"])
         for item in payload["pack_files"]:
             lines.append(f"- {item}")
     if payload["missing"]:
         lines.append("")
-        lines.append("missing use-case content:")
+        lines.append("Use-case coverage gaps:")
         for item in payload["missing"]:
             lines.append(f"- {item}")
     else:
-        lines.extend(["", "missing use-case content: none"])
+        lines.extend(["", "Use-case coverage gaps: none"])
+    lines.extend(["", "Actions:"])
+    lines.append(f"- Open page: {payload['actions']['open_page']}")
+    lines.append(f"- Validate: {payload['actions']['validate']}")
+    lines.append(f"- Write defaults: {payload['actions']['write_defaults']}")
+    lines.append(f"- Export artifact: {payload['actions']['artifact']}")
+    lines.append(f"- Emit pack: {payload['actions']['emit_pack']}")
     return "\n".join(lines) + "\n"
 
 
 def _render_markdown(payload: dict[str, Any]) -> str:
     lines = [
-        "# Day 12 startup use-case page",
+        "# Startup use-case report",
         "",
         f"- Score: **{payload['score']}** ({payload['passed_checks']}/{payload['total_checks']})",
         f"- Page: `{payload['page']}`",
@@ -286,18 +301,18 @@ def _render_markdown(payload: dict[str, Any]) -> str:
         lines.extend(["", "## Emitted pack files", ""])
         for item in payload["pack_files"]:
             lines.append(f"- `{item}`")
-    lines.extend(["", "## Missing use-case content", ""])
+    lines.extend(["", "## Use-case coverage gaps", ""])
     if payload["missing"]:
         for item in payload["missing"]:
             lines.append(f"- `{item}`")
     else:
         lines.append("- none")
     lines.extend(["", "## Actions", ""])
-    lines.append(f"- `{payload['actions']['open_page']}`")
-    lines.append(f"- `{payload['actions']['validate']}`")
-    lines.append(f"- `{payload['actions']['write_defaults']}`")
-    lines.append(f"- `{payload['actions']['artifact']}`")
-    lines.append(f"- `{payload['actions']['emit_pack']}`")
+    lines.append(f"- Open page: `{payload['actions']['open_page']}`")
+    lines.append(f"- Validate: `{payload['actions']['validate']}`")
+    lines.append(f"- Write defaults: `{payload['actions']['write_defaults']}`")
+    lines.append(f"- Export artifact: `{payload['actions']['artifact']}`")
+    lines.append(f"- Emit pack: `{payload['actions']['emit_pack']}`")
     return "\n".join(lines) + "\n"
 
 
