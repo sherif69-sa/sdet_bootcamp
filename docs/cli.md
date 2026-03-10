@@ -683,15 +683,15 @@ See: day-27-ultra-upgrade-report.md (legacy history).
 
 ## expansion-automation
 
-Builds a expansion-automation report by combining upstream scale-lane handoff artifacts into one closeout view.
+Builds an expansion-automation report by combining upstream scale-lane handoff artifacts into one closeout view.
 
 Examples:
 
 - `sdetkit day41-expansion-automation --format text`
 - `sdetkit day41-expansion-automation --format json --strict`
 - `sdetkit day41-expansion-automation --write-defaults --format json --strict`
-- `sdetkit day41-expansion-automation --emit-pack-dir docs/artifacts/day41-expansion-automation-pack --format json --strict`
-- `sdetkit day41-expansion-automation --execute --evidence-dir docs/artifacts/day41-expansion-automation-pack/evidence --format json --strict`
+- `sdetkit day41-expansion-automation --emit-pack-dir docs/artifacts/expansion-automation-pack --format json --strict`
+- `sdetkit day41-expansion-automation --execute --evidence-dir docs/artifacts/expansion-automation-pack/evidence --format json --strict`
 - `sdetkit day41-expansion-automation --format markdown --output expansion-automation-report.md`
 
 Useful flags: `--root`, `--format`, `--output`, `--strict`, `--emit-pack-dir`, `--execute`, `--evidence-dir`, `--write-defaults`.
