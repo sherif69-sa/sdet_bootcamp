@@ -216,25 +216,26 @@ See: day-11-ultra-upgrade-report.md (legacy history).
 
 ## startup-use-case
 
-Builds Day 12 startup/small-team landing-page status and validates required workflow sections and runnable command sequence.
+Builds a startup use-case report and validates required workflow sections and runnable command sequence.
 
 Examples:
 
-- `sdetkit startup-use-case --format text --strict`
+- `sdetkit startup-use-case`
 - `sdetkit startup-use-case --format json`
 - `sdetkit startup-use-case --write-defaults --format json --strict`
-- `sdetkit startup-use-case --format markdown --output docs/artifacts/day12-startup-use-case-sample.md`
+- `sdetkit startup-use-case --format markdown --output startup-use-case.md`
 - `sdetkit startup-use-case --emit-pack-dir docs/artifacts/day12-startup-pack --format json --strict`
 
-Useful flags: `--root`, `--format`, `--output`, `--strict`, `--write-defaults`, `--emit-pack-dir`, `--execute`, `--evidence-dir`, `--timeout-sec`.
+Useful flags: `--root`, `--format`, `--output`, `--strict`, `--write-defaults`, `--emit-pack-dir`.
 
-`--strict` returns non-zero if required Day 12 use-case sections or command snippets are missing from `docs/use-cases-startup-small-team.md`.
+`--strict` returns non-zero if required use-case sections or command snippets are missing from `docs/use-cases-startup-small-team.md`.
 
-`--write-defaults` writes a hardened Day 12 startup workflow page if missing/incomplete, then validates again.
+`--write-defaults` writes or repairs the startup workflow page before validation.
 
-`--emit-pack-dir` writes a startup operating-pack bundle containing checklist, CI fast-lane recipe, and risk register files.
+`--emit-pack-dir` writes a startup operating pack bundle containing checklist, CI fast-lane recipe, and risk register files.
 
-See: day-12-ultra-upgrade-report.md
+See: day-12-ultra-upgrade-report.md (legacy history).
+
 
 ## enterprise-use-case
 
