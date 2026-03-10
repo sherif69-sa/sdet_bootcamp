@@ -77,6 +77,8 @@ Ready-to-use guide: `docs/ready-to-use.md`
 
 For full docs UX, open: <https://sherif69-sa.github.io/DevS69-sdetkit/>.
 
+Troubleshooting note for sqlite-utils schema inference edge-cases: `docs/sqlite-utils-empty-column-troubleshooting.md`
+
 ## Role-based starting paths
 
 | Role | Start here | Why |
