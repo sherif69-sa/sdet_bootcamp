@@ -75,7 +75,7 @@ def test_day53_docs_loop_closeout_json(tmp_path: Path, capsys) -> None:
     rc = d53.main(["--root", str(tmp_path), "--format", "json", "--strict"])
     assert rc == 0
     out = json.loads(capsys.readouterr().out)
-    assert out["name"] == "day53-docs-loop-closeout"
+    assert out["name"] == "docs-loop-closeout"
     assert out["summary"]["activation_score"] >= 95
 
 
@@ -119,6 +119,6 @@ def test_day53_strict_fails_when_day52_inputs_missing(tmp_path: Path) -> None:
 
 def test_day53_cli_dispatch(tmp_path: Path, capsys) -> None:
     _seed_repo(tmp_path)
-    rc = cli.main(["day53-docs-loop-closeout", "--root", str(tmp_path), "--format", "text"])
+    rc = cli.main(["docs-loop-closeout", "--root", str(tmp_path), "--format", "text"])
     assert rc == 0
-    assert "Day 53 docs-loop closeout summary" in capsys.readouterr().out
+    assert "Docs Loop Closeout summary" in capsys.readouterr().out

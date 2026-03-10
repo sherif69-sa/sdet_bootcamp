@@ -75,7 +75,7 @@ def test_day55_json(tmp_path: Path, capsys) -> None:
     rc = d55.main(["--root", str(tmp_path), "--format", "json", "--strict"])
     assert rc == 0
     out = json.loads(capsys.readouterr().out)
-    assert out["name"] == "day55-contributor-activation-closeout"
+    assert out["name"] == "contributor-activation-closeout"
     assert out["summary"]["activation_score"] >= 95
 
 
@@ -128,4 +128,4 @@ def test_day55_cli_dispatch(tmp_path: Path, capsys) -> None:
         ["day55-contributor-activation-closeout", "--root", str(tmp_path), "--format", "text"]
     )
     assert rc == 0
-    assert "Day 55 contributor activation closeout summary" in capsys.readouterr().out
+    assert "Contributor Activation Closeout summary" in capsys.readouterr().out

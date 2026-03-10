@@ -25,14 +25,14 @@ _REQUIRED_SECTIONS = [
     "## Scoring model",
 ]
 _REQUIRED_COMMANDS = [
-    "python -m sdetkit day60-phase2-wrap-handoff-closeout --format json --strict",
-    "python -m sdetkit day60-phase2-wrap-handoff-closeout --emit-pack-dir docs/artifacts/day60-phase2-wrap-handoff-closeout-pack --format json --strict",
-    "python -m sdetkit day60-phase2-wrap-handoff-closeout --execute --evidence-dir docs/artifacts/day60-phase2-wrap-handoff-closeout-pack/evidence --format json --strict",
+    "python -m sdetkit phase2-wrap-handoff-closeout --format json --strict",
+    "python -m sdetkit phase2-wrap-handoff-closeout --emit-pack-dir docs/artifacts/day60-phase2-wrap-handoff-closeout-pack --format json --strict",
+    "python -m sdetkit phase2-wrap-handoff-closeout --execute --evidence-dir docs/artifacts/day60-phase2-wrap-handoff-closeout-pack/evidence --format json --strict",
     "python scripts/check_day60_phase2_wrap_handoff_closeout_contract.py",
 ]
 _EXECUTION_COMMANDS = [
-    "python -m sdetkit day60-phase2-wrap-handoff-closeout --format json --strict",
-    "python -m sdetkit day60-phase2-wrap-handoff-closeout --emit-pack-dir docs/artifacts/day60-phase2-wrap-handoff-closeout-pack --format json --strict",
+    "python -m sdetkit phase2-wrap-handoff-closeout --format json --strict",
+    "python -m sdetkit phase2-wrap-handoff-closeout --emit-pack-dir docs/artifacts/day60-phase2-wrap-handoff-closeout-pack --format json --strict",
     "python scripts/check_day60_phase2_wrap_handoff_closeout_contract.py --skip-evidence",
 ]
 _REQUIRED_CONTRACT_LINES = [
@@ -74,9 +74,9 @@ Day 60 closes with a major Phase-2 wrap + handoff upgrade that turns Day 59 pre-
 ## Day 60 command lane
 
 ```bash
-python -m sdetkit day60-phase2-wrap-handoff-closeout --format json --strict
-python -m sdetkit day60-phase2-wrap-handoff-closeout --emit-pack-dir docs/artifacts/day60-phase2-wrap-handoff-closeout-pack --format json --strict
-python -m sdetkit day60-phase2-wrap-handoff-closeout --execute --evidence-dir docs/artifacts/day60-phase2-wrap-handoff-closeout-pack/evidence --format json --strict
+python -m sdetkit phase2-wrap-handoff-closeout --format json --strict
+python -m sdetkit phase2-wrap-handoff-closeout --emit-pack-dir docs/artifacts/day60-phase2-wrap-handoff-closeout-pack --format json --strict
+python -m sdetkit phase2-wrap-handoff-closeout --execute --evidence-dir docs/artifacts/day60-phase2-wrap-handoff-closeout-pack/evidence --format json --strict
 python scripts/check_day60_phase2_wrap_handoff_closeout_contract.py
 ```
 
@@ -301,7 +301,7 @@ def build_day60_phase2_wrap_handoff_closeout_summary(root: Path) -> dict[str, An
 
     score = int(round(sum(c["weight"] for c in checks if c["passed"])))
     return {
-        "name": "day60-phase2-wrap-handoff-closeout",
+        "name": "phase2-wrap-handoff-closeout",
         "inputs": {
             "readme": "README.md",
             "docs_index": "docs/index.md",
@@ -335,7 +335,7 @@ def build_day60_phase2_wrap_handoff_closeout_summary(root: Path) -> dict[str, An
 
 def _render_text(payload: dict[str, Any]) -> str:
     lines = [
-        "Day 60 Phase-2 wrap + handoff closeout summary",
+        "Phase 2 Wrap Handoff Closeout summary (legacy: Day 60)",
         f"- Activation score: {payload['summary']['activation_score']}",
         f"- Passed checks: {payload['summary']['passed_checks']}",
         f"- Failed checks: {payload['summary']['failed_checks']}",
@@ -394,7 +394,9 @@ def _execute_commands(root: Path, evidence_dir: Path) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Day 60 Phase-2 wrap + handoff closeout checks")
+    parser = argparse.ArgumentParser(
+        description="Phase 2 Wrap Handoff Closeout checks (legacy alias: day60-phase2-wrap-handoff-closeout)"
+    )
     parser.add_argument("--root", default=".")
     parser.add_argument("--format", choices=["json", "text"], default="text")
     parser.add_argument("--strict", action="store_true")

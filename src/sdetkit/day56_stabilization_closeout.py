@@ -25,14 +25,14 @@ _REQUIRED_SECTIONS = [
     "## Scoring model",
 ]
 _REQUIRED_COMMANDS = [
-    "python -m sdetkit day56-stabilization-closeout --format json --strict",
-    "python -m sdetkit day56-stabilization-closeout --emit-pack-dir docs/artifacts/day56-stabilization-closeout-pack --format json --strict",
-    "python -m sdetkit day56-stabilization-closeout --execute --evidence-dir docs/artifacts/day56-stabilization-closeout-pack/evidence --format json --strict",
+    "python -m sdetkit stabilization-closeout --format json --strict",
+    "python -m sdetkit stabilization-closeout --emit-pack-dir docs/artifacts/day56-stabilization-closeout-pack --format json --strict",
+    "python -m sdetkit stabilization-closeout --execute --evidence-dir docs/artifacts/day56-stabilization-closeout-pack/evidence --format json --strict",
     "python scripts/check_day56_stabilization_closeout_contract.py",
 ]
 _EXECUTION_COMMANDS = [
-    "python -m sdetkit day56-stabilization-closeout --format json --strict",
-    "python -m sdetkit day56-stabilization-closeout --emit-pack-dir docs/artifacts/day56-stabilization-closeout-pack --format json --strict",
+    "python -m sdetkit stabilization-closeout --format json --strict",
+    "python -m sdetkit stabilization-closeout --emit-pack-dir docs/artifacts/day56-stabilization-closeout-pack --format json --strict",
     "python scripts/check_day56_stabilization_closeout_contract.py --skip-evidence",
 ]
 _REQUIRED_CONTRACT_LINES = [
@@ -74,9 +74,9 @@ Day 56 closes with a major stabilization upgrade that turns Day 55 contributor-a
 ## Day 56 command lane
 
 ```bash
-python -m sdetkit day56-stabilization-closeout --format json --strict
-python -m sdetkit day56-stabilization-closeout --emit-pack-dir docs/artifacts/day56-stabilization-closeout-pack --format json --strict
-python -m sdetkit day56-stabilization-closeout --execute --evidence-dir docs/artifacts/day56-stabilization-closeout-pack/evidence --format json --strict
+python -m sdetkit stabilization-closeout --format json --strict
+python -m sdetkit stabilization-closeout --emit-pack-dir docs/artifacts/day56-stabilization-closeout-pack --format json --strict
+python -m sdetkit stabilization-closeout --execute --evidence-dir docs/artifacts/day56-stabilization-closeout-pack/evidence --format json --strict
 python scripts/check_day56_stabilization_closeout_contract.py
 ```
 
@@ -315,7 +315,7 @@ def build_day56_stabilization_closeout_summary(root: Path) -> dict[str, Any]:
 
     score = int(round(sum(c["weight"] for c in checks if bool(c["passed"]))))
     return {
-        "name": "day56-stabilization-closeout",
+        "name": "stabilization-closeout",
         "inputs": {
             "readme": "README.md",
             "docs_index": "docs/index.md",
@@ -349,7 +349,7 @@ def build_day56_stabilization_closeout_summary(root: Path) -> dict[str, Any]:
 
 def _render_text(payload: dict[str, Any]) -> str:
     lines = [
-        "Day 56 stabilization closeout summary",
+        "Stabilization Closeout summary (legacy: Day 56)",
         f"- Activation score: {payload['summary']['activation_score']}",
         f"- Passed checks: {payload['summary']['passed_checks']}",
         f"- Failed checks: {payload['summary']['failed_checks']}",
@@ -409,7 +409,9 @@ def _execute_commands(root: Path, evidence_dir: Path) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Day 56 stabilization closeout checks")
+    parser = argparse.ArgumentParser(
+        description="Stabilization Closeout checks (legacy alias: day56-stabilization-closeout)"
+    )
     parser.add_argument("--root", default=".")
     parser.add_argument("--format", choices=["json", "text"], default="text")
     parser.add_argument("--strict", action="store_true")

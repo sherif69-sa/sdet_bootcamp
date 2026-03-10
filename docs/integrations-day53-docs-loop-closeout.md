@@ -1,4 +1,4 @@
-# Day 53 — Docs loop optimization closeout lane
+# Docs Loop Closeout lane (Legacy: Day 53)
 
 Day 53 closes with a major docs loop optimization upgrade that converts Day 52 narrative evidence into deterministic cross-link execution across demos, playbooks, and CLI docs.
 
@@ -13,12 +13,12 @@ Day 53 closes with a major docs loop optimization upgrade that converts Day 52 n
 - `docs/artifacts/day52-narrative-closeout-pack/day52-narrative-closeout-summary.json`
 - `docs/artifacts/day52-narrative-closeout-pack/day52-delivery-board.md`
 
-## Day 53 command lane
+## Docs Loop Closeout command lane
 
 ```bash
-python -m sdetkit day53-docs-loop-closeout --format json --strict
-python -m sdetkit day53-docs-loop-closeout --emit-pack-dir docs/artifacts/day53-docs-loop-closeout-pack --format json --strict
-python -m sdetkit day53-docs-loop-closeout --execute --evidence-dir docs/artifacts/day53-docs-loop-closeout-pack/evidence --format json --strict
+python -m sdetkit docs-loop-closeout --format json --strict
+python -m sdetkit docs-loop-closeout --emit-pack-dir docs/artifacts/day53-docs-loop-closeout-pack --format json --strict
+python -m sdetkit docs-loop-closeout --execute --evidence-dir docs/artifacts/day53-docs-loop-closeout-pack/evidence --format json --strict
 python scripts/check_day53_docs_loop_closeout_contract.py
 ```
 

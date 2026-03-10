@@ -1,4 +1,4 @@
-# Day 57 — KPI deep audit closeout lane
+# KPI Deep Audit Closeout lane (Legacy: Day 57)
 
 Day 57 closes with a major KPI deep-audit upgrade that turns Day 56 stabilization outcomes into deterministic trendline governance.
 
@@ -13,12 +13,12 @@ Day 57 closes with a major KPI deep-audit upgrade that turns Day 56 stabilizatio
 - `docs/artifacts/day56-stabilization-closeout-pack/day56-stabilization-closeout-summary.json`
 - `docs/artifacts/day56-stabilization-closeout-pack/day56-delivery-board.md`
 
-## Day 57 command lane
+## KPI Deep Audit Closeout command lane
 
 ```bash
-python -m sdetkit day57-kpi-deep-audit-closeout --format json --strict
-python -m sdetkit day57-kpi-deep-audit-closeout --emit-pack-dir docs/artifacts/day57-kpi-deep-audit-closeout-pack --format json --strict
-python -m sdetkit day57-kpi-deep-audit-closeout --execute --evidence-dir docs/artifacts/day57-kpi-deep-audit-closeout-pack/evidence --format json --strict
+python -m sdetkit kpi-deep-audit-closeout --format json --strict
+python -m sdetkit kpi-deep-audit-closeout --emit-pack-dir docs/artifacts/day57-kpi-deep-audit-closeout-pack --format json --strict
+python -m sdetkit kpi-deep-audit-closeout --execute --evidence-dir docs/artifacts/day57-kpi-deep-audit-closeout-pack/evidence --format json --strict
 python scripts/check_day57_kpi_deep_audit_closeout_contract.py
 ```
 

@@ -1,4 +1,4 @@
-# Day 51 — Case snippet closeout lane
+# Case Snippet Closeout lane (Legacy: Day 51)
 
 Day 51 closes with a major case-snippet upgrade that converts Day 50 execution-prioritization evidence into a deterministic release-storytelling lane.
 
@@ -13,12 +13,12 @@ Day 51 closes with a major case-snippet upgrade that converts Day 50 execution-p
 - `docs/artifacts/day50-execution-prioritization-closeout-pack/day50-execution-prioritization-closeout-summary.json`
 - `docs/artifacts/day50-execution-prioritization-closeout-pack/day50-delivery-board.md`
 
-## Day 51 command lane
+## Case Snippet Closeout command lane
 
 ```bash
-python -m sdetkit day51-case-snippet-closeout --format json --strict
-python -m sdetkit day51-case-snippet-closeout --emit-pack-dir docs/artifacts/day51-case-snippet-closeout-pack --format json --strict
-python -m sdetkit day51-case-snippet-closeout --execute --evidence-dir docs/artifacts/day51-case-snippet-closeout-pack/evidence --format json --strict
+python -m sdetkit case-snippet-closeout --format json --strict
+python -m sdetkit case-snippet-closeout --emit-pack-dir docs/artifacts/day51-case-snippet-closeout-pack --format json --strict
+python -m sdetkit case-snippet-closeout --execute --evidence-dir docs/artifacts/day51-case-snippet-closeout-pack/evidence --format json --strict
 python scripts/check_day51_case_snippet_closeout_contract.py
 ```
 

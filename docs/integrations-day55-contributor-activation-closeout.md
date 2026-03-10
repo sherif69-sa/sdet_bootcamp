@@ -1,4 +1,4 @@
-# Day 55 — Contributor activation closeout lane
+# Contributor Activation Closeout lane (Legacy: Day 55)
 
 Day 55 closes with a major contributor activation upgrade that turns Day 53 docs-loop evidence into a deterministic contributor follow-through lane.
 
@@ -13,12 +13,12 @@ Day 55 closes with a major contributor activation upgrade that turns Day 53 docs
 - `docs/artifacts/day53-docs-loop-closeout-pack/day53-docs-loop-closeout-summary.json`
 - `docs/artifacts/day53-docs-loop-closeout-pack/day53-delivery-board.md`
 
-## Day 55 command lane
+## Contributor Activation Closeout command lane
 
 ```bash
-python -m sdetkit day55-contributor-activation-closeout --format json --strict
-python -m sdetkit day55-contributor-activation-closeout --emit-pack-dir docs/artifacts/day55-contributor-activation-closeout-pack --format json --strict
-python -m sdetkit day55-contributor-activation-closeout --execute --evidence-dir docs/artifacts/day55-contributor-activation-closeout-pack/evidence --format json --strict
+python -m sdetkit contributor-activation-closeout --format json --strict
+python -m sdetkit contributor-activation-closeout --emit-pack-dir docs/artifacts/day55-contributor-activation-closeout-pack --format json --strict
+python -m sdetkit contributor-activation-closeout --execute --evidence-dir docs/artifacts/day55-contributor-activation-closeout-pack/evidence --format json --strict
 python scripts/check_day55_contributor_activation_closeout_contract.py
 ```
 

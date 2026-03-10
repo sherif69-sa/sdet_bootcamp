@@ -25,14 +25,14 @@ _REQUIRED_SECTIONS = [
     "## Scoring model",
 ]
 _REQUIRED_COMMANDS = [
-    "python -m sdetkit day52-narrative-closeout --format json --strict",
-    "python -m sdetkit day52-narrative-closeout --emit-pack-dir docs/artifacts/day52-narrative-closeout-pack --format json --strict",
-    "python -m sdetkit day52-narrative-closeout --execute --evidence-dir docs/artifacts/day52-narrative-closeout-pack/evidence --format json --strict",
+    "python -m sdetkit narrative-closeout --format json --strict",
+    "python -m sdetkit narrative-closeout --emit-pack-dir docs/artifacts/day52-narrative-closeout-pack --format json --strict",
+    "python -m sdetkit narrative-closeout --execute --evidence-dir docs/artifacts/day52-narrative-closeout-pack/evidence --format json --strict",
     "python scripts/check_day52_narrative_closeout_contract.py",
 ]
 _EXECUTION_COMMANDS = [
-    "python -m sdetkit day52-narrative-closeout --format json --strict",
-    "python -m sdetkit day52-narrative-closeout --emit-pack-dir docs/artifacts/day52-narrative-closeout-pack --format json --strict",
+    "python -m sdetkit narrative-closeout --format json --strict",
+    "python -m sdetkit narrative-closeout --emit-pack-dir docs/artifacts/day52-narrative-closeout-pack --format json --strict",
     "python scripts/check_day52_narrative_closeout_contract.py --skip-evidence",
 ]
 _REQUIRED_CONTRACT_LINES = [
@@ -74,9 +74,9 @@ Day 52 closes with a major narrative upgrade that converts Day 51 case-snippet e
 ## Day 52 command lane
 
 ```bash
-python -m sdetkit day52-narrative-closeout --format json --strict
-python -m sdetkit day52-narrative-closeout --emit-pack-dir docs/artifacts/day52-narrative-closeout-pack --format json --strict
-python -m sdetkit day52-narrative-closeout --execute --evidence-dir docs/artifacts/day52-narrative-closeout-pack/evidence --format json --strict
+python -m sdetkit narrative-closeout --format json --strict
+python -m sdetkit narrative-closeout --emit-pack-dir docs/artifacts/day52-narrative-closeout-pack --format json --strict
+python -m sdetkit narrative-closeout --execute --evidence-dir docs/artifacts/day52-narrative-closeout-pack/evidence --format json --strict
 python scripts/check_day52_narrative_closeout_contract.py
 ```
 
@@ -325,7 +325,7 @@ def build_day52_narrative_closeout_summary(root: Path) -> dict[str, Any]:
         )
 
     return {
-        "name": "day52-narrative-closeout",
+        "name": "narrative-closeout",
         "inputs": {
             "readme": readme_path,
             "docs_index": docs_index_path,
@@ -359,7 +359,7 @@ def build_day52_narrative_closeout_summary(root: Path) -> dict[str, Any]:
 
 def _render_text(payload: dict[str, Any]) -> str:
     lines = [
-        "Day 52 narrative closeout summary",
+        "Narrative Closeout summary (legacy: Day 52)",
         f"- Activation score: {payload['summary']['activation_score']}",
         f"- Passed checks: {payload['summary']['passed_checks']}",
         f"- Failed checks: {payload['summary']['failed_checks']}",
@@ -394,7 +394,7 @@ def _emit_pack(root: Path, payload: dict[str, Any], pack_dir: Path) -> None:
     _write(
         target / "day52-proof-map.csv",
         "stream,owner,backup,review_window,docs_cta,command_cta,kpi_target,risk_flag\n"
-        "narrative-floor,qa-lead,docs-owner,2026-03-19T10:00:00Z,docs/integrations-day52-narrative-closeout.md,python -m sdetkit day52-narrative-closeout --format json --strict,failed-checks:0,narrative-drift\n",
+        "narrative-floor,qa-lead,docs-owner,2026-03-19T10:00:00Z,docs/integrations-day52-narrative-closeout.md,python -m sdetkit narrative-closeout --format json --strict,failed-checks:0,narrative-drift\n",
     )
     _write(
         target / "day52-narrative-kpi-scorecard.json",
@@ -452,7 +452,9 @@ def _execute_commands(root: Path, evidence_dir: Path) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Day 52 narrative closeout checks")
+    parser = argparse.ArgumentParser(
+        description="Narrative Closeout checks (legacy alias: day52-narrative-closeout)"
+    )
     parser.add_argument("--root", default=".")
     parser.add_argument("--format", choices=["text", "json"], default="text")
     parser.add_argument("--strict", action="store_true")

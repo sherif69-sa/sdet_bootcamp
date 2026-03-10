@@ -1,4 +1,4 @@
-# Day 59 — Phase-3 pre-plan closeout lane
+# Phase3 Preplan Closeout lane (Legacy: Day 59)
 
 Day 59 closes with a major Phase-3 pre-plan upgrade that turns Day 58 hardening outcomes into deterministic Day 60 execution priorities.
 
@@ -13,12 +13,12 @@ Day 59 closes with a major Phase-3 pre-plan upgrade that turns Day 58 hardening 
 - `docs/artifacts/day58-phase2-hardening-closeout-pack/day58-phase2-hardening-closeout-summary.json`
 - `docs/artifacts/day58-phase2-hardening-closeout-pack/day58-delivery-board.md`
 
-## Day 59 command lane
+## Phase3 Preplan Closeout command lane
 
 ```bash
-python -m sdetkit day59-phase3-preplan-closeout --format json --strict
-python -m sdetkit day59-phase3-preplan-closeout --emit-pack-dir docs/artifacts/day59-phase3-preplan-closeout-pack --format json --strict
-python -m sdetkit day59-phase3-preplan-closeout --execute --evidence-dir docs/artifacts/day59-phase3-preplan-closeout-pack/evidence --format json --strict
+python -m sdetkit phase3-preplan-closeout --format json --strict
+python -m sdetkit phase3-preplan-closeout --emit-pack-dir docs/artifacts/day59-phase3-preplan-closeout-pack --format json --strict
+python -m sdetkit phase3-preplan-closeout --execute --evidence-dir docs/artifacts/day59-phase3-preplan-closeout-pack/evidence --format json --strict
 python scripts/check_day59_phase3_preplan_closeout_contract.py
 ```
 

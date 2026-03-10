@@ -76,7 +76,7 @@ def test_day52_narrative_closeout_json(tmp_path: Path, capsys) -> None:
     rc = d52.main(["--root", str(tmp_path), "--format", "json", "--strict"])
     assert rc == 0
     out = json.loads(capsys.readouterr().out)
-    assert out["name"] == "day52-narrative-closeout"
+    assert out["name"] == "narrative-closeout"
     assert out["summary"]["activation_score"] >= 95
 
 
@@ -120,6 +120,6 @@ def test_day52_strict_fails_when_day51_inputs_missing(tmp_path: Path) -> None:
 
 def test_day52_cli_dispatch(tmp_path: Path, capsys) -> None:
     _seed_repo(tmp_path)
-    rc = cli.main(["day52-narrative-closeout", "--root", str(tmp_path), "--format", "text"])
+    rc = cli.main(["narrative-closeout", "--root", str(tmp_path), "--format", "text"])
     assert rc == 0
-    assert "Day 52 narrative closeout summary" in capsys.readouterr().out
+    assert "Narrative Closeout summary" in capsys.readouterr().out

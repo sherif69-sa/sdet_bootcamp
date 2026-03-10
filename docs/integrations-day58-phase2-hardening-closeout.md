@@ -1,4 +1,4 @@
-# Day 58 — Phase-2 hardening closeout lane
+# Phase 2 Hardening Closeout lane (Legacy: Day 58)
 
 Day 58 closes with a major Phase-2 hardening upgrade that turns Day 57 KPI deep-audit outcomes into deterministic execution hardening governance.
 
@@ -13,12 +13,12 @@ Day 58 closes with a major Phase-2 hardening upgrade that turns Day 57 KPI deep-
 - `docs/artifacts/day57-kpi-deep-audit-closeout-pack/day57-kpi-deep-audit-closeout-summary.json`
 - `docs/artifacts/day57-kpi-deep-audit-closeout-pack/day57-delivery-board.md`
 
-## Day 58 command lane
+## Phase 2 Hardening Closeout command lane
 
 ```bash
-python -m sdetkit day58-phase2-hardening-closeout --format json --strict
-python -m sdetkit day58-phase2-hardening-closeout --emit-pack-dir docs/artifacts/day58-phase2-hardening-closeout-pack --format json --strict
-python -m sdetkit day58-phase2-hardening-closeout --execute --evidence-dir docs/artifacts/day58-phase2-hardening-closeout-pack/evidence --format json --strict
+python -m sdetkit phase2-hardening-closeout --format json --strict
+python -m sdetkit phase2-hardening-closeout --emit-pack-dir docs/artifacts/day58-phase2-hardening-closeout-pack --format json --strict
+python -m sdetkit phase2-hardening-closeout --execute --evidence-dir docs/artifacts/day58-phase2-hardening-closeout-pack/evidence --format json --strict
 python scripts/check_day58_phase2_hardening_closeout_contract.py
 ```
 

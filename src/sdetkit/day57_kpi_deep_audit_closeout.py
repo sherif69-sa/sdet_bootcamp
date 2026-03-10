@@ -25,14 +25,14 @@ _REQUIRED_SECTIONS = [
     "## Scoring model",
 ]
 _REQUIRED_COMMANDS = [
-    "python -m sdetkit day57-kpi-deep-audit-closeout --format json --strict",
-    "python -m sdetkit day57-kpi-deep-audit-closeout --emit-pack-dir docs/artifacts/day57-kpi-deep-audit-closeout-pack --format json --strict",
-    "python -m sdetkit day57-kpi-deep-audit-closeout --execute --evidence-dir docs/artifacts/day57-kpi-deep-audit-closeout-pack/evidence --format json --strict",
+    "python -m sdetkit kpi-deep-audit-closeout --format json --strict",
+    "python -m sdetkit kpi-deep-audit-closeout --emit-pack-dir docs/artifacts/day57-kpi-deep-audit-closeout-pack --format json --strict",
+    "python -m sdetkit kpi-deep-audit-closeout --execute --evidence-dir docs/artifacts/day57-kpi-deep-audit-closeout-pack/evidence --format json --strict",
     "python scripts/check_day57_kpi_deep_audit_closeout_contract.py",
 ]
 _EXECUTION_COMMANDS = [
-    "python -m sdetkit day57-kpi-deep-audit-closeout --format json --strict",
-    "python -m sdetkit day57-kpi-deep-audit-closeout --emit-pack-dir docs/artifacts/day57-kpi-deep-audit-closeout-pack --format json --strict",
+    "python -m sdetkit kpi-deep-audit-closeout --format json --strict",
+    "python -m sdetkit kpi-deep-audit-closeout --emit-pack-dir docs/artifacts/day57-kpi-deep-audit-closeout-pack --format json --strict",
     "python scripts/check_day57_kpi_deep_audit_closeout_contract.py --skip-evidence",
 ]
 _REQUIRED_CONTRACT_LINES = [
@@ -74,9 +74,9 @@ Day 57 closes with a major KPI deep-audit upgrade that turns Day 56 stabilizatio
 ## Day 57 command lane
 
 ```bash
-python -m sdetkit day57-kpi-deep-audit-closeout --format json --strict
-python -m sdetkit day57-kpi-deep-audit-closeout --emit-pack-dir docs/artifacts/day57-kpi-deep-audit-closeout-pack --format json --strict
-python -m sdetkit day57-kpi-deep-audit-closeout --execute --evidence-dir docs/artifacts/day57-kpi-deep-audit-closeout-pack/evidence --format json --strict
+python -m sdetkit kpi-deep-audit-closeout --format json --strict
+python -m sdetkit kpi-deep-audit-closeout --emit-pack-dir docs/artifacts/day57-kpi-deep-audit-closeout-pack --format json --strict
+python -m sdetkit kpi-deep-audit-closeout --execute --evidence-dir docs/artifacts/day57-kpi-deep-audit-closeout-pack/evidence --format json --strict
 python scripts/check_day57_kpi_deep_audit_closeout_contract.py
 ```
 
@@ -308,7 +308,7 @@ def build_day57_kpi_deep_audit_closeout_summary(root: Path) -> dict[str, Any]:
 
     score = int(round(sum(c["weight"] for c in checks if bool(c["passed"]))))
     return {
-        "name": "day57-kpi-deep-audit-closeout",
+        "name": "kpi-deep-audit-closeout",
         "inputs": {
             "readme": "README.md",
             "docs_index": "docs/index.md",
@@ -342,7 +342,7 @@ def build_day57_kpi_deep_audit_closeout_summary(root: Path) -> dict[str, Any]:
 
 def _render_text(payload: dict[str, Any]) -> str:
     lines = [
-        "Day 57 KPI deep-audit closeout summary",
+        "KPI Deep Audit Closeout summary (legacy: Day 57)",
         f"- Activation score: {payload['summary']['activation_score']}",
         f"- Passed checks: {payload['summary']['passed_checks']}",
         f"- Failed checks: {payload['summary']['failed_checks']}",
@@ -400,7 +400,9 @@ def _execute_commands(root: Path, evidence_dir: Path) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Day 57 KPI deep audit closeout checks")
+    parser = argparse.ArgumentParser(
+        description="KPI Deep Audit Closeout checks (legacy alias: day57-kpi-deep-audit-closeout)"
+    )
     parser.add_argument("--root", default=".")
     parser.add_argument("--format", choices=["json", "text"], default="text")
     parser.add_argument("--strict", action="store_true")
