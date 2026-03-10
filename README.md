@@ -148,9 +148,9 @@ python -m sdetkit phase3-wrap-publication-closeout --format json --strict
 python -m sdetkit continuous-upgrade-closeout --format json --strict
 python -m sdetkit continuous-upgrade-cycle2-closeout --format json --strict
 python -m sdetkit continuous-upgrade-cycle3-closeout --format json --strict
-python -m sdetkit day94-continuous-upgrade-cycle4-closeout --format json --strict
-python -m sdetkit day95-continuous-upgrade-cycle5-closeout --format json --strict
-python -m sdetkit day97-continuous-upgrade-cycle7-closeout --format json --strict
+python -m sdetkit continuous-upgrade-cycle4-closeout --format json --strict
+python -m sdetkit continuous-upgrade-cycle5-closeout --format json --strict
+python -m sdetkit continuous-upgrade-cycle7-closeout --format json --strict
 ```
 
 ## Documentation

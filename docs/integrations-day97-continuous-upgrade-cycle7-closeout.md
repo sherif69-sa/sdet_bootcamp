@@ -1,8 +1,8 @@
-# Day 97 — Continuous upgrade closeout lane
+# Continuous Upgrade Cycle 7 Closeout — Continuous upgrade closeout lane
 
-Day 97 starts the next cycle by converting Day 95 publication outcomes into a deterministic continuous-upgrade lane.
+Continuous Upgrade Cycle 7 continues the next-cycle motion by converting prior cycle publication outcomes into a deterministic continuous-upgrade lane.
 
-## Why Day 97 matters
+## Why Continuous Upgrade Cycle 7 matters
 
 - Converts Day 95 publication artifacts into a repeatable execution loop for ongoing repository upgrades.
 - Protects quality with strict contract coverage, runnable commands, KPI thresholds, and rollback safety.
@@ -14,18 +14,19 @@ Day 97 starts the next cycle by converting Day 95 publication outcomes into a de
 - `docs/artifacts/day95-continuous-upgrade-cycle5-closeout-pack/day95-delivery-board.md`
 - `docs/roadmap/plans/day97-continuous-upgrade-cycle7-plan.json`
 
-## Day 97 command lane
+## Command lane
 
 ```bash
-python -m sdetkit day97-continuous-upgrade-cycle7-closeout --format json --strict
-python -m sdetkit day97-continuous-upgrade-cycle7-closeout --emit-pack-dir docs/artifacts/day97-continuous-upgrade-cycle7-closeout-pack --format json --strict
-python -m sdetkit day97-continuous-upgrade-cycle7-closeout --execute --evidence-dir docs/artifacts/day97-continuous-upgrade-cycle7-closeout-pack/evidence --format json --strict
+python -m sdetkit continuous-upgrade-cycle7-closeout --format json --strict
+python -m sdetkit day97-continuous-upgrade-cycle7-closeout --format json --strict  # legacy alias
+python -m sdetkit continuous-upgrade-cycle7-closeout --emit-pack-dir docs/artifacts/day97-continuous-upgrade-cycle7-closeout-pack --format json --strict
+python -m sdetkit continuous-upgrade-cycle7-closeout --execute --evidence-dir docs/artifacts/day97-continuous-upgrade-cycle7-closeout-pack/evidence --format json --strict
 python scripts/check_day97_continuous_upgrade_cycle7_closeout_contract.py
 ```
 
 ## Continuous upgrade contract
 
-- Single owner + backup reviewer are assigned for Day 97 continuous upgrade execution and signoff.
+- Single owner + backup reviewer are assigned for continuous-upgrade execution and signoff (legacy Day 97).
 - The Day 97 lane references Day 95 outcomes, controls, and trust continuity signals.
 - Every Day 97 section includes docs/template CTA, runnable command CTA, KPI threshold, and rollback guardrail.
 - Day 97 closeout records continuous upgrade outputs, report publication status, and backlog inputs.
