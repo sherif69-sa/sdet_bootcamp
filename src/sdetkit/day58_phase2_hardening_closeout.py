@@ -25,14 +25,14 @@ _REQUIRED_SECTIONS = [
     "## Scoring model",
 ]
 _REQUIRED_COMMANDS = [
-    "python -m sdetkit day58-phase2-hardening-closeout --format json --strict",
-    "python -m sdetkit day58-phase2-hardening-closeout --emit-pack-dir docs/artifacts/day58-phase2-hardening-closeout-pack --format json --strict",
-    "python -m sdetkit day58-phase2-hardening-closeout --execute --evidence-dir docs/artifacts/day58-phase2-hardening-closeout-pack/evidence --format json --strict",
+    "python -m sdetkit phase2-hardening-closeout --format json --strict",
+    "python -m sdetkit phase2-hardening-closeout --emit-pack-dir docs/artifacts/day58-phase2-hardening-closeout-pack --format json --strict",
+    "python -m sdetkit phase2-hardening-closeout --execute --evidence-dir docs/artifacts/day58-phase2-hardening-closeout-pack/evidence --format json --strict",
     "python scripts/check_day58_phase2_hardening_closeout_contract.py",
 ]
 _EXECUTION_COMMANDS = [
-    "python -m sdetkit day58-phase2-hardening-closeout --format json --strict",
-    "python -m sdetkit day58-phase2-hardening-closeout --emit-pack-dir docs/artifacts/day58-phase2-hardening-closeout-pack --format json --strict",
+    "python -m sdetkit phase2-hardening-closeout --format json --strict",
+    "python -m sdetkit phase2-hardening-closeout --emit-pack-dir docs/artifacts/day58-phase2-hardening-closeout-pack --format json --strict",
     "python scripts/check_day58_phase2_hardening_closeout_contract.py --skip-evidence",
 ]
 _REQUIRED_CONTRACT_LINES = [
@@ -74,9 +74,9 @@ Day 58 closes with a major Phase-2 hardening upgrade that turns Day 57 KPI deep-
 ## Day 58 command lane
 
 ```bash
-python -m sdetkit day58-phase2-hardening-closeout --format json --strict
-python -m sdetkit day58-phase2-hardening-closeout --emit-pack-dir docs/artifacts/day58-phase2-hardening-closeout-pack --format json --strict
-python -m sdetkit day58-phase2-hardening-closeout --execute --evidence-dir docs/artifacts/day58-phase2-hardening-closeout-pack/evidence --format json --strict
+python -m sdetkit phase2-hardening-closeout --format json --strict
+python -m sdetkit phase2-hardening-closeout --emit-pack-dir docs/artifacts/day58-phase2-hardening-closeout-pack --format json --strict
+python -m sdetkit phase2-hardening-closeout --execute --evidence-dir docs/artifacts/day58-phase2-hardening-closeout-pack/evidence --format json --strict
 python scripts/check_day58_phase2_hardening_closeout_contract.py
 ```
 
@@ -308,7 +308,7 @@ def build_day58_phase2_hardening_closeout_summary(root: Path) -> dict[str, Any]:
 
     score = int(round(sum(c["weight"] for c in checks if bool(c["passed"]))))
     return {
-        "name": "day58-phase2-hardening-closeout",
+        "name": "phase2-hardening-closeout",
         "inputs": {
             "readme": "README.md",
             "docs_index": "docs/index.md",
@@ -342,7 +342,7 @@ def build_day58_phase2_hardening_closeout_summary(root: Path) -> dict[str, Any]:
 
 def _render_text(payload: dict[str, Any]) -> str:
     lines = [
-        "Day 58 Phase-2 hardening closeout summary",
+        "Phase 2 Hardening Closeout summary (legacy: Day 58)",
         f"- Activation score: {payload['summary']['activation_score']}",
         f"- Passed checks: {payload['summary']['passed_checks']}",
         f"- Failed checks: {payload['summary']['failed_checks']}",
@@ -401,7 +401,9 @@ def _execute_commands(root: Path, evidence_dir: Path) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Day 58 Phase-2 hardening closeout checks")
+    parser = argparse.ArgumentParser(
+        description="Phase 2 Hardening Closeout checks (legacy alias: day58-phase2-hardening-closeout)"
+    )
     parser.add_argument("--root", default=".")
     parser.add_argument("--format", choices=["json", "text"], default="text")
     parser.add_argument("--strict", action="store_true")

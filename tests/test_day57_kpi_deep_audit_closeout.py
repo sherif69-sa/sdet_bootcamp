@@ -76,7 +76,7 @@ def test_day57_json(tmp_path: Path, capsys) -> None:
     rc = d57.main(["--root", str(tmp_path), "--format", "json", "--strict"])
     assert rc == 0
     out = json.loads(capsys.readouterr().out)
-    assert out["name"] == "day57-kpi-deep-audit-closeout"
+    assert out["name"] == "kpi-deep-audit-closeout"
     assert out["summary"]["activation_score"] >= 95
 
 
@@ -119,6 +119,6 @@ def test_day57_strict_fails_without_day56(tmp_path: Path) -> None:
 
 def test_day57_cli_dispatch(tmp_path: Path, capsys) -> None:
     _seed_repo(tmp_path)
-    rc = cli.main(["day57-kpi-deep-audit-closeout", "--root", str(tmp_path), "--format", "text"])
+    rc = cli.main(["kpi-deep-audit-closeout", "--root", str(tmp_path), "--format", "text"])
     assert rc == 0
-    assert "Day 57 KPI deep-audit closeout summary" in capsys.readouterr().out
+    assert "KPI Deep Audit Closeout summary" in capsys.readouterr().out

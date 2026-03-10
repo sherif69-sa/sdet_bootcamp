@@ -25,14 +25,14 @@ _REQUIRED_SECTIONS = [
     "## Scoring model",
 ]
 _REQUIRED_COMMANDS = [
-    "python -m sdetkit day51-case-snippet-closeout --format json --strict",
-    "python -m sdetkit day51-case-snippet-closeout --emit-pack-dir docs/artifacts/day51-case-snippet-closeout-pack --format json --strict",
-    "python -m sdetkit day51-case-snippet-closeout --execute --evidence-dir docs/artifacts/day51-case-snippet-closeout-pack/evidence --format json --strict",
+    "python -m sdetkit case-snippet-closeout --format json --strict",
+    "python -m sdetkit case-snippet-closeout --emit-pack-dir docs/artifacts/day51-case-snippet-closeout-pack --format json --strict",
+    "python -m sdetkit case-snippet-closeout --execute --evidence-dir docs/artifacts/day51-case-snippet-closeout-pack/evidence --format json --strict",
     "python scripts/check_day51_case_snippet_closeout_contract.py",
 ]
 _EXECUTION_COMMANDS = [
-    "python -m sdetkit day51-case-snippet-closeout --format json --strict",
-    "python -m sdetkit day51-case-snippet-closeout --emit-pack-dir docs/artifacts/day51-case-snippet-closeout-pack --format json --strict",
+    "python -m sdetkit case-snippet-closeout --format json --strict",
+    "python -m sdetkit case-snippet-closeout --emit-pack-dir docs/artifacts/day51-case-snippet-closeout-pack --format json --strict",
     "python scripts/check_day51_case_snippet_closeout_contract.py --skip-evidence",
 ]
 _REQUIRED_CONTRACT_LINES = [
@@ -74,9 +74,9 @@ Day 51 closes with a major case-snippet upgrade that converts Day 50 execution-p
 ## Day 51 command lane
 
 ```bash
-python -m sdetkit day51-case-snippet-closeout --format json --strict
-python -m sdetkit day51-case-snippet-closeout --emit-pack-dir docs/artifacts/day51-case-snippet-closeout-pack --format json --strict
-python -m sdetkit day51-case-snippet-closeout --execute --evidence-dir docs/artifacts/day51-case-snippet-closeout-pack/evidence --format json --strict
+python -m sdetkit case-snippet-closeout --format json --strict
+python -m sdetkit case-snippet-closeout --emit-pack-dir docs/artifacts/day51-case-snippet-closeout-pack --format json --strict
+python -m sdetkit case-snippet-closeout --execute --evidence-dir docs/artifacts/day51-case-snippet-closeout-pack/evidence --format json --strict
 python scripts/check_day51_case_snippet_closeout_contract.py
 ```
 
@@ -325,7 +325,7 @@ def build_day51_case_snippet_closeout_summary(root: Path) -> dict[str, Any]:
         )
 
     return {
-        "name": "day51-case-snippet-closeout",
+        "name": "case-snippet-closeout",
         "inputs": {
             "readme": readme_path,
             "docs_index": docs_index_path,
@@ -359,7 +359,7 @@ def build_day51_case_snippet_closeout_summary(root: Path) -> dict[str, Any]:
 
 def _render_text(payload: dict[str, Any]) -> str:
     lines = [
-        "Day 51 case snippet closeout summary",
+        "Case Snippet Closeout summary (legacy: Day 51)",
         f"- Activation score: {payload['summary']['activation_score']}",
         f"- Passed checks: {payload['summary']['passed_checks']}",
         f"- Failed checks: {payload['summary']['failed_checks']}",
@@ -396,7 +396,7 @@ def _emit_pack(root: Path, payload: dict[str, Any], pack_dir: Path) -> None:
     _write(
         target / "day51-proof-map.csv",
         "stream,owner,backup,review_window,docs_cta,command_cta,kpi_target,risk_flag\n"
-        "case-snippet-floor,qa-lead,docs-owner,2026-03-19T10:00:00Z,docs/integrations-day51-case-snippet-closeout.md,python -m sdetkit day51-case-snippet-closeout --format json --strict,failed-checks:0,narrative-drift\n",
+        "case-snippet-floor,qa-lead,docs-owner,2026-03-19T10:00:00Z,docs/integrations-day51-case-snippet-closeout.md,python -m sdetkit case-snippet-closeout --format json --strict,failed-checks:0,narrative-drift\n",
     )
     _write(
         target / "day51-case-snippet-kpi-scorecard.json",
@@ -454,7 +454,9 @@ def _execute_commands(root: Path, evidence_dir: Path) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Day 51 case snippet closeout checks")
+    parser = argparse.ArgumentParser(
+        description="Case Snippet Closeout checks (legacy alias: day51-case-snippet-closeout)"
+    )
     parser.add_argument("--root", default=".")
     parser.add_argument("--format", choices=["text", "json"], default="text")
     parser.add_argument("--strict", action="store_true")

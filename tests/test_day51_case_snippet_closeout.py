@@ -78,7 +78,7 @@ def test_day51_case_snippet_closeout_json(tmp_path: Path, capsys) -> None:
     rc = d51.main(["--root", str(tmp_path), "--format", "json", "--strict"])
     assert rc == 0
     out = json.loads(capsys.readouterr().out)
-    assert out["name"] == "day51-case-snippet-closeout"
+    assert out["name"] == "case-snippet-closeout"
     assert out["summary"]["activation_score"] >= 95
 
 
@@ -122,6 +122,6 @@ def test_day51_strict_fails_when_day50_inputs_missing(tmp_path: Path) -> None:
 
 def test_day51_cli_dispatch(tmp_path: Path, capsys) -> None:
     _seed_repo(tmp_path)
-    rc = cli.main(["day51-case-snippet-closeout", "--root", str(tmp_path), "--format", "text"])
+    rc = cli.main(["case-snippet-closeout", "--root", str(tmp_path), "--format", "text"])
     assert rc == 0
-    assert "Day 51 case snippet closeout summary" in capsys.readouterr().out
+    assert "Case Snippet Closeout summary" in capsys.readouterr().out

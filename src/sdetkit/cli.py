@@ -356,30 +356,36 @@ def main(argv: Sequence[str] | None = None) -> int:
         "day49-advanced-weekly-review-control-tower",
     }:
         return day49_weekly_review_closeout.main(list(argv[1:]))
-    if argv and argv[0] in {"execution-prioritization-closeout", "day50-execution-prioritization-closeout"}:
+    if argv and argv[0] in {
+        "execution-prioritization-closeout",
+        "day50-execution-prioritization-closeout",
+    }:
         return day50_execution_prioritization_closeout.main(list(argv[1:]))
-    if argv and argv[0] == "day51-case-snippet-closeout":
+    if argv and argv[0] in {"case-snippet-closeout", "day51-case-snippet-closeout"}:
         return day51_case_snippet_closeout.main(list(argv[1:]))
-    if argv and argv[0] == "day52-narrative-closeout":
+    if argv and argv[0] in {"narrative-closeout", "day52-narrative-closeout"}:
         return day52_narrative_closeout.main(list(argv[1:]))
-    if argv and argv[0] == "day53-docs-loop-closeout":
+    if argv and argv[0] in {"docs-loop-closeout", "day53-docs-loop-closeout"}:
         return day53_docs_loop_closeout.main(list(argv[1:]))
-    if argv and argv[0] == "day55-contributor-activation-closeout":
+    if argv and argv[0] in {
+        "contributor-activation-closeout",
+        "day55-contributor-activation-closeout",
+    }:
         return day55_contributor_activation_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] == "day56-stabilization-closeout":
+    if argv and argv[0] in {"stabilization-closeout", "day56-stabilization-closeout"}:
         return day56_stabilization_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] == "day57-kpi-deep-audit-closeout":
+    if argv and argv[0] in {"kpi-deep-audit-closeout", "day57-kpi-deep-audit-closeout"}:
         return day57_kpi_deep_audit_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] == "day58-phase2-hardening-closeout":
+    if argv and argv[0] in {"phase2-hardening-closeout", "day58-phase2-hardening-closeout"}:
         return day58_phase2_hardening_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] == "day59-phase3-preplan-closeout":
+    if argv and argv[0] in {"phase3-preplan-closeout", "day59-phase3-preplan-closeout"}:
         return day59_phase3_preplan_closeout.main(list(argv[1:]))
 
-    if argv and argv[0] == "day60-phase2-wrap-handoff-closeout":
+    if argv and argv[0] in {"phase2-wrap-handoff-closeout", "day60-phase2-wrap-handoff-closeout"}:
         return day60_phase2_wrap_handoff_closeout.main(list(argv[1:]))
 
     if argv and argv[0] == "day61-phase3-kickoff-closeout":
@@ -764,26 +770,47 @@ Run: sdetkit playbooks
     pa50.add_argument("args", nargs=argparse.REMAINDER)
     d50 = sub.add_parser("day50-execution-prioritization-closeout")
     d50.add_argument("args", nargs=argparse.REMAINDER)
+    p51 = sub.add_parser("case-snippet-closeout")
+    p51.add_argument("args", nargs=argparse.REMAINDER)
     d51 = sub.add_parser("day51-case-snippet-closeout")
     d51.add_argument("args", nargs=argparse.REMAINDER)
+    p52 = sub.add_parser("narrative-closeout")
+    p52.add_argument("args", nargs=argparse.REMAINDER)
     d52 = sub.add_parser("day52-narrative-closeout")
     d52.add_argument("args", nargs=argparse.REMAINDER)
 
+    p53 = sub.add_parser("docs-loop-closeout")
+    p53.add_argument("args", nargs=argparse.REMAINDER)
     d53 = sub.add_parser("day53-docs-loop-closeout")
     d53.add_argument("args", nargs=argparse.REMAINDER)
 
+    p55 = sub.add_parser("contributor-activation-closeout")
+    p55.add_argument("args", nargs=argparse.REMAINDER)
     d55 = sub.add_parser("day55-contributor-activation-closeout")
     d55.add_argument("args", nargs=argparse.REMAINDER)
 
+    p56 = sub.add_parser("stabilization-closeout")
+    p56.add_argument("args", nargs=argparse.REMAINDER)
     d56 = sub.add_parser("day56-stabilization-closeout")
     d56.add_argument("args", nargs=argparse.REMAINDER)
 
+    p57 = sub.add_parser("kpi-deep-audit-closeout")
+    p57.add_argument("args", nargs=argparse.REMAINDER)
     d57 = sub.add_parser("day57-kpi-deep-audit-closeout")
     d57.add_argument("args", nargs=argparse.REMAINDER)
 
+    p58 = sub.add_parser("phase2-hardening-closeout")
+    p58.add_argument("args", nargs=argparse.REMAINDER)
+    d58 = sub.add_parser("day58-phase2-hardening-closeout")
+    d58.add_argument("args", nargs=argparse.REMAINDER)
+
+    p59 = sub.add_parser("phase3-preplan-closeout")
+    p59.add_argument("args", nargs=argparse.REMAINDER)
     d59 = sub.add_parser("day59-phase3-preplan-closeout")
     d59.add_argument("args", nargs=argparse.REMAINDER)
 
+    p60 = sub.add_parser("phase2-wrap-handoff-closeout")
+    p60.add_argument("args", nargs=argparse.REMAINDER)
     d60 = sub.add_parser("day60-phase2-wrap-handoff-closeout")
     d60.add_argument("args", nargs=argparse.REMAINDER)
 
@@ -1120,29 +1147,36 @@ Run: sdetkit playbooks
         return day47_reliability_closeout.main(ns.args)
     if ns.cmd in {"objection-closeout", "day48-objection-closeout"}:
         return day48_objection_closeout.main(ns.args)
-    if ns.cmd in {"weekly-review-closeout", "day49-weekly-review-closeout", "day49-advanced-weekly-review-control-tower"}:
+    if ns.cmd in {
+        "weekly-review-closeout",
+        "day49-weekly-review-closeout",
+        "day49-advanced-weekly-review-control-tower",
+    }:
         return day49_weekly_review_closeout.main(ns.args)
     if ns.cmd in {"execution-prioritization-closeout", "day50-execution-prioritization-closeout"}:
         return day50_execution_prioritization_closeout.main(ns.args)
-    if ns.cmd == "day51-case-snippet-closeout":
+    if ns.cmd in {"case-snippet-closeout", "day51-case-snippet-closeout"}:
         return day51_case_snippet_closeout.main(ns.args)
-    if ns.cmd == "day52-narrative-closeout":
+    if ns.cmd in {"narrative-closeout", "day52-narrative-closeout"}:
         return day52_narrative_closeout.main(ns.args)
-    if ns.cmd == "day53-docs-loop-closeout":
+    if ns.cmd in {"docs-loop-closeout", "day53-docs-loop-closeout"}:
         return day53_docs_loop_closeout.main(ns.args)
-    if ns.cmd == "day55-contributor-activation-closeout":
+    if ns.cmd in {"contributor-activation-closeout", "day55-contributor-activation-closeout"}:
         return day55_contributor_activation_closeout.main(ns.args)
 
-    if ns.cmd == "day56-stabilization-closeout":
+    if ns.cmd in {"stabilization-closeout", "day56-stabilization-closeout"}:
         return day56_stabilization_closeout.main(ns.args)
 
-    if ns.cmd == "day57-kpi-deep-audit-closeout":
+    if ns.cmd in {"kpi-deep-audit-closeout", "day57-kpi-deep-audit-closeout"}:
         return day57_kpi_deep_audit_closeout.main(ns.args)
 
-    if ns.cmd == "day59-phase3-preplan-closeout":
+    if ns.cmd in {"phase2-hardening-closeout", "day58-phase2-hardening-closeout"}:
+        return day58_phase2_hardening_closeout.main(ns.args)
+
+    if ns.cmd in {"phase3-preplan-closeout", "day59-phase3-preplan-closeout"}:
         return day59_phase3_preplan_closeout.main(ns.args)
 
-    if ns.cmd == "day60-phase2-wrap-handoff-closeout":
+    if ns.cmd in {"phase2-wrap-handoff-closeout", "day60-phase2-wrap-handoff-closeout"}:
         return day60_phase2_wrap_handoff_closeout.main(ns.args)
 
     if ns.cmd == "day61-phase3-kickoff-closeout":

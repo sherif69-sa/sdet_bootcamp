@@ -23,14 +23,14 @@ _REQUIRED_SECTIONS = [
     "## Scoring model",
 ]
 _REQUIRED_COMMANDS = [
-    "python -m sdetkit day59-phase3-preplan-closeout --format json --strict",
-    "python -m sdetkit day59-phase3-preplan-closeout --emit-pack-dir docs/artifacts/day59-phase3-preplan-closeout-pack --format json --strict",
-    "python -m sdetkit day59-phase3-preplan-closeout --execute --evidence-dir docs/artifacts/day59-phase3-preplan-closeout-pack/evidence --format json --strict",
+    "python -m sdetkit phase3-preplan-closeout --format json --strict",
+    "python -m sdetkit phase3-preplan-closeout --emit-pack-dir docs/artifacts/day59-phase3-preplan-closeout-pack --format json --strict",
+    "python -m sdetkit phase3-preplan-closeout --execute --evidence-dir docs/artifacts/day59-phase3-preplan-closeout-pack/evidence --format json --strict",
     "python scripts/check_day59_phase3_preplan_closeout_contract.py",
 ]
 _EXECUTION_COMMANDS = [
-    "python -m sdetkit day59-phase3-preplan-closeout --format json --strict",
-    "python -m sdetkit day59-phase3-preplan-closeout --emit-pack-dir docs/artifacts/day59-phase3-preplan-closeout-pack --format json --strict",
+    "python -m sdetkit phase3-preplan-closeout --format json --strict",
+    "python -m sdetkit phase3-preplan-closeout --emit-pack-dir docs/artifacts/day59-phase3-preplan-closeout-pack --format json --strict",
     "python scripts/check_day59_phase3_preplan_closeout_contract.py --skip-evidence",
 ]
 _REQUIRED_CONTRACT_LINES = [
@@ -72,9 +72,9 @@ Day 59 closes with a major Phase-3 pre-plan upgrade that turns Day 58 hardening 
 ## Day 59 command lane
 
 ```bash
-python -m sdetkit day59-phase3-preplan-closeout --format json --strict
-python -m sdetkit day59-phase3-preplan-closeout --emit-pack-dir docs/artifacts/day59-phase3-preplan-closeout-pack --format json --strict
-python -m sdetkit day59-phase3-preplan-closeout --execute --evidence-dir docs/artifacts/day59-phase3-preplan-closeout-pack/evidence --format json --strict
+python -m sdetkit phase3-preplan-closeout --format json --strict
+python -m sdetkit phase3-preplan-closeout --emit-pack-dir docs/artifacts/day59-phase3-preplan-closeout-pack --format json --strict
+python -m sdetkit phase3-preplan-closeout --execute --evidence-dir docs/artifacts/day59-phase3-preplan-closeout-pack/evidence --format json --strict
 python scripts/check_day59_phase3_preplan_closeout_contract.py
 ```
 
@@ -297,7 +297,7 @@ def build_day59_phase3_preplan_closeout_summary(root: Path) -> dict[str, Any]:
 
     score = int(round(sum(c["weight"] for c in checks if c["passed"])))
     return {
-        "name": "day59-phase3-preplan-closeout",
+        "name": "phase3-preplan-closeout",
         "inputs": {
             "readme": "README.md",
             "docs_index": "docs/index.md",
@@ -331,7 +331,7 @@ def build_day59_phase3_preplan_closeout_summary(root: Path) -> dict[str, Any]:
 
 def _render_text(payload: dict[str, Any]) -> str:
     lines = [
-        "Day 59 Phase-3 pre-plan closeout summary",
+        "Phase3 Preplan Closeout summary (legacy: Day 59)",
         f"- Activation score: {payload['summary']['activation_score']}",
         f"- Passed checks: {payload['summary']['passed_checks']}",
         f"- Failed checks: {payload['summary']['failed_checks']}",
@@ -389,7 +389,9 @@ def _execute_commands(root: Path, evidence_dir: Path) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Day 59 Phase-3 pre-plan closeout checks")
+    parser = argparse.ArgumentParser(
+        description="Phase3 Preplan Closeout checks (legacy alias: day59-phase3-preplan-closeout)"
+    )
     parser.add_argument("--root", default=".")
     parser.add_argument("--format", choices=["json", "text"], default="text")
     parser.add_argument("--strict", action="store_true")

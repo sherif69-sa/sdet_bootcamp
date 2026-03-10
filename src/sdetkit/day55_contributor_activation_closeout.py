@@ -25,14 +25,14 @@ _REQUIRED_SECTIONS = [
     "## Scoring model",
 ]
 _REQUIRED_COMMANDS = [
-    "python -m sdetkit day55-contributor-activation-closeout --format json --strict",
-    "python -m sdetkit day55-contributor-activation-closeout --emit-pack-dir docs/artifacts/day55-contributor-activation-closeout-pack --format json --strict",
-    "python -m sdetkit day55-contributor-activation-closeout --execute --evidence-dir docs/artifacts/day55-contributor-activation-closeout-pack/evidence --format json --strict",
+    "python -m sdetkit contributor-activation-closeout --format json --strict",
+    "python -m sdetkit contributor-activation-closeout --emit-pack-dir docs/artifacts/day55-contributor-activation-closeout-pack --format json --strict",
+    "python -m sdetkit contributor-activation-closeout --execute --evidence-dir docs/artifacts/day55-contributor-activation-closeout-pack/evidence --format json --strict",
     "python scripts/check_day55_contributor_activation_closeout_contract.py",
 ]
 _EXECUTION_COMMANDS = [
-    "python -m sdetkit day55-contributor-activation-closeout --format json --strict",
-    "python -m sdetkit day55-contributor-activation-closeout --emit-pack-dir docs/artifacts/day55-contributor-activation-closeout-pack --format json --strict",
+    "python -m sdetkit contributor-activation-closeout --format json --strict",
+    "python -m sdetkit contributor-activation-closeout --emit-pack-dir docs/artifacts/day55-contributor-activation-closeout-pack --format json --strict",
     "python scripts/check_day55_contributor_activation_closeout_contract.py --skip-evidence",
 ]
 _REQUIRED_CONTRACT_LINES = [
@@ -74,9 +74,9 @@ Day 55 closes with a major contributor activation upgrade that turns Day 53 docs
 ## Day 55 command lane
 
 ```bash
-python -m sdetkit day55-contributor-activation-closeout --format json --strict
-python -m sdetkit day55-contributor-activation-closeout --emit-pack-dir docs/artifacts/day55-contributor-activation-closeout-pack --format json --strict
-python -m sdetkit day55-contributor-activation-closeout --execute --evidence-dir docs/artifacts/day55-contributor-activation-closeout-pack/evidence --format json --strict
+python -m sdetkit contributor-activation-closeout --format json --strict
+python -m sdetkit contributor-activation-closeout --emit-pack-dir docs/artifacts/day55-contributor-activation-closeout-pack --format json --strict
+python -m sdetkit contributor-activation-closeout --execute --evidence-dir docs/artifacts/day55-contributor-activation-closeout-pack/evidence --format json --strict
 python scripts/check_day55_contributor_activation_closeout_contract.py
 ```
 
@@ -315,7 +315,7 @@ def build_day55_contributor_activation_closeout_summary(root: Path) -> dict[str,
 
     score = int(round(sum(c["weight"] for c in checks if c["passed"])))
     return {
-        "name": "day55-contributor-activation-closeout",
+        "name": "contributor-activation-closeout",
         "inputs": {
             "readme": "README.md",
             "docs_index": "docs/index.md",
@@ -349,7 +349,7 @@ def build_day55_contributor_activation_closeout_summary(root: Path) -> dict[str,
 
 def _render_text(payload: dict[str, Any]) -> str:
     lines = [
-        "Day 55 contributor activation closeout summary",
+        "Contributor Activation Closeout summary (legacy: Day 55)",
         f"- Activation score: {payload['summary']['activation_score']}",
         f"- Passed checks: {payload['summary']['passed_checks']}",
         f"- Failed checks: {payload['summary']['failed_checks']}",
@@ -415,7 +415,9 @@ def _execute_commands(root: Path, evidence_dir: Path) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Day 55 contributor activation closeout checks")
+    parser = argparse.ArgumentParser(
+        description="Contributor Activation Closeout checks (legacy alias: day55-contributor-activation-closeout)"
+    )
     parser.add_argument("--root", default=".")
     parser.add_argument("--format", choices=["json", "text"], default="text")
     parser.add_argument("--strict", action="store_true")

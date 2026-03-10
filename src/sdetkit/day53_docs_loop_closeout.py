@@ -25,14 +25,14 @@ _REQUIRED_SECTIONS = [
     "## Scoring model",
 ]
 _REQUIRED_COMMANDS = [
-    "python -m sdetkit day53-docs-loop-closeout --format json --strict",
-    "python -m sdetkit day53-docs-loop-closeout --emit-pack-dir docs/artifacts/day53-docs-loop-closeout-pack --format json --strict",
-    "python -m sdetkit day53-docs-loop-closeout --execute --evidence-dir docs/artifacts/day53-docs-loop-closeout-pack/evidence --format json --strict",
+    "python -m sdetkit docs-loop-closeout --format json --strict",
+    "python -m sdetkit docs-loop-closeout --emit-pack-dir docs/artifacts/day53-docs-loop-closeout-pack --format json --strict",
+    "python -m sdetkit docs-loop-closeout --execute --evidence-dir docs/artifacts/day53-docs-loop-closeout-pack/evidence --format json --strict",
     "python scripts/check_day53_docs_loop_closeout_contract.py",
 ]
 _EXECUTION_COMMANDS = [
-    "python -m sdetkit day53-docs-loop-closeout --format json --strict",
-    "python -m sdetkit day53-docs-loop-closeout --emit-pack-dir docs/artifacts/day53-docs-loop-closeout-pack --format json --strict",
+    "python -m sdetkit docs-loop-closeout --format json --strict",
+    "python -m sdetkit docs-loop-closeout --emit-pack-dir docs/artifacts/day53-docs-loop-closeout-pack --format json --strict",
     "python scripts/check_day53_docs_loop_closeout_contract.py --skip-evidence",
 ]
 _REQUIRED_CONTRACT_LINES = [
@@ -74,9 +74,9 @@ Day 53 closes with a major docs loop optimization upgrade that converts Day 52 n
 ## Day 53 command lane
 
 ```bash
-python -m sdetkit day53-docs-loop-closeout --format json --strict
-python -m sdetkit day53-docs-loop-closeout --emit-pack-dir docs/artifacts/day53-docs-loop-closeout-pack --format json --strict
-python -m sdetkit day53-docs-loop-closeout --execute --evidence-dir docs/artifacts/day53-docs-loop-closeout-pack/evidence --format json --strict
+python -m sdetkit docs-loop-closeout --format json --strict
+python -m sdetkit docs-loop-closeout --emit-pack-dir docs/artifacts/day53-docs-loop-closeout-pack --format json --strict
+python -m sdetkit docs-loop-closeout --execute --evidence-dir docs/artifacts/day53-docs-loop-closeout-pack/evidence --format json --strict
 python scripts/check_day53_docs_loop_closeout_contract.py
 ```
 
@@ -325,7 +325,7 @@ def build_day53_docs_loop_closeout_summary(root: Path) -> dict[str, Any]:
         )
 
     return {
-        "name": "day53-docs-loop-closeout",
+        "name": "docs-loop-closeout",
         "inputs": {
             "readme": readme_path,
             "docs_index": docs_index_path,
@@ -359,7 +359,7 @@ def build_day53_docs_loop_closeout_summary(root: Path) -> dict[str, Any]:
 
 def _render_text(payload: dict[str, Any]) -> str:
     lines = [
-        "Day 53 docs-loop closeout summary",
+        "Docs Loop Closeout summary (legacy: Day 53)",
         f"- Activation score: {payload['summary']['activation_score']}",
         f"- Passed checks: {payload['summary']['passed_checks']}",
         f"- Failed checks: {payload['summary']['failed_checks']}",
@@ -394,7 +394,7 @@ def _emit_pack(root: Path, payload: dict[str, Any], pack_dir: Path) -> None:
     _write(
         target / "day53-cross-link-map.csv",
         "stream,owner,backup,review_window,docs_cta,command_cta,kpi_target,risk_flag\n"
-        "docs-loop-floor,qa-lead,docs-owner,2026-03-20T10:00:00Z,docs/integrations-day53-docs-loop-closeout.md,python -m sdetkit day53-docs-loop-closeout --format json --strict,failed-checks:0,link-drift\n",
+        "docs-loop-floor,qa-lead,docs-owner,2026-03-20T10:00:00Z,docs/integrations-day53-docs-loop-closeout.md,python -m sdetkit docs-loop-closeout --format json --strict,failed-checks:0,link-drift\n",
     )
     _write(
         target / "day53-docs-loop-kpi-scorecard.json",
@@ -452,7 +452,9 @@ def _execute_commands(root: Path, evidence_dir: Path) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Day 53 docs-loop closeout checks")
+    parser = argparse.ArgumentParser(
+        description="Docs Loop Closeout checks (legacy alias: day53-docs-loop-closeout)"
+    )
     parser.add_argument("--root", default=".")
     parser.add_argument("--format", choices=["text", "json"], default="text")
     parser.add_argument("--strict", action="store_true")

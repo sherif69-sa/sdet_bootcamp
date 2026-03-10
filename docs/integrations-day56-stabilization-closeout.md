@@ -1,4 +1,4 @@
-# Day 56 — Stabilization closeout lane
+# Stabilization Closeout lane (Legacy: Day 56)
 
 Day 56 closes with a major stabilization upgrade that turns Day 55 contributor-activation outcomes into deterministic KPI recovery and follow-through.
 
@@ -13,12 +13,12 @@ Day 56 closes with a major stabilization upgrade that turns Day 55 contributor-a
 - `docs/artifacts/day55-contributor-activation-closeout-pack/day55-contributor-activation-closeout-summary.json`
 - `docs/artifacts/day55-contributor-activation-closeout-pack/day55-delivery-board.md`
 
-## Day 56 command lane
+## Stabilization Closeout command lane
 
 ```bash
-python -m sdetkit day56-stabilization-closeout --format json --strict
-python -m sdetkit day56-stabilization-closeout --emit-pack-dir docs/artifacts/day56-stabilization-closeout-pack --format json --strict
-python -m sdetkit day56-stabilization-closeout --execute --evidence-dir docs/artifacts/day56-stabilization-closeout-pack/evidence --format json --strict
+python -m sdetkit stabilization-closeout --format json --strict
+python -m sdetkit stabilization-closeout --emit-pack-dir docs/artifacts/day56-stabilization-closeout-pack --format json --strict
+python -m sdetkit stabilization-closeout --execute --evidence-dir docs/artifacts/day56-stabilization-closeout-pack/evidence --format json --strict
 python scripts/check_day56_stabilization_closeout_contract.py
 ```
 

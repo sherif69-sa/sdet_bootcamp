@@ -76,7 +76,7 @@ def test_day60_json(tmp_path: Path, capsys) -> None:
     rc = d60.main(["--root", str(tmp_path), "--format", "json", "--strict"])
     assert rc == 0
     out = json.loads(capsys.readouterr().out)
-    assert out["name"] == "day60-phase2-wrap-handoff-closeout"
+    assert out["name"] == "phase2-wrap-handoff-closeout"
     assert out["summary"]["activation_score"] >= 95
 
 
@@ -127,4 +127,4 @@ def test_day60_cli_dispatch(tmp_path: Path, capsys) -> None:
         ["day60-phase2-wrap-handoff-closeout", "--root", str(tmp_path), "--format", "text"]
     )
     assert rc == 0
-    assert "Day 60 Phase-2 wrap + handoff closeout summary" in capsys.readouterr().out
+    assert "Phase 2 Wrap Handoff Closeout summary" in capsys.readouterr().out
