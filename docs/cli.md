@@ -552,7 +552,7 @@ Useful flags: `--root`, `--day19-summary`, `--changelog`, `--min-release-score`,
 
 ## trust-signal-upgrade
 
-Builds Day 22 trust visibility posture from README badges, governance-policy discoverability links, and workflow/docs-index visibility checks.
+Builds a trust signal upgrade report by combining README and docs index inputs into one closeout view.
 
 Examples:
 
@@ -561,17 +561,19 @@ Examples:
 - `sdetkit trust-signal-upgrade --write-defaults --format json --strict`
 - `sdetkit trust-signal-upgrade --emit-pack-dir docs/artifacts/day22-trust-pack --format json --strict`
 - `sdetkit trust-signal-upgrade --execute --evidence-dir docs/artifacts/day22-trust-pack/evidence --format json --strict`
-- `sdetkit trust-signal-upgrade --format markdown --output docs/artifacts/day22-trust-signal-upgrade-sample.md`
+- `sdetkit trust-signal-upgrade --format markdown --output trust-signal-upgrade-report.md`
 
 Useful flags: `--root`, `--readme`, `--docs-index`, `--min-trust-score`, `--write-defaults`, `--emit-pack-dir`, `--execute`, `--evidence-dir`, `--timeout-sec`, `--strict`, `--format`, `--output`.
 
-`--write-defaults` writes a hardened Day 22 integration page if missing/incomplete, then validates it.
+`--readme` and `--docs-index` point to the repository visibility inputs used to build the report.
 
-`--emit-pack-dir` writes a Day 22 pack containing summary JSON, trust scorecard markdown, visibility checklist markdown, trust action plan, and a validation commands file.
+`--write-defaults` writes or repairs the default Day 22 integration page before validation.
 
-`--execute` runs the Day 22 command chain and emits an execution summary plus per-command logs for closeout evidence.
+`--emit-pack-dir` writes a trust-signal pack bundle containing summary JSON, trust scorecard markdown, visibility checklist markdown, trust action plan, and validation commands.
 
-`--strict` returns non-zero if Day 22 required docs sections/commands are missing, any critical trust checks fail, or trust score falls below `--min-trust-score`.
+`--execute` runs the Day 22 validation commands and writes execution logs into `--evidence-dir`.
+
+`--strict` returns non-zero when required docs content is missing, critical trust checks fail, the trust score falls below `--min-trust-score`, or execute mode detects failed commands.
 
 ## faq-objections
 
