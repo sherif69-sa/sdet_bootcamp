@@ -577,7 +577,7 @@ Useful flags: `--root`, `--readme`, `--docs-index`, `--min-trust-score`, `--writ
 
 ## faq-objections
 
-Builds Day 23 objection-handling readiness from FAQ coverage, adoption clarity signals, and docs discoverability links.
+Builds an objection-handling report by combining README discoverability, docs index linkage, and Day 23 FAQ page coverage into one closeout view.
 
 Examples:
 
@@ -586,21 +586,25 @@ Examples:
 - `sdetkit faq-objections --write-defaults --format json --strict`
 - `sdetkit faq-objections --emit-pack-dir docs/artifacts/day23-faq-pack --format json --strict`
 - `sdetkit faq-objections --execute --evidence-dir docs/artifacts/day23-faq-pack/evidence --format json --strict`
-- `sdetkit faq-objections --format markdown --output docs/artifacts/day23-faq-objections-sample.md`
+- `sdetkit faq-objections --format markdown --output faq-objections-report.md`
 
 Useful flags: `--root`, `--readme`, `--docs-index`, `--docs-page`, `--min-faq-score`, `--write-defaults`, `--emit-pack-dir`, `--execute`, `--evidence-dir`, `--timeout-sec`, `--strict`, `--format`, `--output`.
 
-`--write-defaults` writes a hardened Day 23 FAQ page if missing/incomplete, then validates it.
+`--readme`, `--docs-index`, and `--docs-page` select the discoverability and FAQ contract inputs that feed the report score.
 
-`--emit-pack-dir` writes a Day 23 pack containing summary JSON, FAQ scorecard markdown, objection-response matrix, adoption playbook, and validation commands.
+`--write-defaults` writes or repairs the default Day 23 integration page before validation.
 
-`--execute` runs the Day 23 command chain and emits an execution summary for closeout evidence.
+`--emit-pack-dir` writes a FAQ objections pack bundle containing summary JSON, FAQ scorecard markdown, objection-response matrix, adoption playbook, and validation commands.
 
-`--strict` returns non-zero if Day 23 required docs sections/commands are missing, critical objection checks fail, or FAQ score falls below `--min-faq-score`.
+`--execute` runs the Day 23 validation commands and writes execution logs into `--evidence-dir`.
+
+`--strict` returns non-zero when Day 23 required docs sections or commands are missing, critical objection checks fail, the FAQ score falls below `--min-faq-score`, or execute mode detects failed commands.
+
+See: day-23-ultra-upgrade-report.md (legacy history).
 
 ## community-activation
 
-Builds Day 25 roadmap-voting and community-feedback readiness from docs contract completeness, discoverability links, and strategy alignment checks.
+Builds a community-activation report by combining README and docs index discoverability, Day 25 integration-page contract checks, and top-10 strategy alignment into one closeout view.
 
 Examples:
 
@@ -612,17 +616,21 @@ Examples:
 
 Useful flags: `--root`, `--readme`, `--docs-index`, `--top10`, `--write-defaults`, `--emit-pack-dir`, `--execute`, `--evidence-dir`, `--timeout-sec`, `--min-score`, `--strict`, `--format`.
 
-`--write-defaults` writes a hardened Day 25 integration page if missing/incomplete, then validates it.
+`--readme`, `--docs-index`, and `--top10` select the discoverability and strategy inputs that feed the Day 25 activation score.
 
-`--emit-pack-dir` writes a Day 25 pack containing summary JSON, activation scorecard markdown, roadmap-vote discussion template, feedback triage board, and validation commands.
+`--write-defaults` writes or repairs the default Day 25 integration page before validation.
 
-`--execute` runs the Day 25 command chain and emits an execution summary for closeout evidence.
+`--emit-pack-dir` writes a community activation pack bundle containing summary JSON, activation scorecard markdown, roadmap-vote discussion template, feedback triage board, and validation commands.
 
-`--strict` returns non-zero if Day 25 required docs sections/commands are missing, critical checks fail, or activation score falls below `--min-score`.
+`--execute` runs the Day 25 validation commands and writes execution logs into `--evidence-dir`.
+
+`--strict` returns non-zero when Day 25 required docs sections or commands are missing, critical strategy/evidence checks fail, the activation score falls below `--min-score`, or execute mode detects failed commands.
+
+See: day-25-ultra-upgrade-report.md (legacy history).
 
 ## external-contribution-push
 
-Builds Day 26 external-contribution readiness from docs contract completeness, discoverability links, and strategy alignment checks.
+Builds an external-contribution push report by combining README and docs index discoverability, Day 26 integration-page contract checks, and top-10 strategy alignment into one closeout view.
 
 Examples:
 
@@ -634,18 +642,43 @@ Examples:
 
 Useful flags: `--root`, `--readme`, `--docs-index`, `--top10`, `--write-defaults`, `--emit-pack-dir`, `--execute`, `--evidence-dir`, `--timeout-sec`, `--min-score`, `--strict`, `--format`.
 
+`--readme`, `--docs-index`, and `--top10` select the discoverability and strategy inputs that feed the Day 26 activation score.
+
+`--write-defaults` writes or repairs the default Day 26 integration page before validation.
+
+`--emit-pack-dir` writes an external contribution push pack bundle containing summary JSON, external contribution scorecard markdown, starter-task spotlight, external contribution triage board, and validation commands.
+
+`--execute` runs the Day 26 validation commands and writes execution logs into `--evidence-dir`.
+
+`--strict` returns non-zero when Day 26 required docs sections or commands are missing, critical strategy/evidence checks fail, the activation score falls below `--min-score`, or execute mode detects failed commands.
+
+See: day-26-ultra-upgrade-report.md (legacy history).
+
 ## kpi-audit
 
-Builds Day 27 KPI closeout readiness by validating docs contract, discoverability links, and baseline-vs-current KPI snapshots.
+Builds a KPI audit report by combining README and docs index discoverability, Day 27 integration-page contract checks, top-10 strategy alignment, and baseline-vs-current KPI snapshots into one closeout view.
 
 Examples:
 
 - `sdetkit kpi-audit --format text`
 - `sdetkit kpi-audit --format json --strict`
+- `sdetkit kpi-audit --write-defaults --format json --strict`
 - `sdetkit kpi-audit --emit-pack-dir docs/artifacts/day27-kpi-pack --format json --strict`
 - `sdetkit kpi-audit --execute --evidence-dir docs/artifacts/day27-kpi-pack/evidence --format json --strict`
 
 Useful flags: `--root`, `--readme`, `--docs-index`, `--top10`, `--baseline`, `--current`, `--write-defaults`, `--emit-pack-dir`, `--execute`, `--evidence-dir`, `--timeout-sec`, `--min-score`, `--strict`, `--format`.
+
+`--readme`, `--docs-index`, `--top10`, `--baseline`, and `--current` select the discoverability, strategy, and KPI snapshot inputs that feed the Day 27 audit score.
+
+`--write-defaults` writes or repairs the default Day 27 integration page before validation.
+
+`--emit-pack-dir` writes a KPI audit pack bundle containing summary JSON, KPI scorecard markdown, KPI delta table markdown, corrective actions markdown, and validation commands.
+
+`--execute` runs the Day 27 validation commands and writes execution logs into `--evidence-dir`.
+
+`--strict` returns non-zero when Day 27 required docs sections or commands are missing, critical checks fail, KPI snapshots are invalid or unavailable, the activation score falls below `--min-score`, or execute mode detects failed commands.
+
+See: day-27-ultra-upgrade-report.md (legacy history).
 
 ## security
 
