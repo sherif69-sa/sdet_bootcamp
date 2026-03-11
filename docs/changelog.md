@@ -4,6 +4,7 @@ Track release-level updates, notable features, and operational changes in the pr
 
 - Repository changelog: [CHANGELOG.md](https://github.com/sherif69-sa/DevS69-sdetkit/blob/main/CHANGELOG.md)
 - Release guide: [Releasing](releasing.md)
+- Public release install verification records: [Release verification](release-verification.md)
 - Quality and release controls: [Production readiness](production-readiness.md)
 
 !!! tip "Recommended release flow"
