@@ -156,6 +156,8 @@ docker run --rm -v "$PWD:/work" -w /work sdetkit python -m sdetkit gate fast
 
 This repository is prepared for artifact build and release validation. Public PyPI publication depends on `PYPI_API_TOKEN` configuration and successful workflow execution; this README does not claim generally available PyPI distribution by default.
 
+For first-public-release and post-release external verification steps, follow `RELEASE.md` and `docs/releasing.md`.
+
 ## License
 
 Distributed under the Apache-2.0 license. See `LICENSE` and `ENTERPRISE_OFFERINGS.md`.
