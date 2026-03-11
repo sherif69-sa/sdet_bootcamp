@@ -84,9 +84,13 @@ nav:
   - Home: index.md
   - Start here (core path):
       - Install (quickstart): ready-to-use.md
+      - Blank repo to value in 60 seconds: blank-repo-to-value-60-seconds.md
       - Gate fast + gate release: release-confidence.md
       - Doctor checks: doctor.md
       - Evidence and reports: evidence-showcase.md
+      - Before/after evidence example: before-after-evidence-example.md
+      - SDETKit vs ad hoc scripts and separate tools: sdetkit-vs-ad-hoc.md
+      - Team rollout scenario: team-rollout-scenario.md
       - Decision guide: decision-guide.md
       - Choose your path: choose-your-path.md
   - Team adoption:

@@ -50,6 +50,13 @@ SDETKit gives engineering teams **deterministic release-confidence checks and ev
 - Evidence-backed outputs to support release approvals.
 - One core path that works locally first, then scales into CI.
 
+## Proof of value (start here)
+
+- **Blank repo to value in 60 seconds**: [Fast demo path](blank-repo-to-value-60-seconds.md)
+- **Concrete evidence transformation**: [Before/after evidence example](before-after-evidence-example.md)
+- **Comparison framing**: [SDETKit vs ad hoc scripts and separate tools](sdetkit-vs-ad-hoc.md)
+- **Team rollout view**: [Team rollout scenario](team-rollout-scenario.md)
+
 ## Continue after the core path
 
 Pick one lane based on your immediate need:
