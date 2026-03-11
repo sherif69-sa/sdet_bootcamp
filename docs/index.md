@@ -21,6 +21,7 @@ SDETKit is a release confidence toolkit for SDET, QA, and DevOps teams that need
 [Adopt in your repo](adoption.md){ .md-button }
 [Adoption examples](adoption-examples.md){ .md-button }
 [Adoption troubleshooting](adoption-troubleshooting.md){ .md-button }
+[First-failure triage](first-failure-triage.md){ .md-button }
 [See integrations](github-action.md){ .md-button }
 [See playbooks](global-production-transformation-playbook.md){ .md-button }
 [See examples](examples.md){ .md-button }

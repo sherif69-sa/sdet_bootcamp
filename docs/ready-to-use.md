@@ -95,4 +95,4 @@ That guide includes:
 - A staged path from `gate fast` to stricter release gating
 - Scenario-based rollout examples in [adoption-examples.md](adoption-examples.md)
 
-If quick or release checks fail in an external adoption flow, use the [remediation cookbook](remediation-cookbook.md) for copy-paste next steps.
+If quick or release checks fail, start with [First-failure triage](first-failure-triage.md), then use the [remediation cookbook](remediation-cookbook.md) for copy-paste next steps.
