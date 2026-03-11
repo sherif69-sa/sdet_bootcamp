@@ -126,25 +126,54 @@ python -m sdetkit playbooks
 
 ## Installation
 
-### Runtime install
+SDETKit currently supports two explicit install paths:
+
+- **From source (this repository)** for contributors/maintainers.
+- **From GitHub URL** for external adopters until PyPI publication is verified.
+
+### From source (local clone)
 
 ```bash
 python -m pip install .
 ```
 
-### Developer install (recommended)
+### From GitHub (external repository adoption)
+
+```bash
+python -m pip install "git+https://github.com/sherif69-sa/DevS69-sdetkit.git"
+```
+
+### Developer install (recommended in this repo)
 
 ```bash
 bash scripts/bootstrap.sh
 source .venv/bin/activate
 ```
 
-### Optional extras
+### Optional extras (choose only what you need)
+
+| Extra | Installs | Use when |
+|---|---|---|
+| `dev` | linting, typing, packaging helper tooling | You are contributing to this repository. |
+| `test` | pytest and test helpers | You need to run/extend tests. |
+| `docs` | mkdocs + theme | You need to build docs locally. |
+| `packaging` | build/twine/wheel validation tooling | You are validating release artifacts. |
+| `telegram` | telegram notifier dependency | You need Telegram notifier integration. |
+| `whatsapp` | Twilio notifier dependency | You need WhatsApp notifier integration. |
 
 ```bash
 python -m pip install .[dev]
 python -m pip install .[test]
+python -m pip install .[docs]
 python -m pip install .[packaging]
+python -m pip install .[telegram]
+python -m pip install .[whatsapp]
+```
+
+You can combine extras as needed, for example:
+
+```bash
+python -m pip install .[dev,test,docs]
 ```
 
 ## CI/CD integration

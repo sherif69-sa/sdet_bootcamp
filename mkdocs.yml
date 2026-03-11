@@ -149,6 +149,7 @@ nav:
       - Productization map: productization-map.md
       - Project structure: project-structure.md
       - Releasing sdetkit: releasing.md
+      - Packaging/install/release-readiness audit: packaging-readiness-audit.md
       - Public release verification records: release-verification.md
       - Changelog: changelog.md
       - Roadmap: roadmap.md
