@@ -17,14 +17,18 @@ def _yes_no(value: bool) -> str:
     return "Yes" if value else "No"
 
 
+def _public_surface_contract():
+    from sdetkit.public_surface_contract import PUBLIC_SURFACE_CONTRACT
+
+    return PUBLIC_SURFACE_CONTRACT
+
+
 def render_table() -> str:
     lines = [
         "| Command family | Purpose | Stability tier | First-time adopter default? | Transition-era / legacy-oriented? |",
         "|---|---|---|---|---|",
     ]
-    from sdetkit.public_surface_contract import PUBLIC_SURFACE_CONTRACT
-
-    for family in PUBLIC_SURFACE_CONTRACT:
+    for family in _public_surface_contract():
         lines.append(
             "| "
             f"`{family.name}`"
