@@ -70,6 +70,7 @@ Comparison and proof details: `docs/why-not-just-tools.md`
 - External repository adoption: `docs/adoption.md`
 - Troubleshooting first failures: `docs/adoption-troubleshooting.md`
 - Scenario-based proof examples: `docs/examples.md`
+- Product boundary audit and taxonomy plan: `docs/productization-map.md`
 
 Docs portal: <https://sherif69-sa.github.io/DevS69-sdetkit/>
 
