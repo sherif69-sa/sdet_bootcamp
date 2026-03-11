@@ -20,6 +20,8 @@ SDETKit is a release confidence toolkit for SDET, QA, and DevOps teams that need
 [Release confidence story](release-confidence.md){ .md-button }
 [Adopt in your repo](adoption.md){ .md-button }
 [Adoption troubleshooting](adoption-troubleshooting.md){ .md-button }
+[See integrations](github-action.md){ .md-button }
+[See playbooks](global-production-transformation-playbook.md){ .md-button }
 [See examples](examples.md){ .md-button }
 [See evidence commands](evidence.md){ .md-button }
 
@@ -27,7 +29,9 @@ SDETKit is a release confidence toolkit for SDET, QA, and DevOps teams that need
 
 </div>
 
-## Fast start
+<a id="fast-start"></a>
+
+## Start here: Stable/Core release-confidence path
 
 Run the flagship workflow:
 
@@ -52,7 +56,7 @@ bash scripts/ready_to_use.sh release
 
 You get deterministic pass/fail output and a clear go/no-go signal you can reuse in local and CI workflows.
 
-## Core path
+## Core path (recommended first-time sequence)
 
 Use this sequence to keep rollout focused:
 
@@ -69,11 +73,11 @@ python -m sdetkit security enforce --format json --max-error 0 --max-warn 0 --ma
 python -m sdetkit gate release
 ```
 
-## Who should start where
+## Where integrations and playbooks fit
 
-- **SDET / QA:** [Doctor](doctor.md) and [CLI](cli.md)
-- **DevOps / platform:** [Production readiness](production-readiness.md) and [Security gate](security-gate.md)
-- **Maintainers:** [Evidence](evidence.md) and [Releasing](releasing.md)
+- **Integrations (after core gates):** [GitHub Action](github-action.md), [Recommended CI flow](recommended-ci-flow.md), and [Adopt in your repository](adoption.md).
+- **Playbooks (guided rollout):** [Global production transformation playbook](global-production-transformation-playbook.md), [First contribution quickstart](first-contribution-quickstart.md), and [Release-confidence examples](examples.md).
+- **Reference depth:** [CLI](cli.md), [Command surface inventory](command-surface.md), and [Capability map](command-taxonomy.md).
 
 ## Stability levels
 
@@ -86,22 +90,19 @@ SDETKit documents command and workflow maturity with four levels: **Stable/Core*
 
 Read the policy: [stability-levels.md](stability-levels.md)
 
-## Next steps
+## Next steps (ordered by default path)
 
 - [Decision guide: is SDETKit right for you?](decision-guide.md)
 - [Ready-to-use quickstart](ready-to-use.md)
+- [Release confidence model and lanes](release-confidence.md)
 - [Adopt in your repository](adoption.md)
 - [Recommended CI flow (baseline)](recommended-ci-flow.md)
-- [Example adoption flow](example-adoption-flow.md)
-- [Adoption troubleshooting](adoption-troubleshooting.md)
+- [Global production transformation playbook](global-production-transformation-playbook.md)
 - [Release-confidence examples](examples.md)
-- [Why not just separate tools? (system value)](why-not-just-tools.md)
-- [Repo tour](repo-tour.md)
-- [First contribution quickstart](first-contribution-quickstart.md)
-- [Contributing](contributing.md)
 - [Full command reference](cli.md)
-- [Capability map and command taxonomy](command-taxonomy.md)
 - [Command surface inventory (stability-aware)](command-surface.md)
+- [Capability map and command taxonomy](command-taxonomy.md)
+- [Transition-era historical reports (secondary)](#legacy-reports)
 
 <div class="quick-jump" markdown>
 
@@ -116,10 +117,10 @@ Read the policy: [stability-levels.md](stability-levels.md)
 - [🩺 Doctor checks](doctor.md)
 - [🤝 Contribute](contributing.md)
 - [🧭 Repo tour](repo-tour.md)
-- [📦 Legacy reports](#legacy-reports)
+- [📦 Transition-era reports (secondary)](#legacy-reports)
 
 </div>
 
 ## Legacy reports
 
-Historical day-by-day upgrade reports remain available as transition-era context for audit trails and prior initiatives.
+Historical day-by-day upgrade reports remain available as transition-era context for audit trails and prior initiatives. They are intentionally secondary to the Stable/Core release-confidence journey.

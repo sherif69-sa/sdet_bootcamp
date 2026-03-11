@@ -12,9 +12,9 @@ SDETKit is a layered **release-confidence and engineering-operations toolkit**. 
 
 Most repositories accumulate separate scripts and tools, but the release decision still depends on manual interpretation. SDETKit provides a consistent command path from quick confidence to strict release gating, with machine-readable evidence and CI-safe outcomes.
 
-## Start here
+## Start here: core release-confidence path
 
-Choose the path that matches where you are now:
+If you're new to SDETKit, start with the **Stable/Core** shipping-readiness path first:
 
 ### 0) Decide if SDETKit is a fit
 
@@ -40,12 +40,21 @@ bash scripts/ready_to_use.sh release
 - Use before release decisions.
 - Overview: `docs/release-confidence.md`
 
-### 3) Understand the broader system and command surface
+### 3) Expand deliberately after core gates are working
 
+- Command-family contract and starting defaults: `docs/command-surface.md`
+- Capability map and command taxonomy: `docs/command-taxonomy.md`
+- Full CLI command reference: `docs/cli.md`
 - Representative adopter walkthrough: `docs/example-adoption-flow.md`
-- Full command map: `docs/command-taxonomy.md`
-- Stability-aware command inventory: `docs/command-surface.md`
-- CLI command reference: `docs/cli.md`
+
+## Recommended expansion order
+
+Keep first-time rollout focused to avoid identity drift:
+
+1. **Stable/Core:** run `quick` then `release` and confirm deterministic go/no-go output.
+2. **Integrations:** wire core checks into CI/platform flows after local confidence is established.
+3. **Playbooks:** add guided rollout/adoption lanes for team operating rhythms.
+4. **Experimental (transition-era):** use day/closeout material only when intentionally needed.
 
 ## Who this is for
 
@@ -73,6 +82,10 @@ Comparison and proof details: `docs/why-not-just-tools.md`
 - Scenario-based proof examples: `docs/examples.md`
 - Stability levels (current policy): `docs/stability-levels.md`
 - Product boundary audit and taxonomy plan: `docs/productization-map.md`
+
+### Secondary and transition-era material
+
+Historical day/closeout pages remain available for compatibility, audit trails, and specialized programs. They are intentionally **not** the primary onboarding path for first-time adopters.
 
 Docs portal: <https://sherif69-sa.github.io/DevS69-sdetkit/>
 

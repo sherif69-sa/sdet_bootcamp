@@ -1,6 +1,6 @@
 # CLI
 
-## Start with these core release-confidence commands
+## Start here: Stable/Core command path
 
 Need a fast model of where commands belong before diving into the full list? See [Capability map and command taxonomy](command-taxonomy.md).
 For a stability-aware entrypoint and command inventory, see [command-surface.md](command-surface.md).
@@ -16,6 +16,15 @@ Related script wrappers:
 - `bash scripts/ready_to_use.sh quick`
 - `bash scripts/ready_to_use.sh release`
 - `sdetkit security enforce --format json --max-error 0 --max-warn 0 --max-info 0`
+
+
+## Recommended expansion after core
+
+After the core gates are reliable in your environment:
+
+1. Add **Integrations** for CI/platform embedding (for example `ci`, `ops`, `notify`, `agent`).
+2. Add **Playbooks** for guided rollout using `sdetkit playbooks`.
+3. Use transition-era `dayNN-*` / `*-closeout` lanes only as explicit Experimental opt-in paths.
 
 ## Broader command catalog
 - `sdetkit baseline write`

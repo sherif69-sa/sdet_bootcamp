@@ -82,33 +82,41 @@ extra_javascript:
 
 nav:
   - Home: index.md
-  - Decision guide: decision-guide.md
-  - Quickstart: ready-to-use.md
-  - Release confidence: release-confidence.md
-  - Adopt in your repository: adoption.md
-  - Recommended CI flow (baseline): recommended-ci-flow.md
-  - Example adoption flow: example-adoption-flow.md
-  - Evidence showcase: evidence-showcase.md
-  - Adoption troubleshooting: adoption-troubleshooting.md
-  - Remediation cookbook: remediation-cookbook.md
-  - Examples: examples.md
-  - Foundation:
-      - AgentOS cookbook: agentos-cookbook.md
-      - AgentOS foundation: agentos-foundation.md
+  - Start here:
+      - Decision guide: decision-guide.md
+      - Quickstart: ready-to-use.md
+      - Release confidence: release-confidence.md
+      - CLI (core-first entrypoint): cli.md
+      - Command surface inventory (stability-aware): command-surface.md
+      - Capability map and command taxonomy: command-taxonomy.md
+      - Stability levels (current policy): stability-levels.md
+  - Core release-confidence journeys:
+      - Adopt in your repository: adoption.md
+      - Recommended CI flow (baseline): recommended-ci-flow.md
+      - Example adoption flow: example-adoption-flow.md
+      - Adoption troubleshooting: adoption-troubleshooting.md
+      - Remediation cookbook: remediation-cookbook.md
+      - Evidence showcase: evidence-showcase.md
+      - Examples: examples.md
+  - Integrations (after core path):
+      - "GitHub Action: sdetkit repo audit": github-action.md
+      - IDE + pre-commit integration: ide-and-precommit.md
+      - n8n Integration (PR Webhook Automation): n8n.md
+      - Omnichannel + MCP bridge: omnichannel-mcp-bridge.md
+      - Plugins: plugins.md
+      - Plugins, rule packs, and fix-audit: plugins-and-fix.md
+      - PR automation for audit auto-fixes: pr-automation.md
+  - Playbooks (guided rollout):
+      - Global production transformation playbook: global-production-transformation-playbook.md
+      - First contribution quickstart: first-contribution-quickstart.md
+      - Starter work inventory: starter-work-inventory.md
+      - Maintainer starter-issue hygiene: maintainer-starter-issue-hygiene.md
+      - Contributing: contributing.md
+  - Reference and operations:
       - API: api.md
       - Automation OS: automation-os.md
       - Automation templates engine: automation-templates-engine.md
       - CI Contract: ci-contract.md
-      - CLI: cli.md
-      - Command surface inventory (stability-aware): command-surface.md
-      - Capability map and command taxonomy: command-taxonomy.md
-  - Stability levels (current policy): stability-levels.md
-  - Live Views:
-      - 🕹️ DevS69 Command HUD — Live Detail View: command-hud-live.md
-      - 🔄 DevS69 Diff-to-Decision — Live Detail View: diff-flow-live.md
-      - 🗺️ DevS69 Repo Map — Live Detail View: repo-map-live.md
-      - DevS69 Visual HUD Showcase: hud-showcase.md
-  - Core Operations:
       - Doctor: doctor.md
       - Evidence Pack: evidence.md
       - Ops Control Plane: ops.md
@@ -119,7 +127,6 @@ nav:
       - Repo init: repo-init.md
       - Tool server: tool-server.md
       - sqlite-utils empty-column troubleshooting: sqlite-utils-empty-column-troubleshooting.md
-  - Security & Quality:
       - Determinism checklist: determinism-checklist.md
       - Determinism contract: determinism-contract.md
       - Policy and baselines (sdetkit repo audit): policy-and-baselines.md
@@ -131,38 +138,36 @@ nav:
       - Security suite (Phase 10): security-suite.md
       - Security hardening: security.md
       - Security code scanning follow-ups: security-code-scanning-followups.md
-  - Platform & Governance:
+  - Platform & governance:
+      - AgentOS cookbook: agentos-cookbook.md
+      - AgentOS foundation: agentos-foundation.md
       - AgentOS productization blueprint: enterprise-productization-blueprint.md
-      - First contribution quickstart: first-contribution-quickstart.md
-      - Starter work inventory: starter-work-inventory.md
-      - Maintainer starter-issue hygiene: maintainer-starter-issue-hygiene.md
-      - Contributing: contributing.md
       - Design notes: design.md
       - Governance and org packs: governance-and-org-packs.md
       - License: license.md
       - Monorepo + multi-project support: monorepo-projects.md
+      - Productization map: productization-map.md
       - Project structure: project-structure.md
       - Releasing sdetkit: releasing.md
       - Public release verification records: release-verification.md
       - Changelog: changelog.md
       - Roadmap: roadmap.md
       - Repo tour (visual orientation): repo-tour.md
-  - Ecosystem & Integrations:
-      - "GitHub Action: sdetkit repo audit": github-action.md
-      - IDE + pre-commit integration: ide-and-precommit.md
-      - n8n Integration (PR Webhook Automation): n8n.md
-      - Omnichannel + MCP bridge: omnichannel-mcp-bridge.md
-      - Plugins: plugins.md
-      - Plugins, rule packs, and fix-audit: plugins-and-fix.md
-      - PR automation for audit auto-fixes: pr-automation.md
   - Strategy:
       - Why not just separate tools? (system value): why-not-just-tools.md
       - Product strategy (release confidence): product-strategy.md
-      - Global production transformation playbook: global-production-transformation-playbook.md
       - Enterprise + regulated workflow: use-cases-enterprise-regulated.md
       - Startup + small-team workflow: use-cases-startup-small-team.md
       - Production S-class tier blueprint for the next 90-day boost: production-s-class-90-day-boost.md
       - Top-10 GitHub Strategy for DevS69 sdetkit: top-10-github-strategy.md
+  - Live Views:
+      - 🕹️ DevS69 Command HUD — Live Detail View: command-hud-live.md
+      - 🔄 DevS69 Diff-to-Decision — Live Detail View: diff-flow-live.md
+      - 🗺️ DevS69 Repo Map — Live Detail View: repo-map-live.md
+      - DevS69 Visual HUD Showcase: hud-showcase.md
+  - Transition-era and historical archive (secondary):
+      - Stability policy for Experimental lanes: stability-levels.md
+      - Productization boundary map: productization-map.md
 
 exclude_docs: |
   artifacts/**
