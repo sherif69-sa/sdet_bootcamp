@@ -62,6 +62,19 @@ Publishing is handled by GitHub Actions in `.github/workflows/release.yml`.
 - If no token is configured, packaging checks still run and release artifacts are generated.
 
 
+## Record public verification evidence
+
+After completing external-user verification for a real release, add a short record to `docs/release-verification.md` using the page template.
+
+Keep entries factual and minimal:
+- exact released version
+- exact install and validation commands run
+- verifier environment (OS, Python, pip)
+- success signals + links (PyPI version page and GitHub Release)
+- support path if users cannot install
+
+Do not add a verification entry unless the release was actually published and validated externally.
+
 ## Optional TestPyPI rehearsal
 
 Before first real publish, maintainers can rehearse upload/install manually:

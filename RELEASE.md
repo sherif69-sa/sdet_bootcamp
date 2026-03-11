@@ -97,6 +97,19 @@ Also confirm:
 
 Only after all checks pass is it safe to claim public availability.
 
+## Record public verification evidence
+
+After completing external-user verification for a real release, add a short record to `docs/release-verification.md` using the page template.
+
+Keep entries factual and minimal:
+- exact released version
+- exact install and validation commands run
+- verifier environment (OS, Python, pip)
+- success signals + links (PyPI version page and GitHub Release)
+- support path if users cannot install
+
+Do not add a verification entry unless the release was actually published and validated externally.
+
 ## Optional risk-reduction rehearsal (TestPyPI)
 
 If maintainers want a dry run before the first real publish, run from local `dist/*` against TestPyPI manually with a separate token:
