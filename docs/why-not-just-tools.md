@@ -6,7 +6,7 @@ At its best, SDETKit gives teams a repeatable operator journey from local checks
 
 ## 1) What SDETKit actually is
 
-SDETKit includes a flagship release-confidence path (`ready_to_use`, `gate`, `security enforce`) and a broad command surface that also covers diagnostics, docs quality, onboarding, evidence workflows, operational reporting, and adoption helpers. See the command guide for examples spanning `doctor`, `repo`, `security`, `ops`, `report`, and more. 
+SDETKit includes a flagship release-confidence path (`ready_to_use`, `gate`, `security enforce`) and a broad command surface that also covers diagnostics, docs quality, onboarding, evidence workflows, operational reporting, and adoption helpers. See the command guide for examples spanning `doctor`, `repo`, `security`, `ops`, `report`, and more.
 
 In practice, this is a **toolkit with layers**:
 

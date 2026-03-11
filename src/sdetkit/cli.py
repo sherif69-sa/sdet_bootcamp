@@ -185,9 +185,6 @@ def _resolve_non_day_playbook_alias(cmd: str) -> str:
     return cmd
 
 
-
-
-
 def _add_passthrough_subcommand(
     sub,
     name: str,
@@ -278,15 +275,21 @@ Run: sdetkit playbooks
     ag = sub.add_parser("apiget", help="Deterministic HTTP JSON fetch and replay helper")
     _add_apiget_args(ag)
 
-    _add_passthrough_subcommand(sub, "doctor", help_text="Deterministic repo and release-readiness checks")
+    _add_passthrough_subcommand(
+        sub, "doctor", help_text="Deterministic repo and release-readiness checks"
+    )
 
-    _add_passthrough_subcommand(sub, "gate", help_text="Quick confidence and strict release gate checks")
+    _add_passthrough_subcommand(
+        sub, "gate", help_text="Quick confidence and strict release gate checks"
+    )
 
     _add_passthrough_subcommand(sub, "ci", help_text="CI template and pipeline validation")
 
     _add_passthrough_subcommand(sub, "patch", help_text="Apply controlled file/text patches")
 
-    _add_passthrough_subcommand(sub, "cassette-get", help_text="Record/replay HTTP captures for deterministic checks")
+    _add_passthrough_subcommand(
+        sub, "cassette-get", help_text="Record/replay HTTP captures for deterministic checks"
+    )
 
     _add_passthrough_subcommand(sub, "repo", help_text="Repository automation tasks")
 
@@ -325,7 +328,9 @@ Run: sdetkit playbooks
     cau = sub.add_parser("community-activation", help="Community activation rollout playbook")
     cau.add_argument("args", nargs=argparse.REMAINDER)
 
-    ecp = sub.add_parser("external-contribution-push", help="External contribution rollout playbook")
+    ecp = sub.add_parser(
+        "external-contribution-push", help="External contribution rollout playbook"
+    )
     ecp.add_argument("args", nargs=argparse.REMAINDER)
 
     kpa = sub.add_parser("kpi-audit", help="KPI audit and tracking playbook")
@@ -696,6 +701,7 @@ Run: sdetkit playbooks
     tsu = sub.add_parser("trust-signal-upgrade")
     tsu.add_argument("args", nargs=argparse.REMAINDER)
     return p, sub
+
 
 def main(argv: Sequence[str] | None = None) -> int:
     import sys
