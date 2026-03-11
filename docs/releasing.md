@@ -27,7 +27,21 @@ Current baseline release: **v1.0.2**.
 4. Commit changes and open/merge a PR.
 5. Create and push a signed tag: `vX.Y.Z`.
 6. Confirm GitHub Actions release workflow succeeded.
-7. Confirm artifacts were published to PyPI.
+7. Confirm artifacts were published to PyPI (workflow step must be successful, not skipped).
+8. Run external-user verification in a clean virtual environment:
+
+   ```bash
+   python -m venv .venv-release-verify
+   . .venv-release-verify/bin/activate
+   python -m pip install -U pip
+   python -m pip install sdetkit==X.Y.Z
+   python -m sdetkit --help
+   python -m pip show sdetkit
+   ```
+
+9. Confirm index/release pages:
+   - `https://pypi.org/project/sdetkit/X.Y.Z/` is reachable.
+   - GitHub Release for `vX.Y.Z` includes dist artifacts.
 
 ## CI release safeguards
 
@@ -46,3 +60,16 @@ Publishing is handled by GitHub Actions in `.github/workflows/release.yml`.
 - On tag push `v*.*.*`, artifacts are built and uploaded.
 - Upload uses the configured `PYPI_API_TOKEN` secret.
 - If no token is configured, packaging checks still run and release artifacts are generated.
+
+
+## Optional TestPyPI rehearsal
+
+Before first real publish, maintainers can rehearse upload/install manually:
+
+```bash
+python -m build
+python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple sdetkit==X.Y.Z
+```
+
+This is optional and not wired to the default release workflow.

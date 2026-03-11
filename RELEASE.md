@@ -32,14 +32,22 @@ Release tags must be `vX.Y.Z` and must match the package version. `CHANGELOG.md`
    ```
 
    This runs release metadata validation, `doctor --release --skip clean_tree`, artifact build validation, and wheel smoke install.
-3. Create and push the tag:
+3. Generate post-release verification plan and confirm package install string before tagging:
+
+   ```bash
+   make release-verify-plan
+   python scripts/release_verify_post_publish.py --assert-install-string
+   ```
+
+   This validates the canonical external install target (`pip install sdetkit==<version>`) and prints a deterministic verification plan maintainers can execute after publish.
+4. Create and push the tag:
 
    ```bash
    git tag vX.Y.Z
    git push origin vX.Y.Z
    ```
-4. Watch `.github/workflows/release.yml` complete.
-5. Verify outcomes:
+5. Watch `.github/workflows/release.yml` complete.
+6. Verify outcomes:
    - GitHub Release exists and includes `dist/*` artifacts.
    - PyPI upload occurred only if `PYPI_API_TOKEN` secret is configured.
    - Dependency/security workflows are green for the same commit/tag.
@@ -63,3 +71,39 @@ Do not claim public PyPI availability until:
 - the release workflow succeeded,
 - the PyPI upload step ran (not skipped), and
 - install from PyPI is verified externally.
+
+## Post-release verification (external-user perspective)
+
+Run these in a clean shell after the release workflow shows a successful PyPI upload:
+
+```bash
+python -m venv .venv-release-verify
+. .venv-release-verify/bin/activate
+python -m pip install -U pip
+python -m pip install sdetkit==X.Y.Z
+python -m sdetkit --help
+python -m pip show sdetkit
+```
+
+Success means:
+- `pip install` resolves from default PyPI index without private index overrides.
+- `python -m sdetkit --help` exits 0 and prints CLI usage.
+- `pip show sdetkit` reports the expected version (`X.Y.Z`).
+
+Also confirm:
+- GitHub Release page for `vX.Y.Z` is present with generated notes and `dist/*` artifacts.
+- PyPI project/version page exists and files include wheel + source tarball.
+- The release workflow job includes a successful **Publish to PyPI** step (not skipped).
+
+Only after all checks pass is it safe to claim public availability.
+
+## Optional risk-reduction rehearsal (TestPyPI)
+
+If maintainers want a dry run before the first real publish, run from local `dist/*` against TestPyPI manually with a separate token:
+
+```bash
+python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple sdetkit==X.Y.Z
+```
+
+This repository does not auto-publish to TestPyPI in CI; this path is an optional rehearsal only.
