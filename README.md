@@ -53,6 +53,8 @@ Ready-to-use guide: `docs/ready-to-use.md`
 
 ## Adopt in your own repository (external integration)
 
+Focused remediation playbooks: `docs/remediation-cookbook.md`
+
 If you want to use SDETKit in a different repository, use the adopter-focused guide:
 
 - `docs/adoption.md`

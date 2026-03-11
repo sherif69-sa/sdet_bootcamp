@@ -85,6 +85,7 @@ nav:
   - Quickstart: ready-to-use.md
   - Adopt in your repository: adoption.md
   - Adoption troubleshooting: adoption-troubleshooting.md
+  - Remediation cookbook: remediation-cookbook.md
   - Examples: examples.md
   - Foundation:
       - AgentOS cookbook: agentos-cookbook.md
