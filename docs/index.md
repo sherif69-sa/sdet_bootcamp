@@ -34,7 +34,7 @@ Build, validate, and release software with confidence using a polished SDET + De
 
 <div class="quick-jump" markdown>
 
-[⚡ Fast start](#fast-start) · [🔒 Phase 3 Wrap Publication Closeout](integrations-phase3-wrap-publication-closeout.md) · [🔁 Continuous Upgrade Closeout](integrations-continuous-upgrade-closeout.md) · [🔁 Continuous Upgrade Cycle 2 Closeout](integrations-continuous-upgrade-cycle2-closeout.md) · [🔁 Continuous Upgrade Cycle 3 Closeout](integrations-continuous-upgrade-cycle3-closeout.md) · [🔁 Continuous Upgrade Cycle 4 Closeout](integrations-continuous-upgrade-cycle4-closeout.md) · [🔁 Continuous Upgrade Cycle 5 Closeout](integrations-continuous-upgrade-cycle5-closeout.md) · [🔁 Continuous Upgrade Cycle 7 Closeout](integrations-continuous-upgrade-cycle7-closeout.md) · [🧭 Repo tour](repo-tour.md) · [📈 Top-10 strategy](top-10-github-strategy.md) · [🤖 AgentOS](agentos-foundation.md) · [🍳 Cookbook](agentos-cookbook.md) · [🛠 CLI commands](cli.md) · [🩺 Doctor checks](doctor.md) · [🤝 Contribute](contributing.md) · [📦 Legacy reports](#legacy-reports)
+[⚡ Fast start](#fast-start) · [🧭 Repo tour](repo-tour.md) · [📈 Top-10 strategy](top-10-github-strategy.md) · [🤖 AgentOS](agentos-foundation.md) · [🍳 Cookbook](agentos-cookbook.md) · [🛠 CLI commands](cli.md) · [🩺 Doctor checks](doctor.md) · [🤝 Contribute](contributing.md) · [📦 Legacy reports](#legacy-reports)
 
 </div>
 
@@ -44,15 +44,15 @@ Build, validate, and release software with confidence using a polished SDET + De
 
 Historical day reports remain available for audit/history traceability:
 
-- [Day 90 report](day-90-big-upgrade-report.md)
-- [Day 91 report](day-91-big-upgrade-report.md)
-- [Day 92 report](day-92-big-upgrade-report.md)
-- [Day 93 report](day-93-big-upgrade-report.md)
-- [Day 94 report](day-94-big-upgrade-report.md)
-- [Day 95 report](day-95-big-upgrade-report.md)
-- [Day 97 report](day-97-big-upgrade-report.md)
-- [Day 10 ultra report](day-10-ultra-upgrade-report.md)
-- [Day 11 ultra report](day-11-ultra-upgrade-report.md)
+- Day 90 report (stored under excluded historical artifacts)
+- Day 91 report (stored under excluded historical artifacts)
+- Day 92 report (stored under excluded historical artifacts)
+- Day 93 report (stored under excluded historical artifacts)
+- Day 94 report (stored under excluded historical artifacts)
+- Day 95 report (stored under excluded historical artifacts)
+- Day 97 report (stored under excluded historical artifacts)
+- Day 10 ultra report (stored under excluded historical artifacts)
+- Day 11 ultra report (stored under excluded historical artifacts)
 
 ### Top journeys
 

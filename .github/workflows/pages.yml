@@ -35,7 +35,7 @@ jobs:
       - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b  # v5
 
       - name: Build mkdocs site
-        run: python -m mkdocs build --strict
+        run: NO_MKDOCS_2_WARNING=1 python -m mkdocs build --strict
 
       - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b  # v4
         with:
