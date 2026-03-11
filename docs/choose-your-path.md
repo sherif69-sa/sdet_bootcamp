@@ -24,10 +24,11 @@ Use this page to pick the safest rollout path after the core story is clear: **d
 2. Move to **Path B** when recurring failures and uneven discipline appear.
 3. Apply **Path C** when release approvals need strict, auditable confidence.
 
-## Next reading
+## Curated lanes after path selection
 
-- [Decision guide (fit assessment)](decision-guide.md)
-- [Ready-to-use setup](ready-to-use.md)
-- [Adopt SDETKit in your repository](adoption.md)
-- [Recommended CI flow](recommended-ci-flow.md)
-- [Evidence showcase](evidence-showcase.md)
+- **Beginner lane**: [Ready-to-use setup](ready-to-use.md), [Release confidence](release-confidence.md), [Doctor](doctor.md)
+- **Team adoption lane**: [Adopt SDETKit in your repository](adoption.md), [Example adoption flow](example-adoption-flow.md)
+- **CI lane**: [Recommended CI flow](recommended-ci-flow.md), [CI contract](ci-contract.md), [CI artifact walkthrough](ci-artifact-walkthrough.md)
+- **Advanced/extensions lane**: [CLI reference](cli.md), [API](api.md), [Plugins](plugins.md), [Tool server](tool-server.md)
+
+Need historical context or transition-era chronology? Use [Archive and history](archive/index.md) instead of starting with day-by-day or closeout docs.

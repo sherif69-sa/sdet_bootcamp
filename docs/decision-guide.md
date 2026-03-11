@@ -55,3 +55,15 @@ Stop after the lightweight path if:
 - and current evidence outputs satisfy release reviewers.
 
 Then keep using the core commands and return to broader docs only when integration or scale needs increase.
+
+
+## 6) Route into a curated lane
+
+After confirming fit, choose exactly one lane to avoid doc sprawl:
+
+- **Beginner/core lane**: [Ready-to-use quickstart](ready-to-use.md) → [Release confidence](release-confidence.md) → [Doctor](doctor.md)
+- **Team adoption lane**: [Adoption](adoption.md) → [Example adoption flow](example-adoption-flow.md)
+- **CI lane**: [Recommended CI flow](recommended-ci-flow.md) → [CI contract](ci-contract.md)
+- **Advanced/extensions lane**: [CLI reference](cli.md), [API](api.md), [Plugins](plugins.md), [Tool server](tool-server.md)
+
+Historical transition-era documents remain available in [Archive and history](archive/index.md) and are intentionally out of the first-time path.

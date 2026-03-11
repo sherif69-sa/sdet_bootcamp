@@ -82,22 +82,33 @@ extra_javascript:
 
 nav:
   - Home: index.md
-  - Core path:
+  - Start here (core path):
       - Install (quickstart): ready-to-use.md
       - Gate fast + gate release: release-confidence.md
       - Doctor checks: doctor.md
       - Evidence and reports: evidence-showcase.md
       - Decision guide: decision-guide.md
       - Choose your path: choose-your-path.md
-  - Adopt and scale:
+  - Team adoption:
       - Adopt in your repository: adoption.md
-      - Recommended CI flow (baseline): recommended-ci-flow.md
       - Example adoption flow: example-adoption-flow.md
       - Adoption examples: adoption-examples.md
       - Adoption troubleshooting: adoption-troubleshooting.md
+      - First contribution quickstart: first-contribution-quickstart.md
+      - Contributing: contributing.md
+      - Starter work inventory: starter-work-inventory.md
+      - Maintainer starter-issue hygiene: maintainer-starter-issue-hygiene.md
+  - CI and automation:
+      - Recommended CI flow (baseline): recommended-ci-flow.md
+      - CI contract: ci-contract.md
+      - CI artifact walkthrough: ci-artifact-walkthrough.md
+      - "GitHub Action: sdetkit repo audit": github-action.md
+      - PR automation for audit auto-fixes: pr-automation.md
+      - n8n integration (PR webhook automation): n8n.md
+      - Reporting and trends: reporting-and-trends.md
       - Sample outputs (first-run evidence): sample-outputs.md
       - Remediation cookbook: remediation-cookbook.md
-  - Command and reference:
+  - Advanced and reference:
       - CLI reference: cli.md
       - Command surface inventory: command-surface.md
       - Capability map and command taxonomy: command-taxonomy.md
@@ -114,20 +125,12 @@ nav:
       - Reporting and trends: reporting-and-trends.md
       - Ops Control Plane: ops.md
       - Tool server: tool-server.md
-  - Integrations and playbooks (discover later):
-      - "GitHub Action: sdetkit repo audit": github-action.md
       - IDE + pre-commit integration: ide-and-precommit.md
       - n8n Integration (PR Webhook Automation): n8n.md
       - Omnichannel + MCP bridge: omnichannel-mcp-bridge.md
       - Plugins: plugins.md
       - Plugins, rule packs, and fix-audit: plugins-and-fix.md
-      - PR automation for audit auto-fixes: pr-automation.md
       - Global production transformation playbook: global-production-transformation-playbook.md
-      - First contribution quickstart: first-contribution-quickstart.md
-      - Starter work inventory: starter-work-inventory.md
-      - Maintainer starter-issue hygiene: maintainer-starter-issue-hygiene.md
-      - Contributing: contributing.md
-  - Strategy and governance:
       - Why not just separate tools? (system value): why-not-just-tools.md
       - Product strategy (release confidence): product-strategy.md
       - Stability levels (current policy): stability-levels.md
@@ -143,14 +146,14 @@ nav:
       - Changelog: changelog.md
       - Roadmap: roadmap.md
       - License: license.md
-  - Live Views:
+  - Advanced live views:
       - 🕹️ DevS69 Command HUD — Live Detail View: command-hud-live.md
       - 🔄 DevS69 Diff-to-Decision — Live Detail View: diff-flow-live.md
       - 🗺️ DevS69 Repo Map — Live Detail View: repo-map-live.md
       - DevS69 Visual HUD Showcase: hud-showcase.md
-  - Transition-era and historical archive (secondary):
-      - Stability policy for Experimental lanes: stability-levels.md
-      - Productization boundary map: productization-map.md
+  - Archive and history:
+      - Archive overview: archive/index.md
+      - Transition-era material map: archive/transition-era-material.md
 
 exclude_docs: |
   artifacts/**
