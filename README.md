@@ -120,6 +120,7 @@ python -m pip install .[packaging]
 For teams adopting SDETKit in another repository, start with:
 
 - `docs/adoption.md` for copy-paste local and GitHub Actions workflows.
+- `docs/recommended-ci-flow.md` for the recommended baseline CI shape (PR fast feedback, stricter `main`, release-oriented checks).
 - First gate: `python -m sdetkit gate fast`
 - Stricter rollout: security budgets + `python -m sdetkit gate release`
 
