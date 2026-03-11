@@ -246,7 +246,7 @@ def build_day93_continuous_upgrade_cycle3_closeout_summary(root: Path) -> dict[s
             "evidence": "day-93-big-upgrade-report.md + integrations-continuous-upgrade-cycle3-closeout.md",
         },
         {
-            "check_id": "top10_day93_alignment",
+            "check_id": "top10_day93_align",
             "weight": 5,
             "passed": ("Day 92" in top10_text and "Day 93" in top10_text),
             "evidence": "Day 92 + Day 93 strategy chain",

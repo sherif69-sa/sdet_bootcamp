@@ -85,10 +85,10 @@ run_docs() {
     return 0
   fi
   if command -v mkdocs >/dev/null 2>&1; then
-    mkdocs build -s
+    NO_MKDOCS_2_WARNING=1 mkdocs build -s
     return 0
   fi
-  python3 -m mkdocs build -s
+  NO_MKDOCS_2_WARNING=1 python3 -m mkdocs build -s
 }
 
 case "$mode" in

@@ -106,6 +106,7 @@ nav:
       - Repo Audit: repo-audit.md
       - Repo init: repo-init.md
       - Tool server: tool-server.md
+      - sqlite-utils empty-column troubleshooting: sqlite-utils-empty-column-troubleshooting.md
   - Security & Quality:
       - Determinism checklist: determinism-checklist.md
       - Determinism contract: determinism-contract.md
