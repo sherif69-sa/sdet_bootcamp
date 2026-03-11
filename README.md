@@ -89,6 +89,7 @@ Comparison and proof details: `docs/why-not-just-tools.md`
 - Scenario-based proof examples: `docs/examples.md`
 - Stability levels (current policy): `docs/stability-levels.md`
 - Versioning and support posture (current policy): `docs/versioning-and-support.md`
+- Integrations and extension boundary (current policy): `docs/integrations-and-extension-boundary.md`
 - Product boundary audit and taxonomy plan: `docs/productization-map.md`
 
 ### Secondary and transition-era material
@@ -107,6 +108,8 @@ SDETKit uses four user-facing stability levels: **Stable/Core**, **Integrations*
 - Treat **Experimental** lanes (including day/closeout families) as opt-in transition-era or advanced flows.
 
 Policy docs: `docs/stability-levels.md`, `docs/versioning-and-support.md`
+
+Boundary guidance: `docs/integrations-and-extension-boundary.md`
 
 ## Core commands
 

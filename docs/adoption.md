@@ -10,6 +10,8 @@ Want to preview realistic command and artifact snippets first? See [Sample outpu
 
 Need help choosing rollout order first? Use the compact [Choose your path guide](choose-your-path.md).
 
+For current ecosystem boundaries (what stays core vs integration vs playbook vs experimental), see [integrations-and-extension-boundary.md](integrations-and-extension-boundary.md).
+
 ## What to install
 
 Until public package release is completed, install from GitHub:

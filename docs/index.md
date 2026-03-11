@@ -24,6 +24,7 @@ SDETKit is a release confidence toolkit for SDET, QA, and DevOps teams that need
 [Adoption troubleshooting](adoption-troubleshooting.md){ .md-button }
 [First-failure triage](first-failure-triage.md){ .md-button }
 [See integrations](github-action.md){ .md-button }
+[Extension boundary](integrations-and-extension-boundary.md){ .md-button }
 [See playbooks](global-production-transformation-playbook.md){ .md-button }
 [See examples](examples.md){ .md-button }
 [See evidence commands](evidence.md){ .md-button }
@@ -102,6 +103,8 @@ SDETKit documents command and workflow maturity with four levels: **Stable/Core*
 
 Read the policies: [stability-levels.md](stability-levels.md) and [versioning-and-support.md](versioning-and-support.md)
 
+Boundary guidance: [integrations-and-extension-boundary.md](integrations-and-extension-boundary.md)
+
 ## Next steps (ordered by default path)
 
 - [Decision guide: is SDETKit right for you?](decision-guide.md)
@@ -109,6 +112,7 @@ Read the policies: [stability-levels.md](stability-levels.md) and [versioning-an
 - [Ready-to-use quickstart](ready-to-use.md)
 - [Release confidence model and lanes](release-confidence.md)
 - [Versioning and support posture](versioning-and-support.md)
+- [Integrations and extension boundary](integrations-and-extension-boundary.md)
 - [Adopt in your repository](adoption.md)
 - [Recommended CI flow (baseline)](recommended-ci-flow.md)
 - [Global production transformation playbook](global-production-transformation-playbook.md)
