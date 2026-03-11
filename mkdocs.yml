@@ -83,7 +83,8 @@ extra_javascript:
 nav:
   - Home: index.md
   - Start here (core path):
-      - Install (quickstart): ready-to-use.md
+      - Install: install.md
+      - Install quickstart: ready-to-use.md
       - Blank repo to value in 60 seconds: blank-repo-to-value-60-seconds.md
       - Gate fast + gate release: release-confidence.md
       - Doctor checks: doctor.md

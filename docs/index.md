@@ -14,7 +14,7 @@ SDETKit gives engineering teams **deterministic release-confidence checks and ev
 
 <div class="hero-actions" markdown>
 
-[Install](ready-to-use.md){ .md-button .md-button--primary }
+[Install](install.md){ .md-button .md-button--primary }
 [Gate fast](release-confidence.md){ .md-button }
 [Gate release](release-confidence.md){ .md-button }
 [Doctor](doctor.md){ .md-button }
@@ -27,7 +27,7 @@ SDETKit gives engineering teams **deterministic release-confidence checks and ev
 ## Core path in 5 minutes
 
 1. **Install and verify**
-   - [Ready-to-use quickstart](ready-to-use.md)
+   - [Install guide](install.md)
 2. **Gate fast**
    ```bash
    python -m sdetkit gate fast
