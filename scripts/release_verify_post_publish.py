@@ -29,7 +29,7 @@ def _plan(name: str, version: str) -> dict[str, object]:
         "version": version,
         "verification": {
             "external_install": [
-                f"python -m venv .venv-release-verify && . .venv-release-verify/bin/activate",
+                "python -m venv .venv-release-verify && . .venv-release-verify/bin/activate",
                 "python -m pip install -U pip",
                 f"python -m pip install {name}=={version}",
                 "python -m sdetkit --help",
