@@ -51,3 +51,5 @@ That guide includes:
 - Installation from GitHub
 - Copy-paste GitHub Actions workflows
 - A staged path from `gate fast` to stricter release gating
+
+If quick or release checks fail in an external adoption flow, use the [remediation cookbook](remediation-cookbook.md) for copy-paste next steps.

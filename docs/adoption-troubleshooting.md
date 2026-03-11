@@ -16,6 +16,12 @@ The goal is to decide quickly:
 | `python -m sdetkit security enforce ...` | Enforce security finding budgets | Strict limits commonly fail until thresholds are tuned |
 | `python -m sdetkit gate release` | Stricter release go/no-go gate | Usually fails until `gate fast` and policy prerequisites are stable |
 
+## Copy-paste remediation playbooks
+
+If you already know what failed and just want the exact next commands, use:
+
+- [Remediation cookbook](remediation-cookbook.md)
+
 ## Troubleshooting matrix
 
 | What you see | Usually means | What to do next | Stay lightweight vs tighten later |
