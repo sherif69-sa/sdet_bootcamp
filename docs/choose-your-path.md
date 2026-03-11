@@ -32,4 +32,5 @@ These are the same existing, supported commands already used in adoption docs:
 - [Adoption examples](adoption-examples.md)
 - [Ready-to-use setup](ready-to-use.md)
 - [Recommended CI flow](recommended-ci-flow.md)
+- [Sample outputs (what first runs look like)](sample-outputs.md)
 - [Decision guide (fit assessment)](decision-guide.md)

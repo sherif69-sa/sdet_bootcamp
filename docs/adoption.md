@@ -4,6 +4,8 @@ This page is for teams using SDETKit **outside this repository**.
 
 It gives you a safe, copy-paste path from first run to stricter CI enforcement.
 
+Want to preview realistic command and artifact snippets first? See [Sample outputs](sample-outputs.md).
+
 Need help choosing rollout order first? Use the compact [Choose your path guide](choose-your-path.md).
 
 ## What to install
