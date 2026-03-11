@@ -10,6 +10,8 @@ It is intentionally small and derived from this repository's current CI/release 
 - `.github/workflows/release.yml`
 - `docs/adoption.md`
 
+For tier and scope boundaries, use [integrations-and-extension-boundary.md](integrations-and-extension-boundary.md).
+
 ## Recommended shape
 
 Use three stages:

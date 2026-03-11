@@ -76,9 +76,20 @@ Treat as evolving (validate before broad dependence):
 - Guided playbook narratives and transition-era/day closeout lanes.
 - Newer or explicitly experimental command families.
 
+## Maintainer operational note (release/changelog hygiene)
+
+When a change can affect compatibility expectations (command behavior, output shape, install path, or integration-facing interfaces), maintainers should make the impact explicit in release materials:
+
+1. Call out the affected stability tier (**Stable/Core**, **Integrations**, **Playbooks**, or **Experimental**).
+2. State whether the change is backward-compatible or transitionary.
+3. Keep `CHANGELOG.md` wording aligned with this page and [stability-levels.md](stability-levels.md).
+
+This keeps trust policy operational in everyday review and release decisions without adding heavy process overhead.
+
 ## Related references
 
 - [stability-levels.md](stability-levels.md)
+- [integrations-and-extension-boundary.md](integrations-and-extension-boundary.md)
 - [release-confidence.md](release-confidence.md)
 - [command-surface.md](command-surface.md)
 - [releasing.md](releasing.md)

@@ -53,4 +53,5 @@ See also:
 
 - [Productization map](productization-map.md)
 - [Versioning and support posture](versioning-and-support.md)
+- [Integrations and extension boundary](integrations-and-extension-boundary.md)
 - [Capability map and command taxonomy](command-taxonomy.md)

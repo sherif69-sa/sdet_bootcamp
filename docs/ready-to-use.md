@@ -86,6 +86,7 @@ Then explore broader commands if needed:
 - Explore command groups: `python -m sdetkit --help`
 - See playbooks: `python -m sdetkit playbooks`
 - Read release-confidence narrative: [release-confidence.md](release-confidence.md)
+- Understand ecosystem scope: [integrations-and-extension-boundary.md](integrations-and-extension-boundary.md)
 
 ## Using this in another repository
 
