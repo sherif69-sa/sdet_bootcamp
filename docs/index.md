@@ -52,11 +52,13 @@ SDETKit gives engineering teams **deterministic release-confidence checks and ev
 
 ## Continue after the core path
 
-- [Decision guide](decision-guide.md)
-- [Choose your path](choose-your-path.md)
-- [Adopt in your repository](adoption.md)
-- [Recommended CI flow](recommended-ci-flow.md)
+Pick one lane based on your immediate need:
 
-## Secondary and historical material
+- **Team adoption lane**: [Adopt in your repository](adoption.md)
+- **CI and automation lane**: [Recommended CI flow](recommended-ci-flow.md)
+- **Advanced/extensions lane**: [Advanced and reference](cli.md)
+- **Rollout routing help**: [Decision guide](decision-guide.md), [Choose your path](choose-your-path.md)
 
-Integrations, playbooks, taxonomy depth, and transition-era historical pages remain available in docs navigation for teams that need broader rollout patterns. They are intentionally discover-later, not first-run requirements.
+## Archive and historical context
+
+Historical transition-era and day-by-day closeout material is preserved in [Archive and history](archive/index.md). Start there only if you need legacy implementation context or chronology.
