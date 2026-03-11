@@ -53,3 +53,4 @@ For new users and adopters, use this sequence:
 - First-failure triage (compact): [first-failure-triage.md](first-failure-triage.md)
 - Expanded troubleshooting: [adoption-troubleshooting.md](adoption-troubleshooting.md)
 - Practical scenarios: [examples.md](examples.md)
+- Compact representative outputs: [sample-outputs.md](sample-outputs.md)

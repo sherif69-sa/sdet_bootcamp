@@ -99,3 +99,5 @@ That guide includes:
 - Scenario-based rollout examples in [adoption-examples.md](adoption-examples.md)
 
 If quick or release checks fail, start with [First-failure triage](first-failure-triage.md), then use the [remediation cookbook](remediation-cookbook.md) for copy-paste next steps.
+
+If you want compact, realistic output examples before your first run, see [Sample outputs](sample-outputs.md).
