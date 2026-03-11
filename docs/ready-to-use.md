@@ -1,4 +1,4 @@
-# Ready-to-use setup (start working in minutes)
+# Ready-to-use quickstart (after install)
 
 Use this guide when you want a practical start to release confidence without learning the entire repository first.
 
@@ -6,10 +6,11 @@ If you need a 30-second rollout self-selection first, use [Choose your path](cho
 
 ## Install SDETKit
 
-Choose the path that matches your context:
+Use the canonical install guide first: [install.md](install.md).
 
-- In this repository (local clone): `python -m pip install .`
-- In an external repository: `python -m pip install "git+https://github.com/sherif69-sa/DevS69-sdetkit.git"`
+Recommended for external users:
+
+- `python -m pip install "git+https://github.com/sherif69-sa/DevS69-sdetkit.git"`
 
 Optional extras (`dev`, `test`, `docs`, `packaging`, `telegram`, `whatsapp`) are not required for the core release-confidence path.
 
@@ -24,7 +25,7 @@ python -m sdetkit gate --help
 
 Expected result: both commands print help text and exit with code `0`.
 
-## Fast start (recommended, under 5 minutes)
+## Fast start (repository helper lane, optional)
 
 ```bash
 bash scripts/ready_to_use.sh quick
@@ -37,13 +38,13 @@ What this does:
 3. Runs the CI quick lane.
 4. Leaves you with a working repo and a clear next step.
 
-If you are in another repository (without this repo's helper scripts), use:
+For external repositories (without this repo's helper scripts), use this as the primary command:
 
 ```bash
 python -m sdetkit gate fast
 ```
 
-## Full release-confidence start
+## Full release-confidence start (repository helper lane, optional)
 
 ```bash
 bash scripts/ready_to_use.sh release
@@ -66,20 +67,23 @@ Use this when you need production-quality release evidence.
 
 1. Install SDETKit.
 2. Verify install with `python -m sdetkit --help`.
-3. Run quick confidence (`bash scripts/ready_to_use.sh quick` or `python -m sdetkit gate fast`).
-4. Run strict release checks (`bash scripts/ready_to_use.sh release` or security-enforce + `gate release`).
-5. Use [cli.md](cli.md) to discover core command families.
-6. Use [adoption.md](adoption.md) to roll the same path into CI.
-7. Pick a realistic rollout shape in [adoption-examples.md](adoption-examples.md).
-8. Use [choose-your-path.md](choose-your-path.md) when deciding rollout order across teams.
+3. Run quick confidence (`python -m sdetkit gate fast`).
+4. Run strict release checks (`python -m sdetkit gate release`).
+5. If you are working inside this repository, you can optionally use `scripts/ready_to_use.sh` wrappers.
+6. Use [cli.md](cli.md) to discover core command families.
+7. Use [adoption.md](adoption.md) to roll the same path into CI.
+8. Pick a realistic rollout shape in [adoption-examples.md](adoption-examples.md).
+9. Use [choose-your-path.md](choose-your-path.md) when deciding rollout order across teams.
 
 ## Next actions after setup
 
 Follow the core path:
 
-1. `bash scripts/ready_to_use.sh quick`
-2. `bash scripts/ready_to_use.sh release`
+1. `python -m sdetkit gate fast`
+2. `python -m sdetkit gate release`
 3. Adopt in another repository with [adoption.md](adoption.md)
+
+If you are inside this repository and prefer wrappers, you can run `bash scripts/ready_to_use.sh quick` and `bash scripts/ready_to_use.sh release`.
 
 Then explore broader commands if needed:
 

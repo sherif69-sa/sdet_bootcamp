@@ -27,6 +27,23 @@ Terminal demo GIF/video: **not yet checked in**.
 
 When available, place the asset at `docs/assets/sdetkit-terminal-demo.gif` and link/embed it here and in the docs home page.
 
+## Install in 10 seconds
+
+**Recommended (external users):**
+
+```bash
+python -m pip install "git+https://github.com/sherif69-sa/DevS69-sdetkit.git"
+python -m sdetkit --help
+```
+
+Why this is the canonical path today:
+
+- It works in any repository without cloning this repo first.
+- It does not depend on repo-local helper scripts.
+- PyPI install is not yet verified/publicly recorded for this project.
+
+Secondary install options are in [docs/install.md](docs/install.md) (`pipx`, `uv tool install`, local source install for contributors).
+
 ## Start here (core adoption path)
 
 For first-time adoption, focus on these five hero paths only:
@@ -44,7 +61,7 @@ For first-time adoption, focus on these five hero paths only:
 ### 1) Install and verify
 
 ```bash
-python -m pip install .
+python -m pip install "git+https://github.com/sherif69-sa/DevS69-sdetkit.git"
 python -m sdetkit --help
 ```
 
@@ -97,29 +114,17 @@ Docs portal: <https://sherif69-sa.github.io/DevS69-sdetkit/>
 
 ## Installation
 
-SDETKit currently supports two explicit install paths:
+See the canonical install guide: [docs/install.md](docs/install.md).
 
-- **From source (this repository)** for contributors/maintainers.
-- **From GitHub URL** for external adopters until PyPI publication is verified.
+Quick reference:
 
-### From source (local clone)
+- **Recommended for first-time users:**
 
-```bash
-python -m pip install .
-```
+  ```bash
+  python -m pip install "git+https://github.com/sherif69-sa/DevS69-sdetkit.git"
+  ```
 
-### From GitHub (external repository adoption)
-
-```bash
-python -m pip install "git+https://github.com/sherif69-sa/DevS69-sdetkit.git"
-```
-
-### Developer install (recommended in this repo)
-
-```bash
-bash scripts/bootstrap.sh
-source .venv/bin/activate
-```
+- **Alternatives:** `pipx`, `uv tool install`, or local source install (`python -m pip install .`) for contributors.
 
 ### Optional extras (choose only what you need)
 
@@ -158,13 +163,7 @@ python -m sdetkit gate --help
 
 Expected result: both commands print usage/help text and exit successfully.
 
-Then run the first real release-confidence signal:
-
-```bash
-bash scripts/ready_to_use.sh quick
-```
-
-If you installed SDETKit in another repository (without this repo's scripts), use:
+Then run the first real release-confidence signal in your own repository:
 
 ```bash
 python -m sdetkit gate fast
@@ -172,10 +171,10 @@ python -m sdetkit gate fast
 
 ## Recommended first 10 minutes
 
-1. Install SDETKit (local clone or GitHub URL).
+1. Install SDETKit (recommended: GitHub URL install).
 2. Verify CLI availability with `python -m sdetkit --help`.
-3. Run quick confidence: `bash scripts/ready_to_use.sh quick` (or `python -m sdetkit gate fast` in external repos).
-4. Run strict release checks: `bash scripts/ready_to_use.sh release`.
+3. Run quick confidence: `python -m sdetkit gate fast`.
+4. Run strict release checks: `python -m sdetkit gate release`.
 5. Review command families in `docs/cli.md` and staged rollout guidance in `docs/adoption.md`.
 
 What works without optional extras:

@@ -14,7 +14,9 @@ For current ecosystem boundaries (what stays core vs integration vs playbook vs 
 
 ## What to install
 
-Until public package release is completed, install from GitHub:
+For full install options (including `pipx` and `uv tool install`), see [Install SDETKit](install.md).
+
+Until public package release is completed, the recommended external install is from GitHub:
 
 ```bash
 python -m pip install "git+https://github.com/sherif69-sa/DevS69-sdetkit.git"
