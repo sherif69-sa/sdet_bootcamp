@@ -12,6 +12,21 @@ SDETKit gives engineering teams **deterministic release-confidence checks and ev
 
 Most teams can run tools; fewer teams can make a repeatable release decision. SDETKit defines a core command path that produces deterministic pass/fail outcomes plus evidence-backed outputs you can trust in local runs and CI.
 
+## Proof of value (concrete, fast, honest)
+
+New here? Start with proof pages grounded in real SDETKit commands and artifact shapes:
+
+- **Blank repo to value in 60 seconds**: `docs/blank-repo-to-value-60-seconds.md`
+- **Before/after evidence example**: `docs/before-after-evidence-example.md`
+- **SDETKit vs ad hoc scripts and separate tools**: `docs/sdetkit-vs-ad-hoc.md`
+- **Team rollout scenario**: `docs/team-rollout-scenario.md`
+
+## See it in action
+
+Terminal demo GIF/video: **not yet checked in**.
+
+When available, place the asset at `docs/assets/sdetkit-terminal-demo.gif` and link/embed it here and in the docs home page.
+
 ## Start here (core adoption path)
 
 For first-time adoption, focus on these five hero paths only:
