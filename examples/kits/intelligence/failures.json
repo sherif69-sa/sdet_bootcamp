@@ -1,0 +1,14 @@
+{
+  "failures": [
+    {
+      "test_id": "tests/api/test_orders.py::test_retry_on_timeout",
+      "message": "request timed out after 2.0s while waiting for upstream",
+      "fixture_scope": "session"
+    },
+    {
+      "test_id": "tests/integration/test_checkout.py::test_payment_capture",
+      "message": "connection reset by peer during network call",
+      "fixture_scope": "module"
+    }
+  ]
+}

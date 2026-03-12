@@ -38,10 +38,22 @@ def _cmd_flake_classify(history_path: Path, rerun_threshold: int) -> dict[str, A
         flaky = failures > 0 and passes > 0 and len(outcomes) >= rerun_threshold
         classification = "flaky" if flaky else ("stable-failing" if failures else "stable-passing")
         message = f"{classification}:{','.join(outcomes)}"
+        if classification == "flaky":
+            signal = "nondeterministic-rerun"
+            next_step = "Quarantine test and capture deterministic seed/fixture isolation evidence."
+        elif classification == "stable-failing":
+            signal = "consistent-regression"
+            next_step = "Treat as product regression and escalate to release decision gate."
+        else:
+            signal = "stable"
+            next_step = "Keep in baseline suite."
+
         out.append(
             {
                 "test_id": test_id,
                 "classification": classification,
+                "signal": signal,
+                "next_step": next_step,
                 "runs": len(outcomes),
                 "failures": failures,
                 "passes": passes,
@@ -121,6 +133,52 @@ def _cmd_mutation_policy(policy_path: Path) -> dict[str, Any]:
     }
 
 
+def _cmd_failure_fingerprint(failures_path: Path) -> dict[str, Any]:
+    doc = _load_json(failures_path)
+    if not isinstance(doc, dict) or not isinstance(doc.get("failures"), list):
+        raise ValueError("failures file must contain a failures array")
+
+    fingerprints: list[dict[str, Any]] = []
+    for item in doc["failures"]:
+        if not isinstance(item, dict):
+            continue
+        test_id = str(item.get("test_id", "")).strip()
+        message = str(item.get("message", "")).strip()
+        fixture_scope = str(item.get("fixture_scope", "unknown")).strip() or "unknown"
+        if not test_id or not message:
+            continue
+
+        msg_lower = message.lower()
+        nondeterminism_hints: list[str] = []
+        if any(token in msg_lower for token in ["timeout", "timed out", "deadline exceeded"]):
+            nondeterminism_hints.append("timing-sensitive")
+        if any(token in msg_lower for token in ["connection reset", "econnreset", "network"]):
+            nondeterminism_hints.append("network-sensitive")
+        if any(token in msg_lower for token in ["random", "seed", "nondetermin"]):
+            nondeterminism_hints.append("seed-sensitive")
+        if fixture_scope in {"session", "module"}:
+            nondeterminism_hints.append("shared-fixture-scope")
+
+        fingerprints.append(
+            {
+                "test_id": test_id,
+                "fixture_scope": fixture_scope,
+                "fingerprint": _fingerprint(test_id, message),
+                "nondeterminism_hints": sorted(set(nondeterminism_hints)),
+            }
+        )
+
+    fingerprints.sort(key=lambda item: (item["test_id"], item["fingerprint"]))
+    return {
+        "schema_version": "sdetkit.intelligence.failure-fingerprint.v1",
+        "failures": fingerprints,
+        "summary": {
+            "total": len(fingerprints),
+            "with_nondeterminism_hints": sum(1 for item in fingerprints if item["nondeterminism_hints"]),
+        },
+    }
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="sdetkit intelligence", description="Test Intelligence Kit")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -143,6 +201,12 @@ def main(argv: list[str] | None = None) -> int:
     mut = sub.add_parser("mutation-policy", help="Mutation governance evaluation")
     mut.add_argument("--policy", required=True)
 
+    fp = sub.add_parser(
+        "failure-fingerprint",
+        help="Stable failure fingerprinting with nondeterminism heuristics",
+    )
+    fp.add_argument("--failures", required=True)
+
     ns = parser.parse_args(argv)
     try:
         if ns.cmd == "flake" and ns.subcmd == "classify":
@@ -155,6 +219,10 @@ def main(argv: list[str] | None = None) -> int:
             payload = _cmd_impact(
                 safe_path(Path.cwd(), ns.changed, allow_absolute=True),
                 safe_path(Path.cwd(), ns.test_map, allow_absolute=True),
+            )
+        elif ns.cmd == "failure-fingerprint":
+            payload = _cmd_failure_fingerprint(
+                safe_path(Path.cwd(), ns.failures, allow_absolute=True)
             )
         else:
             payload = _cmd_mutation_policy(safe_path(Path.cwd(), ns.policy, allow_absolute=True))

@@ -42,11 +42,12 @@ _KITS: Final[list[dict[str, object]]] = [
     },
     {
         "id": "failure-forensics",
-        "stability": "experimental",
-        "summary": "Run comparison and deterministic repro bundle generation.",
+        "stability": "stable",
+        "summary": "Run-to-run regression intelligence, evidence diffing, and deterministic repro bundle generation.",
         "hero_commands": [
             "sdetkit forensics compare --from old.json --to new.json",
             "sdetkit forensics bundle --run run.json --output bundle.zip",
+            "sdetkit forensics bundle-diff --from-bundle old.zip --to-bundle new.zip",
         ],
     },
 ]

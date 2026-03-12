@@ -80,6 +80,14 @@ run_gate_fast() {
   return "$rc"
 }
 
+
+run_flagship_contracts() {
+  python3 -m sdetkit intelligence flake classify --history examples/kits/intelligence/flake-history.json >/dev/null
+  python3 -m sdetkit intelligence failure-fingerprint --failures examples/kits/intelligence/failures.json >/dev/null
+  python3 -m sdetkit integration check --profile examples/kits/integration/profile.json >/dev/null || true
+  python3 -m sdetkit forensics compare --from examples/kits/forensics/run-a.json --to examples/kits/forensics/run-b.json >/dev/null
+}
+
 run_docs() {
   if [[ "$skip_docs" -eq 1 ]]; then
     return 0
@@ -94,9 +102,11 @@ run_docs() {
 case "$mode" in
   quick)
     run_gate_fast
+    run_flagship_contracts
     ;;
   all)
     run_gate_fast
+    run_flagship_contracts
     run_docs
     ;;
   *)

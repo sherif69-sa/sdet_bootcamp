@@ -1,21 +1,25 @@
-# Release Confidence Kit
+# Release Decision Kit
 
 ## Purpose
-Provide deterministic release gating, diagnostics, and evidence outputs for release owners.
+Provide an opinionated go/no-go decision lane backed by deterministic evidence.
 
 ## Inputs
-Repository source tree, policy/config files, and optional CI metadata.
+Repository state, policy/config baselines, and CI metadata.
 
-## Outputs
-Gate/doctor/security/evidence JSON/SARIF/manifests from existing stable commands.
+## Outputs / artifacts
+Existing core release contracts from `gate`, `doctor`, `security`, and `evidence` including JSON/SARIF/evidence manifests.
+
+## Exit-code contract
+- `0`: pass/no blocking release conditions
+- `1`: gate/security policy violations where applicable
+- `2`: invalid input or execution contract failures
 
 ## CI role
-Primary merge and release confidence decision lane.
+Primary release controller for merge and publish decisions.
 
-## Hero commands
+## Example
 ```bash
-sdetkit release gate fast
 sdetkit release gate release
-sdetkit release doctor
-sdetkit release evidence --help
+sdetkit release doctor --format json
+sdetkit release evidence pack --output .sdetkit/out/evidence.zip
 ```

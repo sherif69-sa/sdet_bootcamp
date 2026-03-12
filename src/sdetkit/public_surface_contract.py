@@ -29,10 +29,10 @@ PUBLIC_SURFACE_CONTRACT: tuple[CommandFamilyContract, ...] = (
         top_level_commands=("gate", "doctor", "security", "evidence", "playbooks"),
     ),
     CommandFamilyContract(
-        name="stable-core-engineering-workflows",
-        role="Stable day-to-day engineering and repository utility workflows.",
-        stability_tier="Stable/Core",
-        first_time_recommended=True,
+        name="supporting-utilities-and-automation",
+        role="Supporting utilities and automation lanes; useful but intentionally secondary to flagship kits.",
+        stability_tier="Stable/Supporting",
+        first_time_recommended=False,
         transition_legacy_oriented=False,
         top_level_commands=(
             "repo",

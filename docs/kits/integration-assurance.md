@@ -1,20 +1,26 @@
 # Integration Assurance Kit
 
 ## Purpose
-Validate environment and service readiness contracts with offline-first deterministic checks.
+Provide offline-first confidence that runtime dependencies are actually ready.
 
 ## Inputs
-Integration profile JSON (`required_env`, `required_files`, `services`).
+- Readiness profile JSON (`required_env`, `required_files`, `services`)
+- Cassette JSON for replay contract validation
 
-## Outputs/artifacts
+## Outputs / artifacts
 - `sdetkit.integration.profile-check.v1`
 - `sdetkit.integration.matrix.v1`
+- `sdetkit.integration.cassette-validate.v1`
+
+## Exit-code contract
+- `0`: all checks passed / compatible
+- `1`: readiness or cassette contract failure
+- `2`: invalid profile/cassette input
 
 ## CI role
-Catch environment drift before integration test execution.
+Fail fast before expensive integration runs, and verify replay cassettes are valid and deterministic.
 
-## Example commands
+## Example
 ```bash
-sdetkit integration check --profile examples/kits/integration/profile.json
-sdetkit integration matrix --profile examples/kits/integration/profile.json
+sdetkit integration cassette-validate --cassette .sdetkit/cassettes/sample.json
 ```
