@@ -95,4 +95,3 @@ For product-value framing and artifact-oriented examples:
 - Run first command in under 60 seconds
 - Validate docs links and anchors before publishing
 - Ship a first contribution with deterministic quality gates
-
