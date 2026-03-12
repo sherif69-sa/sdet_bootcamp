@@ -215,8 +215,8 @@ def _add_passthrough_subcommand(
 
 def _build_root_parser() -> tuple[argparse.ArgumentParser, object]:
     help_description = """\
-SDETKit helps teams prove release confidence / shipping readiness with
-deterministic checks and audit-friendly evidence.
+DevS69 SDETKit is an operator-grade platform for release decisions,
+deterministic evidence, test intelligence, integration assurance, and failure forensics.
 
 Stability levels: Stable/Core, Integrations, Playbooks, Experimental.
 
@@ -256,7 +256,7 @@ Start here:
     _add_passthrough_subcommand(sub, "intelligence", help_text="Test Intelligence Kit")
     _add_passthrough_subcommand(sub, "integration", help_text="Integration Assurance Kit")
     _add_passthrough_subcommand(sub, "forensics", help_text="Failure Forensics Kit")
-    _add_passthrough_subcommand(sub, "kv", help_text="Parse key=value input into JSON")
+    _add_passthrough_subcommand(sub, "kv", help_text="Utility: parse key=value input into JSON (supporting surface)")
 
     ag = sub.add_parser("apiget", help="Deterministic HTTP JSON fetch and replay helper")
     _add_apiget_args(ag)
@@ -274,7 +274,7 @@ Start here:
     _add_passthrough_subcommand(sub, "patch", help_text="Apply controlled file/text patches")
 
     _add_passthrough_subcommand(
-        sub, "cassette-get", help_text="Record/replay HTTP captures for deterministic checks"
+        sub, "cassette-get", help_text="Utility: record/replay HTTP captures for deterministic checks"
     )
 
     _add_passthrough_subcommand(sub, "repo", help_text="Repository automation tasks")

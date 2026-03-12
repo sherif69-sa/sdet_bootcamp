@@ -1,20 +1,27 @@
 # Failure Forensics Kit
 
 ## Purpose
-Provide deterministic run comparison and minimal repro bundle packaging.
+Explain what changed between runs and preserve reproducible failure evidence.
 
 ## Inputs
-Two run JSON files (`report` schema) and optional extra evidence files.
+- Two run records (`sdetkit.audit.run.v1`)
+- Optional evidence files for deterministic bundle generation
+- Two bundles for evidence-pack diff
 
-## Outputs/artifacts
+## Outputs / artifacts
 - `sdetkit.forensics.compare.v1`
 - `sdetkit.forensics.bundle.v1`
+- `sdetkit.forensics.bundle-diff.v1`
+
+## Exit-code contract
+- `compare`: `1` when `--fail-on` threshold is breached
+- `bundle-diff`: `1` when added/removed/changed artifacts are detected
+- `2`: invalid input
 
 ## CI role
-Summarize regressions/resolutions and preserve reproducible failure bundles.
+Detect regressions/new failures/resolved failures and preserve minimal repro metadata bundles.
 
-## Example commands
+## Example
 ```bash
-sdetkit forensics compare --from examples/kits/forensics/run-a.json --to examples/kits/forensics/run-b.json
-sdetkit forensics bundle --run examples/kits/forensics/run-b.json --output build/repro.zip
+sdetkit forensics bundle-diff --from-bundle artifacts/prev.zip --to-bundle artifacts/new.zip
 ```

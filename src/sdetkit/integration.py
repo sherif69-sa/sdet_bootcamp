@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from .atomicio import canonical_json_dumps
+from .cassette import Cassette
 from .security import SecurityError, safe_path
 
 
@@ -59,15 +60,67 @@ def _evaluate(profile: dict[str, Any]) -> dict[str, Any]:
             )
 
     checks.sort(key=lambda x: (str(x.get("kind", "")), str(x.get("name", ""))))
+    failed = [item for item in checks if not bool(item.get("passed"))]
     return {
         "schema_version": "sdetkit.integration.profile-check.v1",
         "profile_name": str(profile.get("name", "default")),
         "checks": checks,
         "summary": {
             "total": len(checks),
-            "failed": sum(1 for x in checks if not bool(x.get("passed"))),
-            "passed": all(bool(x.get("passed")) for x in checks) if checks else True,
+            "failed": len(failed),
+            "passed": not failed if checks else True,
+            "next_step": (
+                "Ready for integration lanes."
+                if not failed
+                else "Fix failed readiness checks before running integration suites."
+            ),
         },
+    }
+
+
+def _validate_cassette(cassette_path: Path) -> dict[str, Any]:
+    cassette = Cassette.load(cassette_path, allow_absolute=True)
+    interactions = cassette.interactions
+    invalid: list[dict[str, Any]] = []
+    methods: dict[str, int] = {}
+    hosts: set[str] = set()
+
+    for idx, item in enumerate(interactions):
+        req = item.get("request") if isinstance(item, dict) else None
+        resp = item.get("response") if isinstance(item, dict) else None
+        if not isinstance(req, dict) or not isinstance(resp, dict):
+            invalid.append({"index": idx, "reason": "invalid-shape"})
+            continue
+
+        method = str(req.get("method", "")).upper()
+        url = str(req.get("url", ""))
+        if not method or not url:
+            invalid.append({"index": idx, "reason": "missing-method-or-url"})
+            continue
+        methods[method] = methods.get(method, 0) + 1
+
+        try:
+            host = url.split("//", 1)[1].split("/", 1)[0]
+        except Exception:
+            host = ""
+        if host:
+            hosts.add(host)
+
+        status_code = resp.get("status_code")
+        if not isinstance(status_code, int) or status_code < 100 or status_code > 599:
+            invalid.append({"index": idx, "reason": "invalid-status-code"})
+
+    return {
+        "schema_version": "sdetkit.integration.cassette-validate.v1",
+        "cassette": str(cassette_path),
+        "summary": {
+            "interactions": len(interactions),
+            "invalid": len(invalid),
+            "hosts": sorted(hosts),
+            "methods": {k: methods[k] for k in sorted(methods)},
+            "passed": len(invalid) == 0,
+        },
+        "invalid": invalid,
     }
 
 
@@ -80,17 +133,24 @@ def main(argv: list[str] | None = None) -> int:
     check.add_argument("--profile", required=True)
     matrix = sub.add_parser("matrix", help="Print compatibility summary in JSON")
     matrix.add_argument("--profile", required=True)
+    cassette_validate = sub.add_parser(
+        "cassette-validate", help="Validate deterministic cassette contract for integration replay"
+    )
+    cassette_validate.add_argument("--cassette", required=True)
     ns = parser.parse_args(argv)
 
     try:
-        profile = _load_profile(safe_path(Path.cwd(), ns.profile, allow_absolute=True))
-        payload = _evaluate(profile)
-        if ns.cmd == "matrix":
-            payload["schema_version"] = "sdetkit.integration.matrix.v1"
-            payload["compatibility"] = {
-                "profile": payload["profile_name"],
-                "status": "compatible" if payload["summary"]["passed"] else "incompatible",
-            }
+        if ns.cmd in {"check", "matrix"}:
+            profile = _load_profile(safe_path(Path.cwd(), ns.profile, allow_absolute=True))
+            payload = _evaluate(profile)
+            if ns.cmd == "matrix":
+                payload["schema_version"] = "sdetkit.integration.matrix.v1"
+                payload["compatibility"] = {
+                    "profile": payload["profile_name"],
+                    "status": "compatible" if payload["summary"]["passed"] else "incompatible",
+                }
+        else:
+            payload = _validate_cassette(safe_path(Path.cwd(), ns.cassette, allow_absolute=True))
     except (ValueError, OSError, SecurityError) as exc:
         sys.stderr.write(f"integration error: {exc}\n")
         return 2

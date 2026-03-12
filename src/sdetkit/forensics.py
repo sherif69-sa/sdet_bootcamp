@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import io
 import json
 import sys
 import zipfile
@@ -18,7 +17,19 @@ def _compare(from_path: Path, to_path: Path) -> dict[str, Any]:
     from_run = load_run_record(from_path)
     to_run = load_run_record(to_path)
     payload = diff_runs(from_run, to_run)
+    new_error = [x for x in payload.get("new", []) if x.get("severity") == "error"]
     payload["schema_version"] = "sdetkit.forensics.compare.v1"
+    payload["regression_summary"] = {
+        "new_failures": payload.get("counts", {}).get("new", 0),
+        "resolved_failures": payload.get("counts", {}).get("resolved", 0),
+        "changed_failures": payload.get("counts", {}).get("changed", 0),
+        "regression": bool(new_error),
+    }
+    payload["next_step"] = (
+        "Block release and open failure-forensics triage lane."
+        if new_error
+        else "No new error regressions detected."
+    )
     return payload
 
 
@@ -58,6 +69,36 @@ def _bundle(run_path: Path, output_path: Path, include: list[str]) -> dict[str, 
     }
 
 
+def _bundle_diff(from_bundle: Path, to_bundle: Path) -> dict[str, Any]:
+    with zipfile.ZipFile(from_bundle, "r") as left_zip, zipfile.ZipFile(to_bundle, "r") as right_zip:
+        left_names = set(left_zip.namelist())
+        right_names = set(right_zip.namelist())
+        added = sorted(right_names - left_names)
+        removed = sorted(left_names - right_names)
+        shared = sorted(left_names & right_names)
+        changed = sorted(
+            name
+            for name in shared
+            if hashlib.sha256(left_zip.read(name)).hexdigest()
+            != hashlib.sha256(right_zip.read(name)).hexdigest()
+        )
+
+    return {
+        "schema_version": "sdetkit.forensics.bundle-diff.v1",
+        "from_bundle": str(from_bundle),
+        "to_bundle": str(to_bundle),
+        "added": added,
+        "removed": removed,
+        "changed": changed,
+        "summary": {
+            "added": len(added),
+            "removed": len(removed),
+            "changed": len(changed),
+            "passed": not (added or removed or changed),
+        },
+    }
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="sdetkit forensics", description="Failure Forensics Kit")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -71,6 +112,10 @@ def main(argv: list[str] | None = None) -> int:
     bundle.add_argument("--run", required=True)
     bundle.add_argument("--output", required=True)
     bundle.add_argument("--include", nargs="*", default=[])
+
+    bundle_diff = sub.add_parser("bundle-diff", help="Diff two forensics bundles")
+    bundle_diff.add_argument("--from-bundle", required=True)
+    bundle_diff.add_argument("--to-bundle", required=True)
 
     ns = parser.parse_args(argv)
     try:
@@ -87,6 +132,14 @@ def main(argv: list[str] | None = None) -> int:
             if ns.fail_on == "warn" and new_warn:
                 return 1
             return 0
+
+        if ns.cmd == "bundle-diff":
+            payload = _bundle_diff(
+                safe_path(Path.cwd(), ns.from_bundle, allow_absolute=True),
+                safe_path(Path.cwd(), ns.to_bundle, allow_absolute=True),
+            )
+            sys.stdout.write(canonical_json_dumps(payload))
+            return 0 if payload["summary"]["passed"] else 1
 
         payload = _bundle(
             safe_path(Path.cwd(), ns.run, allow_absolute=True),
