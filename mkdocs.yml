@@ -163,3 +163,4 @@ exclude_docs: |
   roadmap/reports/**
   day-*-*-report.md
   integrations-*.md
+  !integrations-and-extension-boundary.md

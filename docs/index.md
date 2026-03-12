@@ -23,6 +23,10 @@ SDETKit gives engineering teams **deterministic release-confidence checks and ev
 
 </div>
 
+## Fast start
+
+If you are new to SDETKit, start with [Install](install.md), then run [First run](ready-to-use.md).
+
 ## Choose one lane
 
 ### 1) Beginner / first-run lane
@@ -77,3 +81,17 @@ For product-value framing and artifact-oriented examples:
 - [Before/after evidence example](before-after-evidence-example.md)
 - [Evidence showcase](evidence-showcase.md)
 - [Decision guide](decision-guide.md)
+
+<div class="quick-jump" markdown>
+
+[⚡ Fast start](#fast-start) · [🧭 Repo tour](repo-tour.md) · [📈 Top-10 strategy](top-10-github-strategy.md) · [🤖 AgentOS](agentos-foundation.md) · [🍳 Cookbook](agentos-cookbook.md) · [🛠 CLI commands](cli.md) · [🩺 Doctor checks](doctor.md) · [🤝 Contribute](contributing.md) · [📦 Legacy reports](#legacy-reports)
+
+</div>
+
+## Legacy reports
+
+### Top journeys
+
+- Run first command in under 60 seconds
+- Validate docs links and anchors before publishing
+- Ship a first contribution with deterministic quality gates
