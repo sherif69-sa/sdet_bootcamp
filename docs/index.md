@@ -44,3 +44,8 @@ Utility commands such as `kv`, `apiget`, and `cassette-get` remain available for
 - Run first command in under 60 seconds
 - Validate docs links and anchors before publishing
 - Ship a first contribution with deterministic quality gates
+
+### Latest continuous-upgrade lane
+
+- [Cycle 8 big upgrade report](continuous-upgrade-cycle8-big-upgrade-report.md)
+- [Continuous upgrade cycle #8 closeout](integrations-continuous-upgrade-cycle8-closeout.md)
