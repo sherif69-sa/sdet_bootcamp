@@ -1,15 +1,15 @@
-# Day 14 Weekly Review #2
+# Name 14 Weekly Review #2
 
-## What shipped (Day 8-13)
+## What shipped (Name 8-13)
 
-| Day | Upgrade | Report | Artifact | Status |
+| Name | Upgrade | Report | Artifact | Status |
 | --- | --- | --- | --- | --- |
-| 8 | Good-first-issue accelerator pack | `docs/day-8-ultra-upgrade-report.md` | `docs/artifacts/day8-good-first-issues-sample.md` | shipped ✅ |
-| 9 | Triage-ready issue + PR templates | `docs/day-9-ultra-upgrade-report.md` | `docs/artifacts/day9-triage-templates-sample.md` | shipped ✅ |
-| 10 | First-contribution checklist | `docs/day-10-ultra-upgrade-report.md` | `docs/artifacts/day10-first-contribution-checklist-sample.md` | shipped ✅ |
-| 11 | Docs navigation tune-up | `docs/day-11-ultra-upgrade-report.md` | `docs/artifacts/day11-docs-navigation-sample.md` | shipped ✅ |
-| 12 | Startup/small-team workflow | `docs/day-12-ultra-upgrade-report.md` | `docs/artifacts/day12-startup-use-case-sample.md` | shipped ✅ |
-| 13 | Enterprise/regulated workflow | `docs/day-13-ultra-upgrade-report.md` | `docs/artifacts/day13-enterprise-use-case-sample.md` | shipped ✅ |
+| 8 | Good-first-issue accelerator pack | `docs/name-8-ultra-upgrade-report.md` | `docs/artifacts/name8-good-first-issues-sample.md` | shipped ✅ |
+| 9 | Triage-ready issue + PR templates | `docs/name-9-ultra-upgrade-report.md` | `docs/artifacts/name9-triage-templates-sample.md` | shipped ✅ |
+| 10 | First-contribution checklist | `docs/name-10-ultra-upgrade-report.md` | `docs/artifacts/name10-first-contribution-checklist-sample.md` | shipped ✅ |
+| 11 | Docs navigation tune-up | `docs/name-11-ultra-upgrade-report.md` | `docs/artifacts/name11-docs-navigation-sample.md` | shipped ✅ |
+| 12 | Startup/small-team workflow | `docs/name-12-ultra-upgrade-report.md` | `docs/artifacts/name12-startup-use-case-sample.md` | shipped ✅ |
+| 13 | Enterprise/regulated workflow | `docs/name-13-ultra-upgrade-report.md` | `docs/artifacts/name13-enterprise-use-case-sample.md` | shipped ✅ |
 
 ## KPI movement
 
@@ -33,6 +33,6 @@
 
 ## Next-week focus
 
-- Day 15: refine multi-channel distribution loop for documentation and demos.
-- Day 16: publish adoption-ready workflow templates with copy/paste CI variants.
-- Day 17: capture week-over-week quality + contribution deltas in one evidence pack.
+- Name 15: refine multi-channel distribution loop for documentation and demos.
+- Name 16: publish adoption-ready workflow templates with copy/paste CI variants.
+- Name 17: capture week-over-week quality + contribution deltas in one evidence pack.

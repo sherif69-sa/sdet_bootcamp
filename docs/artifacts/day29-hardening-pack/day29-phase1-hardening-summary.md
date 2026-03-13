@@ -1,4 +1,4 @@
-# Day 29 phase-1 hardening summary
+# Name 29 phase-1 hardening summary
 
 - Activation score: **100**
 - Passed checks: **8**

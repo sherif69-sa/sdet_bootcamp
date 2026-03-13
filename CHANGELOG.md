@@ -1,6 +1,6 @@
 ## Unreleased
 
-- add Day 86 launch readiness closeout lane command, docs, checks, and tests (`day86-launch-readiness-closeout`).
+- add Name 86 launch readiness closeout lane command, docs, checks, and tests (`name86-launch-readiness-closeout`).
 
 # Changelog
 ## [1.0.2]
@@ -16,4 +16,4 @@
 - Dependency hygiene: requirements pinned and lockfiles added.
 - Repo init/apply reliability: tolerate non-UTF-8 preset template files.
 - Repo cleanliness: ignore local SDETKit workspace and docs build output.
-- feat: add `day89-governance-scale-closeout` with strict closeout checks, pack emission, and execution evidence lane.
+- feat: add `name89-governance-scale-closeout` with strict closeout checks, pack emission, and execution evidence lane.

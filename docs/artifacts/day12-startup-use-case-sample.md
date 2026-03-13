@@ -1,4 +1,4 @@
-# Day 12 startup use-case page
+# Name 12 startup use-case page
 
 - Score: **100.0** (14/14)
 - Page: `docs/use-cases-startup-small-team.md`
@@ -25,9 +25,9 @@ python -m sdetkit report --out reports/startup-weekly.json
 
 ## Emitted pack files
 
-- `docs/artifacts/day12-startup-pack/startup-day12-checklist.md`
-- `docs/artifacts/day12-startup-pack/startup-day12-ci.yml`
-- `docs/artifacts/day12-startup-pack/startup-day12-risk-register.md`
+- `docs/artifacts/name12-startup-pack/startup-name12-checklist.md`
+- `docs/artifacts/name12-startup-pack/startup-name12-ci.yml`
+- `docs/artifacts/name12-startup-pack/startup-name12-risk-register.md`
 
 ## Missing use-case content
 
@@ -38,5 +38,5 @@ python -m sdetkit report --out reports/startup-weekly.json
 - `docs/use-cases-startup-small-team.md`
 - `sdetkit startup-use-case --format json --strict`
 - `sdetkit startup-use-case --write-defaults --format json --strict`
-- `sdetkit startup-use-case --format markdown --output docs/artifacts/day12-startup-use-case-sample.md`
-- `sdetkit startup-use-case --emit-pack-dir docs/artifacts/day12-startup-pack --format json --strict`
+- `sdetkit startup-use-case --format markdown --output docs/artifacts/name12-startup-use-case-sample.md`
+- `sdetkit startup-use-case --emit-pack-dir docs/artifacts/name12-startup-pack --format json --strict`

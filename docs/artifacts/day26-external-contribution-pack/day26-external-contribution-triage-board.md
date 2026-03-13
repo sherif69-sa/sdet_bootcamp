@@ -1,4 +1,4 @@
-# Day 26 external contribution triage board
+# Name 26 external contribution triage board
 
 | Starter task | Interest signal | Owner | Status | Response SLA |
 | --- | --- | --- | --- | --- |

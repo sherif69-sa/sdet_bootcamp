@@ -1,7 +1,7 @@
 {
-  "day": 32,
+  "name": 32,
   "cadence": {
-    "publish_day": "Friday",
+    "publish_name": "Friname",
     "merge_cutoff": "16:00 UTC",
     "artifact_sla_minutes": 60,
     "owner_rotation": "weekly"

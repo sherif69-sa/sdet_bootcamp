@@ -1,7 +1,7 @@
-command: python scripts/check_day20_release_narrative_contract.py --skip-evidence
+command: python scripts/check_name20_release_narrative_contract.py --skip-evidence
 returncode: 0
 ok: True
 --- stdout ---
-day20-release-narrative-contract check passed
+name20-release-narrative-contract check passed
 
 --- stderr ---

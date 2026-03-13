@@ -1,4 +1,4 @@
-# Day 15 GitHub Actions rollout checklist
+# Name 15 GitHub Actions rollout checklist
 
 - [ ] Validate quickstart page in strict mode.
 - [ ] Commit workflow files under .github/workflows/.

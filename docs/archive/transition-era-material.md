@@ -2,12 +2,12 @@
 
 Use this page to access historical docs without mixing them into the core onboarding journey.
 
-## Day-by-day reports
+## Name-by-name reports
 
-The full day-by-day report history is preserved as top-level docs files and excluded from first-time navigation.
+The full name-by-name report history is preserved as top-level docs files and excluded from first-time navigation.
 
-- Pattern: `day-*-ultra-upgrade-report.md`
-- Pattern: `day-*-big-upgrade-report.md`
+- Pattern: `name-*-ultra-upgrade-report.md`
+- Pattern: `name-*-big-upgrade-report.md`
 
 ## Transition and closeout documents
 

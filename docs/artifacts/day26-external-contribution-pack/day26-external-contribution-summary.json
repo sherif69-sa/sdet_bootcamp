@@ -28,28 +28,28 @@
     {
       "category": "discoverability",
       "evidence": "docs/integrations-external-contribution-push.md",
-      "key": "readme_day26_link",
+      "key": "readme_name26_link",
       "passed": true,
       "weight": 10
     },
     {
       "category": "discoverability",
       "evidence": "external-contribution-push",
-      "key": "readme_day26_command",
+      "key": "readme_name26_command",
       "passed": true,
       "weight": 8
     },
     {
       "category": "discoverability",
-      "evidence": "day-26-ultra-upgrade-report.md",
-      "key": "docs_index_day26_link",
+      "evidence": "name-26-ultra-upgrade-report.md",
+      "key": "docs_index_name26_link",
       "passed": true,
       "weight": 7
     },
     {
       "category": "strategy",
-      "evidence": "Day 26 \u2014 External contribution push",
-      "key": "top10_day26_alignment",
+      "evidence": "Name 26 \u2014 External contribution push",
+      "key": "top10_name26_alignment",
       "passed": true,
       "weight": 10
     },
@@ -74,14 +74,14 @@
     "readme": "README.md",
     "top10": "docs/top-10-github-strategy.md"
   },
-  "name": "day26-external-contribution-push",
+  "name": "name26-external-contribution-push",
   "strict_failures": [],
   "summary": {
     "activation_score": 100.0,
     "critical_failures": [],
     "failed_checks": [],
     "recommendations": [
-      "Day 26 external contribution push lane is healthy; keep weekly conversion summaries flowing."
+      "Name 26 external contribution push lane is healthy; keep weekly conversion summaries flowing."
     ],
     "total_checks": 9
   }

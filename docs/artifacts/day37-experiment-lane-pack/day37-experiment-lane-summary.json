@@ -1,19 +1,19 @@
 {
-  "name": "day37-experiment-lane",
+  "name": "name37-experiment-lane",
   "inputs": {
     "readme": "README.md",
     "docs_index": "docs/index.md",
-    "docs_page": "docs/integrations-day37-experiment-lane.md",
+    "docs_page": "docs/integrations-name37-experiment-lane.md",
     "top10": "docs/top-10-github-strategy.md",
-    "day36_summary": "docs/artifacts/day36-distribution-closeout-pack/day36-distribution-closeout-summary.json",
-    "day36_delivery_board": "docs/artifacts/day36-distribution-closeout-pack/day36-delivery-board.md"
+    "name36_summary": "docs/artifacts/name36-distribution-closeout-pack/name36-distribution-closeout-summary.json",
+    "name36_delivery_board": "docs/artifacts/name36-distribution-closeout-pack/name36-delivery-board.md"
   },
   "checks": [
     {
       "check_id": "docs_page_exists",
       "weight": 10,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/integrations-day37-experiment-lane.md"
+      "evidence": "/workspace/DevS69-sdetkit/docs/integrations-name37-experiment-lane.md"
     },
     {
       "check_id": "required_sections_present",
@@ -32,59 +32,59 @@
       }
     },
     {
-      "check_id": "readme_day37_link",
+      "check_id": "readme_name37_link",
       "weight": 8,
       "passed": true,
-      "evidence": "docs/integrations-day37-experiment-lane.md"
+      "evidence": "docs/integrations-name37-experiment-lane.md"
     },
     {
-      "check_id": "readme_day37_command",
+      "check_id": "readme_name37_command",
       "weight": 4,
       "passed": true,
-      "evidence": "day37-experiment-lane"
+      "evidence": "name37-experiment-lane"
     },
     {
-      "check_id": "docs_index_day37_links",
+      "check_id": "docs_index_name37_links",
       "weight": 8,
       "passed": true,
-      "evidence": "day-37-big-upgrade-report.md + integrations-day37-experiment-lane.md"
+      "evidence": "name-37-big-upgrade-report.md + integrations-name37-experiment-lane.md"
     },
     {
-      "check_id": "top10_day37_alignment",
+      "check_id": "top10_name37_alignment",
       "weight": 5,
       "passed": true,
-      "evidence": "Day 37 + Day 38 strategy chain"
+      "evidence": "Name 37 + Name 38 strategy chain"
     },
     {
-      "check_id": "day36_summary_present",
+      "check_id": "name36_summary_present",
       "weight": 10,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day36-distribution-closeout-pack/day36-distribution-closeout-summary.json"
+      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/name36-distribution-closeout-pack/name36-distribution-closeout-summary.json"
     },
     {
-      "check_id": "day36_delivery_board_present",
+      "check_id": "name36_delivery_board_present",
       "weight": 8,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day36-distribution-closeout-pack/day36-delivery-board.md"
+      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/name36-distribution-closeout-pack/name36-delivery-board.md"
     },
     {
-      "check_id": "day36_quality_floor",
+      "check_id": "name36_quality_floor",
       "weight": 10,
       "passed": true,
       "evidence": {
-        "day36_score": 100.0,
+        "name36_score": 100.0,
         "strict_pass": true,
-        "day36_checks": 14
+        "name36_checks": 14
       }
     },
     {
-      "check_id": "day36_board_integrity",
+      "check_id": "name36_board_integrity",
       "weight": 7,
       "passed": true,
       "evidence": {
         "board_items": 5,
-        "contains_day36": true,
-        "contains_day37": true
+        "contains_name36": true,
+        "contains_name37": true
       }
     },
     {
@@ -113,9 +113,9 @@
     }
   ],
   "rollup": {
-    "day36_activation_score": 100.0,
-    "day36_checks": 14,
-    "day36_delivery_board_items": 5
+    "name36_activation_score": 100.0,
+    "name36_checks": 14,
+    "name36_delivery_board_items": 5
   },
   "summary": {
     "activation_score": 100,
@@ -125,10 +125,10 @@
     "strict_pass": true
   },
   "wins": [
-    "Day 36 continuity is strict-pass with activation score=100.0.",
-    "Day 36 delivery board integrity validated with 5 checklist items.",
+    "Name 36 continuity is strict-pass with activation score=100.0.",
+    "Name 36 delivery board integrity validated with 5 checklist items.",
     "Experiment contract + quality checklist is fully locked for execution.",
-    "Day 37 experiment lane activation is fully complete and ready for Day 38 distribution batch #1."
+    "Name 37 experiment lane activation is fully complete and ready for Name 38 distribution batch #1."
   ],
   "misses": [],
   "handoff_actions": []

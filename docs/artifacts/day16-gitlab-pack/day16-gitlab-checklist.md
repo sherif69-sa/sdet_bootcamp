@@ -1,4 +1,4 @@
-# Day 16 GitLab CI rollout checklist
+# Name 16 GitLab CI rollout checklist
 
 - [ ] Validate quickstart page in strict mode.
 - [ ] Commit `.gitlab-ci.yml` updates with staged variants.

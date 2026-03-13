@@ -24,8 +24,8 @@ Please **do not open public issues** for suspected vulnerabilities.
 
 ## Response targets
 
-- **Initial triage response:** within 3 business cycles.
-- **Status updates:** at least every 7 business cycles until resolution.
+- **Initial triage response:** within 3 business names.
+- **Status updates:** at least every 7 business names until resolution.
 - **Coordinated disclosure:** after a fix is released and users have had reasonable upgrade time.
 
 ## Handling expectations

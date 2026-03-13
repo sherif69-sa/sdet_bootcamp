@@ -28,28 +28,28 @@
     {
       "category": "discoverability",
       "evidence": "docs/integrations-kpi-audit.md",
-      "key": "readme_day27_link",
+      "key": "readme_name27_link",
       "passed": true,
       "weight": 8
     },
     {
       "category": "discoverability",
       "evidence": "kpi-audit",
-      "key": "readme_day27_command",
+      "key": "readme_name27_command",
       "passed": true,
       "weight": 6
     },
     {
       "category": "discoverability",
-      "evidence": "day-27-ultra-upgrade-report.md",
-      "key": "docs_index_day27_link",
+      "evidence": "name-27-ultra-upgrade-report.md",
+      "key": "docs_index_name27_link",
       "passed": true,
       "weight": 6
     },
     {
       "category": "strategy",
-      "evidence": "Day 27 \u2014 KPI audit",
-      "key": "top10_day27_alignment",
+      "evidence": "Name 27 \u2014 KPI audit",
+      "key": "top10_name27_alignment",
       "passed": true,
       "weight": 8
     },
@@ -62,22 +62,22 @@
     },
     {
       "category": "data",
-      "evidence": "docs/artifacts/day27-kpi-pack/day27-kpi-baseline.json",
+      "evidence": "docs/artifacts/name27-kpi-pack/name27-kpi-baseline.json",
       "key": "baseline_metrics_valid",
       "passed": true,
       "weight": 10
     },
     {
       "category": "data",
-      "evidence": "docs/artifacts/day27-kpi-pack/day27-kpi-current.json",
+      "evidence": "docs/artifacts/name27-kpi-pack/name27-kpi-current.json",
       "key": "current_metrics_valid",
       "passed": true,
       "weight": 10
     }
   ],
   "inputs": {
-    "baseline": "docs/artifacts/day27-kpi-pack/day27-kpi-baseline.json",
-    "current": "docs/artifacts/day27-kpi-pack/day27-kpi-current.json",
+    "baseline": "docs/artifacts/name27-kpi-pack/name27-kpi-baseline.json",
+    "current": "docs/artifacts/name27-kpi-pack/name27-kpi-current.json",
     "docs_index": "docs/index.md",
     "docs_page": "docs/integrations-kpi-audit.md",
     "readme": "README.md",
@@ -127,14 +127,14 @@
       }
     }
   },
-  "name": "day27-kpi-audit",
+  "name": "name27-kpi-audit",
   "strict_failures": [],
   "summary": {
     "activation_score": 100.0,
     "critical_failures": [],
     "failed_checks": [],
     "recommendations": [
-      "Day 27 KPI audit lane is healthy; publish weekly KPI deltas and corrective actions."
+      "Name 27 KPI audit lane is healthy; publish weekly KPI deltas and corrective actions."
     ],
     "total_checks": 10
   }

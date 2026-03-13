@@ -1,4 +1,4 @@
-# Day 13 enterprise operating checklist
+# Name 13 enterprise operating checklist
 
 - [ ] Validate enterprise landing page contract in strict mode.
 - [ ] Regenerate enterprise artifact markdown for handoff.

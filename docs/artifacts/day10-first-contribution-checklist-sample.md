@@ -1,4 +1,4 @@
-# Day 10 first-contribution checklist
+# Name 10 first-contribution checklist
 
 - Score: **100.0** (14/14)
 - Guide file: `CONTRIBUTING.md`
@@ -33,4 +33,4 @@ mkdocs build
 - `docs/contributing.md`
 - `sdetkit first-contribution --format json --strict`
 - `sdetkit first-contribution --write-defaults --strict`
-- `sdetkit first-contribution --format markdown --output docs/artifacts/day10-first-contribution-checklist-sample.md`
+- `sdetkit first-contribution --format markdown --output docs/artifacts/name10-first-contribution-checklist-sample.md`

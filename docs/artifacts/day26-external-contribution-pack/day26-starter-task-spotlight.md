@@ -1,4 +1,4 @@
-# Day 26 starter-task spotlight plan
+# Name 26 starter-task spotlight plan
 
 ## Public call-to-action
 Help wanted: pick one starter task and submit your first contribution this week.

@@ -4,16 +4,16 @@ ok: True
 --- stdout ---
 {
   "inputs": {
-    "day14": {
+    "name14": {
       "score": 100.0,
       "status": "pass"
     },
-    "day18": {
+    "name18": {
       "gate_status": "pass",
       "reliability_score": 95.09
     }
   },
-  "name": "day19-release-readiness-board",
+  "name": "name19-release-readiness-board",
   "recommendations": [
     "Release posture is strong; proceed with release candidate tagging and notes preparation."
   ],
