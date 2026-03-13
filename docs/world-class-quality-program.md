@@ -61,6 +61,12 @@ Build and operate SDETKit as a globally trusted quality platform by combining:
 - Post-release rollback rate: `< 2%`.
 - Time from merge-ready to tagged release: `< 2 hours` for routine releases.
 
+## Kickoff progress (initial pass)
+
+- KPI dashboard baseline published: `docs/artifacts/world-class-kpi-dashboard-baseline.md`.
+- Release-critical ownership map published: `docs/artifacts/world-class-release-ownership-map.md`.
+- Next focus: quality-gate audit and flakiness hotspot burn-down.
+
 ## Operating cadence
 
 - **Weekly quality review**: inspect failures, flakiness, and lead-time trends.
