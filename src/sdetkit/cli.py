@@ -111,8 +111,8 @@ from . import (
     repo,
     report,
     roadmap,
-    startup_use_case,
     sdet_package,
+    startup_use_case,
     triage_templates,
     trust_signal_upgrade,
     weekly_review,
@@ -249,25 +249,41 @@ Start here:
         "playbooks",
         help="Discover and run adoption/rollout playbooks",
     )
-    _add_passthrough_subcommand(sub, "kits", help_text="[Stable/Core] Umbrella kit catalog and kit details")
+    _add_passthrough_subcommand(
+        sub, "kits", help_text="[Stable/Core] Umbrella kit catalog and kit details"
+    )
 
     _add_passthrough_subcommand(
         sub, "release", help_text="[Stable/Core] Release Confidence Kit (primary surface)"
     )
-    _add_passthrough_subcommand(sub, "intelligence", help_text="[Stable/Core] Test Intelligence Kit (primary surface)")
-    _add_passthrough_subcommand(sub, "integration", help_text="[Stable/Core] Integration Assurance Kit (primary surface)")
-    _add_passthrough_subcommand(sub, "forensics", help_text="[Stable/Core] Failure Forensics Kit (experimental sublanes possible)")
-    _add_passthrough_subcommand(sub, "kv", help_text="Utility: parse key=value input into JSON (supporting surface)")
+    _add_passthrough_subcommand(
+        sub, "intelligence", help_text="[Stable/Core] Test Intelligence Kit (primary surface)"
+    )
+    _add_passthrough_subcommand(
+        sub, "integration", help_text="[Stable/Core] Integration Assurance Kit (primary surface)"
+    )
+    _add_passthrough_subcommand(
+        sub,
+        "forensics",
+        help_text="[Stable/Core] Failure Forensics Kit (experimental sublanes possible)",
+    )
+    _add_passthrough_subcommand(
+        sub, "kv", help_text="Utility: parse key=value input into JSON (supporting surface)"
+    )
 
     ag = sub.add_parser("apiget", help="Deterministic HTTP JSON fetch and replay helper")
     _add_apiget_args(ag)
 
     _add_passthrough_subcommand(
-        sub, "doctor", help_text="[Stable/Compatibility] Deterministic repo and release-readiness checks"
+        sub,
+        "doctor",
+        help_text="[Stable/Compatibility] Deterministic repo and release-readiness checks",
     )
 
     _add_passthrough_subcommand(
-        sub, "gate", help_text="[Stable/Compatibility] Quick confidence and strict release gate checks"
+        sub,
+        "gate",
+        help_text="[Stable/Compatibility] Quick confidence and strict release gate checks",
     )
 
     _add_passthrough_subcommand(sub, "ci", help_text="CI template and pipeline validation")
@@ -275,10 +291,14 @@ Start here:
     _add_passthrough_subcommand(sub, "patch", help_text="Apply controlled file/text patches")
 
     _add_passthrough_subcommand(
-        sub, "cassette-get", help_text="Utility: record/replay HTTP captures for deterministic checks"
+        sub,
+        "cassette-get",
+        help_text="Utility: record/replay HTTP captures for deterministic checks",
     )
 
-    _add_passthrough_subcommand(sub, "repo", help_text="[Stable/Compatibility] Repository automation tasks")
+    _add_passthrough_subcommand(
+        sub, "repo", help_text="[Stable/Compatibility] Repository automation tasks"
+    )
 
     _add_passthrough_subcommand(sub, "dev", help_text="Shortcut to `repo dev` workflows")
 
@@ -291,7 +311,9 @@ Start here:
     agt = sub.add_parser("agent", help="Agent-centric automation workflows")
     agt.add_argument("args", nargs=argparse.REMAINDER)
 
-    sec = sub.add_parser("security", help="[Stable/Compatibility] Security policy checks and enforcement")
+    sec = sub.add_parser(
+        "security", help="[Stable/Compatibility] Security policy checks and enforcement"
+    )
     sec.add_argument("args", nargs=argparse.REMAINDER)
 
     osp = sub.add_parser("ops", help="Operational control-plane workflows")
@@ -303,7 +325,9 @@ Start here:
     plc = sub.add_parser("policy", help="Policy evaluation and helper commands")
     plc.add_argument("args", nargs=argparse.REMAINDER)
 
-    evd = sub.add_parser("evidence", help="[Stable/Compatibility] Generate audit-friendly release evidence")
+    evd = sub.add_parser(
+        "evidence", help="[Stable/Compatibility] Generate audit-friendly release evidence"
+    )
     evd.add_argument("args", nargs=argparse.REMAINDER)
 
     onb = sub.add_parser("onboarding", help="Role-based onboarding playbook")
@@ -632,69 +656,68 @@ Start here:
     d97.set_defaults(cmd="continuous-upgrade-cycle7-closeout")
     d97.add_argument("args", nargs=argparse.REMAINDER)
 
-    fqo = sub.add_parser("faq-objections")
+    fqo = sub.add_parser("faq-objections", help="FAQ objections playbook")
     fqo.add_argument("args", nargs=argparse.REMAINDER)
 
     dmo = sub.add_parser("demo")
     dmo.add_argument("args", nargs=argparse.REMAINDER)
 
-    fct = sub.add_parser("first-contribution")
+    fct = sub.add_parser("first-contribution", help="First contribution playbook")
     fct.add_argument("args", nargs=argparse.REMAINDER)
 
-    ctf = sub.add_parser("contributor-funnel")
+    ctf = sub.add_parser("contributor-funnel", help="Contributor funnel playbook")
     ctf.add_argument("args", nargs=argparse.REMAINDER)
 
-    prf = sub.add_parser("proof")
+    prf = sub.add_parser("proof", help="Proof and evidence workflows")
     prf.add_argument("args", nargs=argparse.REMAINDER)
 
-    ttp = sub.add_parser("triage-templates")
+    ttp = sub.add_parser("triage-templates", help="Issue and triage template workflows")
     ttp.add_argument("args", nargs=argparse.REMAINDER)
 
-    dqa = sub.add_parser("docs-qa")
+    dqa = sub.add_parser("docs-qa", help="Docs quality and link checks")
     dqa.add_argument("args", nargs=argparse.REMAINDER)
 
-    wrv = sub.add_parser("weekly-review")
+    wrv = sub.add_parser("weekly-review", help="Weekly review playbook")
     wrv.add_argument("args", nargs=argparse.REMAINDER)
 
-    dnv = sub.add_parser("docs-nav")
+    dnv = sub.add_parser("docs-nav", help="Docs navigation validation")
     dnv.add_argument("args", nargs=argparse.REMAINDER)
     rdm = sub.add_parser("roadmap")
     rdm.add_argument("args", nargs=argparse.REMAINDER)
 
-    suc = sub.add_parser("startup-use-case")
+    suc = sub.add_parser("startup-use-case", help="Startup use-case playbook")
     suc.add_argument("args", nargs=argparse.REMAINDER)
 
     spk = sub.add_parser("sdet-package")
     spk.add_argument("args", nargs=argparse.REMAINDER)
 
-    euc = sub.add_parser("enterprise-use-case")
+    euc = sub.add_parser("enterprise-use-case", help="Enterprise use-case playbook")
     euc.add_argument("args", nargs=argparse.REMAINDER)
 
-    gha = sub.add_parser("github-actions-quickstart")
+    gha = sub.add_parser("github-actions-quickstart", help="GitHub Actions quickstart playbook")
     gha.add_argument("args", nargs=argparse.REMAINDER)
 
-    glc = sub.add_parser("gitlab-ci-quickstart")
+    glc = sub.add_parser("gitlab-ci-quickstart", help="GitLab CI quickstart playbook")
     glc.add_argument("args", nargs=argparse.REMAINDER)
 
-    qcd = sub.add_parser("quality-contribution-delta")
+    qcd = sub.add_parser("quality-contribution-delta", help="Quality contribution delta report")
     qcd.add_argument("args", nargs=argparse.REMAINDER)
 
-    rep = sub.add_parser("reliability-evidence-pack")
+    rep = sub.add_parser("reliability-evidence-pack", help="Reliability evidence pack")
     rep.add_argument("args", nargs=argparse.REMAINDER)
 
-    rrb = sub.add_parser("release-readiness-board")
+    rrb = sub.add_parser("release-readiness-board", help="Release readiness board")
     rrb.add_argument("args", nargs=argparse.REMAINDER)
 
-    rn = sub.add_parser("release-narrative")
+    rn = sub.add_parser("release-narrative", help="Release narrative playbook")
     rn.add_argument("args", nargs=argparse.REMAINDER)
 
-    tsu = sub.add_parser("trust-signal-upgrade")
+    tsu = sub.add_parser("trust-signal-upgrade", help="Trust signal upgrade playbook")
     tsu.add_argument("args", nargs=argparse.REMAINDER)
     return p, sub
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    import sys
 
     if argv is None:
         argv = sys.argv[1:]
@@ -1186,7 +1209,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if ns.cmd == "release":
         if not ns.args:
-            sys.stderr.write("release error: expected subcommand (gate|doctor|security|evidence|repo)\n")
+            sys.stderr.write(
+                "release error: expected subcommand (gate|doctor|security|evidence|repo)\n"
+            )
             return 2
         subcmd = ns.args[0]
         rest = ns.args[1:]
@@ -1200,7 +1225,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             return evidence.main(rest)
         if subcmd == "repo":
             return repo.main(rest)
-        sys.stderr.write("release error: supported subcommands are gate|doctor|security|evidence|repo\n")
+        sys.stderr.write(
+            "release error: supported subcommands are gate|doctor|security|evidence|repo\n"
+        )
         return 2
 
     if ns.cmd == "intelligence":

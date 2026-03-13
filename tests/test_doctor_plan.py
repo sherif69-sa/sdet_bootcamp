@@ -33,7 +33,7 @@ def test_doctor_apply_plan_rejects_mismatch(tmp_path: Path, monkeypatch, capsys)
     rc2 = doctor.main(["--apply-plan", "deadbeefdead", "--format", "json"])
     data2 = json.loads(capsys.readouterr().out)
     assert rc2 == 2
-    assert data2["error"] == "plan_id_mismatch"
+    assert data2["error"]["code"] == "plan_id_mismatch"
     assert data2["expected"] == plan["plan_id"]
 
 
