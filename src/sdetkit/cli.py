@@ -79,6 +79,7 @@ from . import (
     day95_continuous_upgrade_cycle5_closeout,
     day96_continuous_upgrade_cycle6_closeout,
     day97_continuous_upgrade_cycle7_closeout,
+    continuous_upgrade_cycle8_closeout,
     demo,
     docs_navigation,
     docs_qa,
@@ -655,6 +656,11 @@ Start here:
     )
     d97.set_defaults(cmd="continuous-upgrade-cycle7-closeout")
     d97.add_argument("args", nargs=argparse.REMAINDER)
+    d98 = sub.add_parser(
+        "continuous-upgrade-cycle8-closeout"
+    )
+    d98.set_defaults(cmd="continuous-upgrade-cycle8-closeout")
+    d98.add_argument("args", nargs=argparse.REMAINDER)
 
     fqo = sub.add_parser("faq-objections", help="FAQ objections playbook")
     fqo.add_argument("args", nargs=argparse.REMAINDER)
@@ -1072,6 +1078,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "day97-continuous-upgrade-cycle7-closeout",
     }:
         return day97_continuous_upgrade_cycle7_closeout.main(list(argv[1:]))
+    if argv and argv[0] == "continuous-upgrade-cycle8-closeout":
+        return continuous_upgrade_cycle8_closeout.main(list(argv[1:]))
 
     if argv and argv[0] == "faq-objections":
         return faq_objections.main(list(argv[1:]))
@@ -1454,6 +1462,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         return day96_continuous_upgrade_cycle6_closeout.main(ns.args)
     if ns.cmd in {"continuous-upgrade-cycle7-closeout", "day97-continuous-upgrade-cycle7-closeout"}:
         return day97_continuous_upgrade_cycle7_closeout.main(ns.args)
+
+    if ns.cmd == "continuous-upgrade-cycle8-closeout":
+        return continuous_upgrade_cycle8_closeout.main(ns.args)
 
     if ns.cmd == "faq-objections":
         return faq_objections.main(ns.args)
