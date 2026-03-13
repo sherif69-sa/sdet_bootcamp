@@ -1,13 +1,13 @@
 {
-  "name": "day28-weekly-review",
+  "name": "name28-weekly-review",
   "inputs": {
     "readme": "README.md",
     "docs_index": "docs/index.md",
-    "docs_page": "docs/integrations-day28-weekly-review.md",
+    "docs_page": "docs/integrations-name28-weekly-review.md",
     "top10": "docs/top-10-github-strategy.md",
-    "day25_summary": "docs/artifacts/day25-community-pack/day25-community-summary.json",
-    "day26_summary": "docs/artifacts/day26-external-contribution-pack/day26-external-contribution-summary.json",
-    "day27_summary": "docs/artifacts/day27-kpi-pack/day27-kpi-summary.json"
+    "name25_summary": "docs/artifacts/name25-community-pack/name25-community-summary.json",
+    "name26_summary": "docs/artifacts/name26-external-contribution-pack/name26-external-contribution-summary.json",
+    "name27_summary": "docs/artifacts/name27-kpi-pack/name27-kpi-summary.json"
   },
   "checks": [
     {
@@ -15,7 +15,7 @@
       "category": "contract",
       "weight": 10,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/integrations-day28-weekly-review.md"
+      "evidence": "/workspace/DevS69-sdetkit/docs/integrations-name28-weekly-review.md"
     },
     {
       "key": "required_sections_present",
@@ -36,25 +36,25 @@
       }
     },
     {
-      "key": "readme_day28_link",
+      "key": "readme_name28_link",
       "category": "discoverability",
       "weight": 10,
       "passed": true,
-      "evidence": "docs/integrations-day28-weekly-review.md"
+      "evidence": "docs/integrations-name28-weekly-review.md"
     },
     {
-      "key": "docs_index_day28_link",
+      "key": "docs_index_name28_link",
       "category": "discoverability",
       "weight": 10,
       "passed": true,
-      "evidence": "day-28-ultra-upgrade-report.md"
+      "evidence": "name-28-ultra-upgrade-report.md"
     },
     {
-      "key": "top10_day28_alignment",
+      "key": "top10_name28_alignment",
       "category": "strategy",
       "weight": 8,
       "passed": true,
-      "evidence": "Day 28 \u2014 Weekly review #4"
+      "evidence": "Name 28 \u2014 Weekly review #4"
     },
     {
       "key": "docs_mentions_wins_misses_actions",
@@ -64,31 +64,31 @@
       "evidence": "wins/misses/corrective"
     },
     {
-      "key": "day25_input_present",
+      "key": "name25_input_present",
       "category": "data",
       "weight": 8,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day25-community-pack/day25-community-summary.json"
+      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/name25-community-pack/name25-community-summary.json"
     },
     {
-      "key": "day26_input_present",
+      "key": "name26_input_present",
       "category": "data",
       "weight": 8,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day26-external-contribution-pack/day26-external-contribution-summary.json"
+      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/name26-external-contribution-pack/name26-external-contribution-summary.json"
     },
     {
-      "key": "day27_input_present",
+      "key": "name27_input_present",
       "category": "data",
       "weight": 9,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day27-kpi-pack/day27-kpi-summary.json"
+      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/name27-kpi-pack/name27-kpi-summary.json"
     }
   ],
   "rollup": {
-    "day25_activation_score": 100.0,
-    "day26_activation_score": 100.0,
-    "day27_activation_score": 100.0,
+    "name25_activation_score": 100.0,
+    "name26_activation_score": 100.0,
+    "name27_activation_score": 100.0,
     "average_activation_score": 100.0
   },
   "summary": {
@@ -99,10 +99,10 @@
     "strict_pass": true
   },
   "wins": [
-    "Day 25 community activation remained strong (100.0).",
-    "Day 26 external contribution push stayed healthy (100.0).",
-    "Day 27 KPI audit preserved positive momentum (100.0).",
-    "Day 28 weekly review #4 is ready for final phase-close communication."
+    "Name 25 community activation remained strong (100.0).",
+    "Name 26 external contribution push stayed healthy (100.0).",
+    "Name 27 KPI audit preserved positive momentum (100.0).",
+    "Name 28 weekly review #4 is ready for final phase-close communication."
   ],
   "misses": [],
   "corrective_actions": []

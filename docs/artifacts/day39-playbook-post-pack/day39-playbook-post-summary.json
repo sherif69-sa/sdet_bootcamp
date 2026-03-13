@@ -1,19 +1,19 @@
 {
-  "name": "day39-playbook-post",
+  "name": "name39-playbook-post",
   "inputs": {
     "readme": "README.md",
     "docs_index": "docs/index.md",
-    "docs_page": "docs/integrations-day39-playbook-post.md",
+    "docs_page": "docs/integrations-name39-playbook-post.md",
     "top10": "docs/top-10-github-strategy.md",
-    "day38_summary": "docs/artifacts/day38-distribution-batch-pack/day38-distribution-batch-summary.json",
-    "day38_delivery_board": "docs/artifacts/day38-distribution-batch-pack/day38-delivery-board.md"
+    "name38_summary": "docs/artifacts/name38-distribution-batch-pack/name38-distribution-batch-summary.json",
+    "name38_delivery_board": "docs/artifacts/name38-distribution-batch-pack/name38-delivery-board.md"
   },
   "checks": [
     {
       "check_id": "docs_page_exists",
       "weight": 10,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/integrations-day39-playbook-post.md"
+      "evidence": "/workspace/DevS69-sdetkit/docs/integrations-name39-playbook-post.md"
     },
     {
       "check_id": "required_sections_present",
@@ -32,28 +32,28 @@
       }
     },
     {
-      "check_id": "readme_day39_link",
+      "check_id": "readme_name39_link",
       "weight": 8,
       "passed": true,
-      "evidence": "docs/integrations-day39-playbook-post.md"
+      "evidence": "docs/integrations-name39-playbook-post.md"
     },
     {
-      "check_id": "readme_day39_command",
+      "check_id": "readme_name39_command",
       "weight": 4,
       "passed": true,
-      "evidence": "day39-playbook-post"
+      "evidence": "name39-playbook-post"
     },
     {
-      "check_id": "docs_index_day39_links",
+      "check_id": "docs_index_name39_links",
       "weight": 8,
       "passed": true,
-      "evidence": "day-39-big-upgrade-report.md + integrations-day39-playbook-post.md"
+      "evidence": "name-39-big-upgrade-report.md + integrations-name39-playbook-post.md"
     },
     {
-      "check_id": "top10_day39_alignment",
+      "check_id": "top10_name39_alignment",
       "weight": 5,
       "passed": true,
-      "evidence": "Day 39 + Day 40 strategy chain"
+      "evidence": "Name 39 + Name 40 strategy chain"
     },
     {
       "check_id": "day38_summary_present",
@@ -125,10 +125,10 @@
     "strict_pass": true
   },
   "wins": [
-    "Day 38 continuity is strict-pass with activation score=100.0.",
-    "Day 38 delivery board integrity validated with 5 checklist items.",
+    "Name 38 continuity is strict-pass with activation score=100.0.",
+    "Name 38 delivery board integrity validated with 5 checklist items.",
     "Playbook publication contract + quality checklist is fully locked for execution.",
-    "Day 39 playbook post #1 is fully complete and ready for Day 40 scale lane."
+    "Name 39 playbook post #1 is fully complete and ready for Name 40 scale lane."
   ],
   "misses": [],
   "handoff_actions": []

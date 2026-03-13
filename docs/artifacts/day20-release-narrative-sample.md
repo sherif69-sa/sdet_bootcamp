@@ -1,4 +1,4 @@
-# Day 20 release narrative
+# Name 20 release narrative
 
 **Headline:** This release is ready to communicate broadly with a stable quality posture.
 
@@ -24,13 +24,13 @@
 ## Audience blurbs
 
 - **Non Maintainers:** What changed: clearer quality gates, faster release confidence, and traceable evidence for audits.
-- **Engineering:** Ship with confidence by tying Day 19 release score to concrete checklist and evidence artifacts.
+- **Engineering:** Ship with confidence by tying Name 19 release score to concrete checklist and evidence artifacts.
 - **Support:** Use highlights + risks sections to pre-brief known changes and probable user questions.
 
 ## Narrative channels
 
 - **Release Notes:** This release is ready to communicate broadly with a stable quality posture. Key highlights: Packaging: modernize license metadata.
 - **Community Post:** Shipping update: stronger quality gates, clearer evidence, and a smoother adoption path for teams.
-- **Internal Update:** Day 20 narrative pack is ready. Reuse the highlights/risks sections in weekly status and customer comms.
+- **Internal Update:** Name 20 narrative pack is ready. Reuse the highlights/risks sections in weekly status and customer comms.
 
 **Call to action:** Share this narrative in release notes, weekly updates, and community announcements.

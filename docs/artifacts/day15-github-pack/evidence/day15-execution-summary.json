@@ -1,5 +1,5 @@
 {
-  "name": "day15-github-actions-execution",
+  "name": "name15-github-actions-execution",
   "total_commands": 4,
   "passed_commands": 4,
   "failed_commands": 0,
@@ -33,7 +33,7 @@
       "command": "python -m sdetkit github-actions-quickstart --format json --strict",
       "returncode": 0,
       "ok": true,
-      "stdout": "{\n  \"name\": \"day15-github-actions-quickstart\",\n  \"page\": \"docs/integrations-github-actions-quickstart.md\",\n  \"variant\": \"minimal\",\n  \"selected_workflow\": \"name: sdetkit-github-quickstart\\non:\\n  pull_request:\\n  workflow_dispatch:\\n\\njobs:\\n  quality-gate:\\n    runs-on: ubuntu-latest\\n    steps:\\n      - uses: actions/checkout@v4\\n      - uses: actions/setup-python@v5\\n        with:\\n          python-version: '3.11'\\n      - run: python -m pip install -r requirements-test.txt -e .\\n      - run: python -m sdetkit github-actions-quickstart --format json --strict\\n      - run: python -m pytest -q tests/test_cli_sdetkit.py tests/test_github_actions_quickstart.py\\n\",\n  \"passed_checks\": 18,\n  \"total_checks\": 18,\n  \"score\": 100.0,\n  \"missing\": [],\n  \"touched_files\": []\n}\n",
+      "stdout": "{\n  \"name\": \"name15-github-actions-quickstart\",\n  \"page\": \"docs/integrations-github-actions-quickstart.md\",\n  \"variant\": \"minimal\",\n  \"selected_workflow\": \"name: sdetkit-github-quickstart\\non:\\n  pull_request:\\n  workflow_dispatch:\\n\\njobs:\\n  quality-gate:\\n    runs-on: ubuntu-latest\\n    steps:\\n      - uses: actions/checkout@v4\\n      - uses: actions/setup-python@v5\\n        with:\\n          python-version: '3.11'\\n      - run: python -m pip install -r requirements-test.txt -e .\\n      - run: python -m sdetkit github-actions-quickstart --format json --strict\\n      - run: python -m pytest -q tests/test_cli_sdetkit.py tests/test_github_actions_quickstart.py\\n\",\n  \"passed_checks\": 18,\n  \"total_checks\": 18,\n  \"score\": 100.0,\n  \"missing\": [],\n  \"touched_files\": []\n}\n",
       "stderr": ""
     }
   ]

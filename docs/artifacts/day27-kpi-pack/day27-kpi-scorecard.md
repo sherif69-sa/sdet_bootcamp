@@ -1,4 +1,4 @@
-Day 27 KPI audit summary
+Name 27 KPI audit summary
 score=100.0
 failed=none
 critical=none

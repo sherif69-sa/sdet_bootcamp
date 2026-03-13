@@ -1,4 +1,4 @@
-# Day 17 quality scorecard
+# Name 17 quality scorecard
 
 - Completion rate delta: +0
 - Artifact coverage delta: +0

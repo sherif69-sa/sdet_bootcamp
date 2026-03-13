@@ -1,9 +1,9 @@
 {
-  "day": 31,
+  "name": 31,
   "baseline": {
-    "day30_activation_score": 99.0,
-    "day30_average_activation_score": 100.0,
-    "day30_backlog_items": 8
+    "name30_activation_score": 99.0,
+    "name30_average_activation_score": 100.0,
+    "name30_backlog_items": 8
   },
   "week1_targets": {
     "activation_score_floor": 95,

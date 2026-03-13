@@ -11,7 +11,7 @@
    - In `provider.type=local`, manager and reviewer notes come from the local provider.
 2. **Workers** execute planned actions.
    - Multiple workers are modeled explicitly (`worker-1`, `worker-2`) and assigned work round-robin.
-   - Execution is sequential today, but structure is ready for parallel worker scheduling.
+   - Execution is sequential toname, but structure is ready for parallel worker scheduling.
 3. **Reviewer** validates worker outputs.
    - Any denied or failed action causes reviewer rejection and a non-zero status.
 4. **Finalize** with canonical, stable run records saved to history.

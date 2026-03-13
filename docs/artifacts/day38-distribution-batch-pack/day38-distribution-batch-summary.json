@@ -1,19 +1,19 @@
 {
-  "name": "day38-distribution-batch",
+  "name": "name38-distribution-batch",
   "inputs": {
     "readme": "README.md",
     "docs_index": "docs/index.md",
-    "docs_page": "docs/integrations-day38-distribution-batch.md",
+    "docs_page": "docs/integrations-name38-distribution-batch.md",
     "top10": "docs/top-10-github-strategy.md",
-    "day37_summary": "docs/artifacts/day37-experiment-lane-pack/day37-experiment-lane-summary.json",
-    "day37_delivery_board": "docs/artifacts/day37-experiment-lane-pack/day37-delivery-board.md"
+    "name37_summary": "docs/artifacts/name37-experiment-lane-pack/name37-experiment-lane-summary.json",
+    "name37_delivery_board": "docs/artifacts/name37-experiment-lane-pack/name37-delivery-board.md"
   },
   "checks": [
     {
       "check_id": "docs_page_exists",
       "weight": 10,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/integrations-day38-distribution-batch.md"
+      "evidence": "/workspace/DevS69-sdetkit/docs/integrations-name38-distribution-batch.md"
     },
     {
       "check_id": "required_sections_present",
@@ -32,59 +32,59 @@
       }
     },
     {
-      "check_id": "readme_day38_link",
+      "check_id": "readme_name38_link",
       "weight": 8,
       "passed": true,
-      "evidence": "docs/integrations-day38-distribution-batch.md"
+      "evidence": "docs/integrations-name38-distribution-batch.md"
     },
     {
-      "check_id": "readme_day38_command",
+      "check_id": "readme_name38_command",
       "weight": 4,
       "passed": true,
-      "evidence": "day38-distribution-batch"
+      "evidence": "name38-distribution-batch"
     },
     {
-      "check_id": "docs_index_day38_links",
+      "check_id": "docs_index_name38_links",
       "weight": 8,
       "passed": true,
-      "evidence": "day-38-big-upgrade-report.md + integrations-day38-distribution-batch.md"
+      "evidence": "name-38-big-upgrade-report.md + integrations-name38-distribution-batch.md"
     },
     {
-      "check_id": "top10_day38_alignment",
+      "check_id": "top10_name38_alignment",
       "weight": 5,
       "passed": true,
-      "evidence": "Day 38 + Day 39 strategy chain"
+      "evidence": "Name 38 + Name 39 strategy chain"
     },
     {
-      "check_id": "day37_summary_present",
+      "check_id": "name37_summary_present",
       "weight": 10,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day37-experiment-lane-pack/day37-experiment-lane-summary.json"
+      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/name37-experiment-lane-pack/name37-experiment-lane-summary.json"
     },
     {
-      "check_id": "day37_delivery_board_present",
+      "check_id": "name37_delivery_board_present",
       "weight": 8,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day37-experiment-lane-pack/day37-delivery-board.md"
+      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/name37-experiment-lane-pack/name37-delivery-board.md"
     },
     {
-      "check_id": "day37_quality_floor",
+      "check_id": "name37_quality_floor",
       "weight": 10,
       "passed": true,
       "evidence": {
-        "day37_score": 100.0,
+        "name37_score": 100.0,
         "strict_pass": true,
-        "day37_checks": 14
+        "name37_checks": 14
       }
     },
     {
-      "check_id": "day37_board_integrity",
+      "check_id": "name37_board_integrity",
       "weight": 7,
       "passed": true,
       "evidence": {
         "board_items": 5,
-        "contains_day37": true,
-        "contains_day38": true
+        "contains_name37": true,
+        "contains_name38": true
       }
     },
     {
@@ -113,9 +113,9 @@
     }
   ],
   "rollup": {
-    "day37_activation_score": 100.0,
-    "day37_checks": 14,
-    "day37_delivery_board_items": 5
+    "name37_activation_score": 100.0,
+    "name37_checks": 14,
+    "name37_delivery_board_items": 5
   },
   "summary": {
     "activation_score": 100,
@@ -125,10 +125,10 @@
     "strict_pass": true
   },
   "wins": [
-    "Day 37 continuity is strict-pass with activation score=100.0.",
-    "Day 37 delivery board integrity validated with 5 checklist items.",
+    "Name 37 continuity is strict-pass with activation score=100.0.",
+    "Name 37 delivery board integrity validated with 5 checklist items.",
     "Distribution contract + quality checklist is fully locked for execution.",
-    "Day 38 distribution batch #1 is fully complete and ready for Day 39 playbook post #1."
+    "Name 38 distribution batch #1 is fully complete and ready for Name 39 playbook post #1."
   ],
   "misses": [],
   "handoff_actions": []

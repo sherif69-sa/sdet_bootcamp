@@ -26,7 +26,7 @@ jobs:
         os: [ubuntu-latest, macos-latest]
         python-version: ["3.11", "3.12", "3.13"]
     concurrency:
-      group: day64-reference-${{ github.workflow }}-${{ github.ref }}-${{ matrix.os }}-py${{ matrix.python-version }}
+      group: name64-reference-${{ github.workflow }}-${{ github.ref }}-${{ matrix.os }}-py${{ matrix.python-version }}
       cancel-in-progress: true
     steps:
       - name: Checkout
@@ -41,10 +41,10 @@ jobs:
         uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306  # v5.0.3
         with:
           path: ~/.cache/pip
-          key: day64-${{ runner.os }}-py${{ matrix.python-version }}-${{ hashFiles('requirements*.txt', 'pyproject.toml') }}
+          key: name64-${{ runner.os }}-py${{ matrix.python-version }}-${{ hashFiles('requirements*.txt', 'pyproject.toml') }}
           restore-keys: |
-            day64-${{ runner.os }}-py${{ matrix.python-version }}-
-            day64-${{ runner.os }}-
+            name64-${{ runner.os }}-py${{ matrix.python-version }}-
+            name64-${{ runner.os }}-
 
       - name: Install deps
         run: |

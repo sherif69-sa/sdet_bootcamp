@@ -1,4 +1,4 @@
-# Day 17 quality + contribution delta pack
+# Name 17 quality + contribution delta pack
 
 ## Quality deltas
 

@@ -6,7 +6,7 @@ on:
   pull_request:
   workflow_dispatch:
   schedule:
-    # Weekly run every Monday at 03:30 UTC.
+    # Weekly run every Monname at 03:30 UTC.
     - cron: "30 3 * * 1"
 
 permissions:
@@ -246,7 +246,7 @@ jobs:
             if (staleOpenIssues.length > 0) {
               weakSpots.push({
                 area: 'Maintenance issue hygiene',
-                observation: `${staleOpenIssues.length} maintenance issue(s) have been open with no recent updates for 14+ days.`,
+                observation: `${staleOpenIssues.length} maintenance issue(s) have been open with no recent updates for 14+ names.`,
                 suggestion: 'Close outdated trackers or convert them into actionable implementation issues with owners.',
               });
             }

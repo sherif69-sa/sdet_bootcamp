@@ -1,4 +1,4 @@
-# Day 30 sample output (illustrative)
+# Name 30 sample output (illustrative)
 
 - Activation score: **100**
 - Passed checks: **11**
@@ -7,7 +7,7 @@
 
 ## Closeout rollup
 
-- Day 27 score: `95`
-- Day 28 score: `93`
-- Day 29 score: `97`
+- Name 27 score: `95`
+- Name 28 score: `93`
+- Name 29 score: `97`
 - Average score: `95.0`

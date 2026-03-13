@@ -1,4 +1,4 @@
-# Day 37 experiment backlog seeded on Day 36
+# Name 37 experiment backlog seeded on Name 36
 
 - [ ] Test CTA variant: command-first vs narrative-first headline on GitHub discussion.
 - [ ] Compare morning vs afternoon LinkedIn posting window for CTR lift.

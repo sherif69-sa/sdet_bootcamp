@@ -1,19 +1,19 @@
 {
-  "name": "day32-release-cadence",
+  "name": "name32-release-cadence",
   "inputs": {
     "readme": "README.md",
     "docs_index": "docs/index.md",
-    "docs_page": "docs/integrations-day32-release-cadence.md",
+    "docs_page": "docs/integrations-name32-release-cadence.md",
     "top10": "docs/top-10-github-strategy.md",
-    "day31_summary": "docs/artifacts/day31-phase2-pack/day31-phase2-kickoff-summary.json",
-    "day31_delivery_board": "docs/artifacts/day31-phase2-pack/day31-delivery-board.md"
+    "name31_summary": "docs/artifacts/name31-phase2-pack/name31-phase2-kickoff-summary.json",
+    "name31_delivery_board": "docs/artifacts/name31-phase2-pack/name31-delivery-board.md"
   },
   "checks": [
     {
       "check_id": "docs_page_exists",
       "weight": 10,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/integrations-day32-release-cadence.md"
+      "evidence": "/workspace/DevS69-sdetkit/docs/integrations-name32-release-cadence.md"
     },
     {
       "check_id": "required_sections_present",
@@ -32,59 +32,59 @@
       }
     },
     {
-      "check_id": "readme_day32_link",
+      "check_id": "readme_name32_link",
       "weight": 8,
       "passed": true,
-      "evidence": "docs/integrations-day32-release-cadence.md"
+      "evidence": "docs/integrations-name32-release-cadence.md"
     },
     {
-      "check_id": "readme_day32_command",
+      "check_id": "readme_name32_command",
       "weight": 4,
       "passed": true,
-      "evidence": "day32-release-cadence"
+      "evidence": "name32-release-cadence"
     },
     {
-      "check_id": "docs_index_day32_links",
+      "check_id": "docs_index_name32_links",
       "weight": 8,
       "passed": true,
-      "evidence": "day-32-ultra-upgrade-report.md + integrations-day32-release-cadence.md"
+      "evidence": "name-32-ultra-upgrade-report.md + integrations-name32-release-cadence.md"
     },
     {
-      "check_id": "top10_day32_alignment",
+      "check_id": "top10_name32_alignment",
       "weight": 5,
       "passed": true,
-      "evidence": "Day 32 + Day 33 strategy chain"
+      "evidence": "Name 32 + Name 33 strategy chain"
     },
     {
-      "check_id": "day31_summary_present",
+      "check_id": "name31_summary_present",
       "weight": 10,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day31-phase2-pack/day31-phase2-kickoff-summary.json"
+      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/name31-phase2-pack/name31-phase2-kickoff-summary.json"
     },
     {
-      "check_id": "day31_delivery_board_present",
+      "check_id": "name31_delivery_board_present",
       "weight": 8,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day31-phase2-pack/day31-delivery-board.md"
+      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/name31-phase2-pack/name31-delivery-board.md"
     },
     {
-      "check_id": "day31_quality_floor",
+      "check_id": "name31_quality_floor",
       "weight": 10,
       "passed": true,
       "evidence": {
-        "day31_score": 100.0,
+        "name31_score": 100.0,
         "strict_pass": true,
-        "day31_checks": 13
+        "name31_checks": 13
       }
     },
     {
-      "check_id": "day31_board_integrity",
+      "check_id": "name31_board_integrity",
       "weight": 7,
       "passed": true,
       "evidence": {
         "board_items": 5,
-        "contains_day32": true,
-        "contains_day33": true
+        "contains_name32": true,
+        "contains_name33": true
       }
     },
     {
@@ -113,9 +113,9 @@
     }
   ],
   "rollup": {
-    "day31_activation_score": 100.0,
-    "day31_checks": 13,
-    "day31_delivery_board_items": 5
+    "name31_activation_score": 100.0,
+    "name31_checks": 13,
+    "name31_delivery_board_items": 5
   },
   "summary": {
     "activation_score": 100,
@@ -125,10 +125,10 @@
     "strict_pass": true
   },
   "wins": [
-    "Day 31 continuity is strict-pass with activation score=100.0.",
-    "Day 31 delivery board integrity validated with 5 checklist items.",
+    "Name 31 continuity is strict-pass with activation score=100.0.",
+    "Name 31 delivery board integrity validated with 5 checklist items.",
     "Release cadence + changelog contract is fully locked for weekly execution.",
-    "Day 32 release cadence setup is fully closed and ready for Day 33 demo asset execution."
+    "Name 32 release cadence setup is fully closed and ready for Name 33 demo asset execution."
   ],
   "misses": [],
   "handoff_actions": []

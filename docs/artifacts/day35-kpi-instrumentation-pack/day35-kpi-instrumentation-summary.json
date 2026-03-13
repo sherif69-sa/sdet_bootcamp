@@ -1,19 +1,19 @@
 {
-  "name": "day35-kpi-instrumentation",
+  "name": "name35-kpi-instrumentation",
   "inputs": {
     "readme": "README.md",
     "docs_index": "docs/index.md",
-    "docs_page": "docs/integrations-day35-kpi-instrumentation.md",
+    "docs_page": "docs/integrations-name35-kpi-instrumentation.md",
     "top10": "docs/top-10-github-strategy.md",
-    "day34_summary": "docs/artifacts/day34-demo-asset2-pack/day34-demo-asset2-summary.json",
-    "day34_delivery_board": "docs/artifacts/day34-demo-asset2-pack/day34-delivery-board.md"
+    "name34_summary": "docs/artifacts/name34-demo-asset2-pack/name34-demo-asset2-summary.json",
+    "name34_delivery_board": "docs/artifacts/name34-demo-asset2-pack/name34-delivery-board.md"
   },
   "checks": [
     {
       "check_id": "docs_page_exists",
       "weight": 10,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/integrations-day35-kpi-instrumentation.md"
+      "evidence": "/workspace/DevS69-sdetkit/docs/integrations-name35-kpi-instrumentation.md"
     },
     {
       "check_id": "required_sections_present",
@@ -32,59 +32,59 @@
       }
     },
     {
-      "check_id": "readme_day35_link",
+      "check_id": "readme_name35_link",
       "weight": 8,
       "passed": true,
-      "evidence": "docs/integrations-day35-kpi-instrumentation.md"
+      "evidence": "docs/integrations-name35-kpi-instrumentation.md"
     },
     {
-      "check_id": "readme_day35_command",
+      "check_id": "readme_name35_command",
       "weight": 4,
       "passed": true,
-      "evidence": "day35-kpi-instrumentation"
+      "evidence": "name35-kpi-instrumentation"
     },
     {
-      "check_id": "docs_index_day35_links",
+      "check_id": "docs_index_name35_links",
       "weight": 8,
       "passed": true,
-      "evidence": "day-35-big-upgrade-report.md + integrations-day35-kpi-instrumentation.md"
+      "evidence": "name-35-big-upgrade-report.md + integrations-name35-kpi-instrumentation.md"
     },
     {
-      "check_id": "top10_day35_alignment",
+      "check_id": "top10_name35_alignment",
       "weight": 5,
       "passed": true,
-      "evidence": "Day 35 + Day 36 strategy chain"
+      "evidence": "Name 35 + Name 36 strategy chain"
     },
     {
-      "check_id": "day34_summary_present",
+      "check_id": "name34_summary_present",
       "weight": 10,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day34-demo-asset2-pack/day34-demo-asset2-summary.json"
+      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/name34-demo-asset2-pack/name34-demo-asset2-summary.json"
     },
     {
-      "check_id": "day34_delivery_board_present",
+      "check_id": "name34_delivery_board_present",
       "weight": 8,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day34-demo-asset2-pack/day34-delivery-board.md"
+      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/name34-demo-asset2-pack/name34-delivery-board.md"
     },
     {
-      "check_id": "day34_quality_floor",
+      "check_id": "name34_quality_floor",
       "weight": 10,
       "passed": true,
       "evidence": {
-        "day34_score": 100.0,
+        "name34_score": 100.0,
         "strict_pass": true,
-        "day34_checks": 14
+        "name34_checks": 14
       }
     },
     {
-      "check_id": "day34_board_integrity",
+      "check_id": "name34_board_integrity",
       "weight": 7,
       "passed": true,
       "evidence": {
         "board_items": 5,
-        "contains_day35": true,
-        "contains_day36": true
+        "contains_name35": true,
+        "contains_name36": true
       }
     },
     {
@@ -113,9 +113,9 @@
     }
   ],
   "rollup": {
-    "day34_activation_score": 100.0,
-    "day34_checks": 14,
-    "day34_delivery_board_items": 5
+    "name34_activation_score": 100.0,
+    "name34_checks": 14,
+    "name34_delivery_board_items": 5
   },
   "summary": {
     "activation_score": 100,
@@ -125,10 +125,10 @@
     "strict_pass": true
   },
   "wins": [
-    "Day 34 continuity is strict-pass with activation score=100.0.",
-    "Day 34 delivery board integrity validated with 5 checklist items.",
+    "Name 34 continuity is strict-pass with activation score=100.0.",
+    "Name 34 delivery board integrity validated with 5 checklist items.",
     "KPI instrumentation contract + quality checklist is fully locked for execution.",
-    "Day 35 KPI instrumentation closeout is fully complete and ready for Day 36 distribution execution."
+    "Name 35 KPI instrumentation closeout is fully complete and ready for Name 36 distribution execution."
   ],
   "misses": [],
   "handoff_actions": []

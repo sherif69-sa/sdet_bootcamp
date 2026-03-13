@@ -49,14 +49,14 @@
     {
       "category": "discoverability",
       "evidence": "docs/integrations-faq-objections.md",
-      "key": "readme_day23_link",
+      "key": "readme_name23_link",
       "passed": true,
       "weight": 8
     },
     {
       "category": "discoverability",
-      "evidence": "day-23-ultra-upgrade-report.md",
-      "key": "docs_index_day23",
+      "evidence": "name-23-ultra-upgrade-report.md",
+      "key": "docs_index_name23",
       "passed": true,
       "weight": 7
     },
@@ -73,7 +73,7 @@
     "docs_page": "docs/integrations-faq-objections.md",
     "readme": "README.md"
   },
-  "name": "day23-faq-objections",
+  "name": "name23-faq-objections",
   "recommendations": [
     "FAQ objections lane is healthy; keep objections refreshed from real issue/discussion trends."
   ],

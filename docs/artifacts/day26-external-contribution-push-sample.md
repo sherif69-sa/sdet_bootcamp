@@ -1,4 +1,4 @@
-# Day 26 external contribution push sample
+# Name 26 external contribution push sample
 
 ```bash
 python -m sdetkit external-contribution-push --format json --strict

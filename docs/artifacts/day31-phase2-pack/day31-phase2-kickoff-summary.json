@@ -1,19 +1,19 @@
 {
-  "name": "day31-phase2-kickoff",
+  "name": "name31-phase2-kickoff",
   "inputs": {
     "readme": "README.md",
     "docs_index": "docs/index.md",
-    "docs_page": "docs/integrations-day31-phase2-kickoff.md",
+    "docs_page": "docs/integrations-name31-phase2-kickoff.md",
     "top10": "docs/top-10-github-strategy.md",
-    "day30_summary": "docs/artifacts/day30-wrap-pack/day30-phase1-wrap-summary.json",
-    "day30_backlog": "docs/artifacts/day30-wrap-pack/day30-phase2-backlog.md"
+    "name30_summary": "docs/artifacts/name30-wrap-pack/name30-phase1-wrap-summary.json",
+    "name30_backlog": "docs/artifacts/name30-wrap-pack/name30-phase2-backlog.md"
   },
   "checks": [
     {
       "check_id": "docs_page_exists",
       "weight": 10,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/integrations-day31-phase2-kickoff.md"
+      "evidence": "/workspace/DevS69-sdetkit/docs/integrations-name31-phase2-kickoff.md"
     },
     {
       "check_id": "required_sections_present",
@@ -32,48 +32,48 @@
       }
     },
     {
-      "check_id": "readme_day31_link",
+      "check_id": "readme_name31_link",
       "weight": 8,
       "passed": true,
-      "evidence": "docs/integrations-day31-phase2-kickoff.md"
+      "evidence": "docs/integrations-name31-phase2-kickoff.md"
     },
     {
-      "check_id": "readme_day31_command",
+      "check_id": "readme_name31_command",
       "weight": 4,
       "passed": true,
-      "evidence": "day31-phase2-kickoff"
+      "evidence": "name31-phase2-kickoff"
     },
     {
-      "check_id": "docs_index_day31_links",
+      "check_id": "docs_index_name31_links",
       "weight": 8,
       "passed": true,
-      "evidence": "day-31-ultra-upgrade-report.md + integrations-day31-phase2-kickoff.md"
+      "evidence": "name-31-ultra-upgrade-report.md + integrations-name31-phase2-kickoff.md"
     },
     {
-      "check_id": "top10_day31_alignment",
+      "check_id": "top10_name31_alignment",
       "weight": 5,
       "passed": true,
-      "evidence": "Day 31 + Day 32 strategy chain"
+      "evidence": "Name 31 + Name 32 strategy chain"
     },
     {
-      "check_id": "day30_summary_present",
+      "check_id": "name30_summary_present",
       "weight": 10,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day30-wrap-pack/day30-phase1-wrap-summary.json"
+      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/name30-wrap-pack/name30-phase1-wrap-summary.json"
     },
     {
-      "check_id": "day30_backlog_present",
+      "check_id": "name30_backlog_present",
       "weight": 8,
       "passed": true,
-      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/day30-wrap-pack/day30-phase2-backlog.md"
+      "evidence": "/workspace/DevS69-sdetkit/docs/artifacts/name30-wrap-pack/name30-phase2-backlog.md"
     },
     {
-      "check_id": "day30_quality_floor",
+      "check_id": "name30_quality_floor",
       "weight": 10,
       "passed": true,
       "evidence": {
-        "day30_score": 99.0,
-        "day30_average": 100.0,
+        "name30_score": 99.0,
+        "name30_average": 100.0,
         "strict_pass": true
       }
     },
@@ -83,8 +83,8 @@
       "passed": true,
       "evidence": {
         "backlog_items": 8,
-        "contains_day31": true,
-        "contains_day32": true
+        "contains_name31": true,
+        "contains_name32": true
       }
     },
     {
@@ -105,9 +105,9 @@
     }
   ],
   "rollup": {
-    "day30_activation_score": 99.0,
-    "day30_average_activation_score": 100.0,
-    "day30_backlog_items": 8
+    "name30_activation_score": 99.0,
+    "name30_average_activation_score": 100.0,
+    "name30_backlog_items": 8
   },
   "summary": {
     "activation_score": 100,
@@ -117,10 +117,10 @@
     "strict_pass": true
   },
   "wins": [
-    "Day 30 continuity is strict-pass with score=99.0 and avg=100.0.",
+    "Name 30 continuity is strict-pass with score=99.0 and avg=100.0.",
     "Phase-2 backlog integrity validated with 8 checklist items.",
-    "Week-1 targets and Day 31 delivery board are fully locked.",
-    "Day 31 kickoff is fully closed and ready for Day 32 release-cadence execution."
+    "Week-1 targets and Name 31 delivery board are fully locked.",
+    "Name 31 kickoff is fully closed and ready for Name 32 release-cadence execution."
   ],
   "misses": [],
   "handoff_actions": []

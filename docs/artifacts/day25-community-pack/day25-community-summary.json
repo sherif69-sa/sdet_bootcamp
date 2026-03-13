@@ -28,28 +28,28 @@
     {
       "category": "discoverability",
       "evidence": "docs/integrations-community-activation.md",
-      "key": "readme_day25_link",
+      "key": "readme_name25_link",
       "passed": true,
       "weight": 10
     },
     {
       "category": "discoverability",
       "evidence": "community-activation",
-      "key": "readme_day25_command",
+      "key": "readme_name25_command",
       "passed": true,
       "weight": 8
     },
     {
       "category": "discoverability",
-      "evidence": "day-25-ultra-upgrade-report.md",
-      "key": "docs_index_day25_link",
+      "evidence": "name-25-ultra-upgrade-report.md",
+      "key": "docs_index_name25_link",
       "passed": true,
       "weight": 7
     },
     {
       "category": "strategy",
-      "evidence": "Day 25 \u2014 Community activation",
-      "key": "top10_day25_alignment",
+      "evidence": "Name 25 \u2014 Community activation",
+      "key": "top10_name25_alignment",
       "passed": true,
       "weight": 20
     },
@@ -67,14 +67,14 @@
     "readme": "README.md",
     "top10": "docs/top-10-github-strategy.md"
   },
-  "name": "day25-community-activation",
+  "name": "name25-community-activation",
   "strict_failures": [],
   "summary": {
     "activation_score": 100.0,
     "critical_failures": [],
     "failed_checks": [],
     "recommendations": [
-      "Day 25 community activation lane is healthy; keep weekly voting summaries flowing."
+      "Name 25 community activation lane is healthy; keep weekly voting summaries flowing."
     ],
     "total_checks": 8
   }

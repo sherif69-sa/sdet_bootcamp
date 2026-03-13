@@ -1,7 +1,7 @@
-# Day 39 delivery board
+# Name 39 delivery board
 
-- [ ] Day 39 playbook draft committed
-- [ ] Day 39 review notes captured with owner + backup
-- [ ] Day 39 rollout timeline exported
-- [ ] Day 39 KPI scorecard snapshot exported
-- [ ] Day 40 scale priorities drafted from Day 39 learnings
+- [ ] Name 39 playbook draft committed
+- [ ] Name 39 review notes captured with owner + backup
+- [ ] Name 39 rollout timeline exported
+- [ ] Name 39 KPI scorecard snapshot exported
+- [ ] Name 40 scale priorities drafted from Name 39 learnings
