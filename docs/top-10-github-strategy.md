@@ -215,6 +215,11 @@ Phase 2 converts early traction into repeatable growth loops. Each impact ships 
 - Higher discussion volume from real users and integrators.
 - Reuse signals from templates/playbooks in downstream workflows.
 
+### Continuous-upgrade continuity extension
+
+- **Cycle 9 closeout** establishes governance-scale readiness and strict contract evidence.
+- **Cycle 10 closeout** converts those outcomes into publication-quality execution packs for the next continuous-upgrade lane.
+
 ### Phase 3 (Cycles 61-90): Ecosystem + trust (daily execution)
 
 Phase 3 turns growth into durable ecosystem trust: stronger community rituals, deeper integrations, and proof-backed outcomes.
