@@ -27,6 +27,7 @@ python -m sdetkit integration check --profile examples/kits/integration/profile.
 python -m sdetkit forensics compare --from examples/kits/forensics/run-a.json --to examples/kits/forensics/run-b.json --fail-on error
 python -m sdetkit forensics bundle --run examples/kits/forensics/run-b.json --output build/repro.zip
 python -m sdetkit continuous-upgrade-cycle9-closeout --format json --strict
+python -m sdetkit continuous-upgrade-cycle10-closeout --format json --strict
 ```
 
 ## Upgrade planning (first step)
