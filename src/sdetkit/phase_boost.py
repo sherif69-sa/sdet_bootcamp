@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -127,7 +128,11 @@ def _parser() -> argparse.ArgumentParser:
         description="Generate a production-ready 90-impact, 3-phase boost plan.",
     )
     parser.add_argument("--repo-name", default="DevS69-sdetkit", help="Repository name in output.")
-    parser.add_argument("--start-date", default="TBD", help="Program start date label.")
+    parser.add_argument(
+        "--start-date",
+        default=date.today().isoformat(),
+        help="Program start date label (defaults to today in ISO format).",
+    )
     parser.add_argument(
         "--output",
         type=Path,
