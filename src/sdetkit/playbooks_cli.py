@@ -61,14 +61,14 @@ RESERVED_NAMES: set[str] = (
     {"baseline", "playbooks"} | CORE_COMMANDS | DOC_AND_GOV_COMMANDS | set(RECOMMENDED_PLAYBOOKS)
 )
 
-_DAY_PREFIX = re.compile(r"^impact\d+_")
-_DAY_CLOSEOUT = re.compile(r"^impact\d+_(.+_closeout)$")
+_SERIES_PREFIX = re.compile(r"^(?:impact|day)\d+_")
+_SERIES_CLOSEOUT = re.compile(r"^(?:impact|day)\d+_(.+_closeout)$")
 
-# Stable product lanes promoted from Day 41-50 naming.
-_PRODUCT_CANONICAL_BY_DAY_MODULE: dict[str, str] = {
+# Stable product lanes promoted from legacy numeric-series naming.
+_PRODUCT_CANONICAL_BY_LEGACY_MODULE: dict[str, str] = {
     "day28_weekly_review": "weekly-review-lane",
     "day41_expansion_automation": "expansion-automation",
-    # Day 42 and Day 46 would both collide on optimization-closeout.
+    # Two legacy modules would collide on optimization-closeout.
     "day42_optimization_closeout": "optimization-closeout-foundation",
     "day43_acceleration_closeout": "acceleration-closeout",
     "day44_scale_closeout": "scale-closeout",
@@ -82,10 +82,10 @@ _PRODUCT_CANONICAL_BY_DAY_MODULE: dict[str, str] = {
 }
 
 
-_DISABLED_DAY_CLOSEOUT_ALIAS_MODULES: set[str] = {
+_DISABLED_SERIES_CLOSEOUT_ALIAS_MODULES: set[str] = {
     "day42_optimization_closeout",
 }
-_DISABLED_DAY_GENERIC_ALIAS_MODULES: set[str] = {
+_DISABLED_SERIES_GENERIC_ALIAS_MODULES: set[str] = {
     "day42_optimization_closeout",
 }
 
@@ -105,7 +105,7 @@ def _pkg_dir() -> Path:
 
 
 def _is_legacy_module(mod: str) -> bool:
-    if _DAY_PREFIX.match(mod):
+    if _SERIES_PREFIX.match(mod):
         return True
     if mod.endswith("_closeout"):
         return True
@@ -127,8 +127,8 @@ def _discover_legacy_modules(pkg_dir: Path) -> list[str]:
     return sorted(mods)
 
 
-def _alias_for_day_closeout(mod: str) -> str | None:
-    m = _DAY_CLOSEOUT.match(mod)
+def _alias_for_series_closeout(mod: str) -> str | None:
+    m = _SERIES_CLOSEOUT.match(mod)
     if not m:
         return None
     alias_mod = m.group(1)
@@ -138,10 +138,10 @@ def _alias_for_day_closeout(mod: str) -> str | None:
     return alias_cmd
 
 
-def _alias_for_day_module(mod: str) -> str | None:
-    if not _DAY_PREFIX.match(mod):
+def _alias_for_series_module(mod: str) -> str | None:
+    if not _SERIES_PREFIX.match(mod):
         return None
-    alias_mod = _DAY_PREFIX.sub("", mod, count=1)
+    alias_mod = _SERIES_PREFIX.sub("", mod, count=1)
     if not alias_mod:
         return None
     alias_cmd = _mod_to_cmd(alias_mod)
@@ -160,9 +160,9 @@ def _build_registry(pkg_dir: Path) -> tuple[dict[str, str], dict[str, str]]:
             cmd_to_mod[cmd] = mod
 
     for mod in _discover_legacy_modules(pkg_dir):
-        canonical = _PRODUCT_CANONICAL_BY_DAY_MODULE.get(mod)
+        canonical = _PRODUCT_CANONICAL_BY_LEGACY_MODULE.get(mod)
         if canonical is None:
-            canonical = _alias_for_day_module(mod) or _mod_to_cmd(mod)
+            canonical = _alias_for_series_module(mod) or _mod_to_cmd(mod)
 
         if canonical in cmd_to_mod and cmd_to_mod[canonical] != mod:
             canonical = _mod_to_cmd(mod)
@@ -405,7 +405,7 @@ def _cmd_validate(ns: argparse.Namespace) -> int:
         sys.stdout.write(f"playbooks validate: {'OK' if payload['ok'] else 'FAIL'}\n")
         for item in results:
             marker = "OK" if item["ok"] else "FAIL"
-            sys.stdout.write(f"[{marker}] {item['name']} -> {item['module']}\n")
+            sys.stdout.write(f"[{marker}] {item['name']}\n")
 
     return 0 if payload["ok"] else 2
 
