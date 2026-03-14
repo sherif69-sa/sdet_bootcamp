@@ -40,3 +40,9 @@ def test_phase_boost_cli_writes_markdown_and_json(tmp_path: Path):
 
     assert "S-class production readiness" in md_text
     assert payload["repository"] == "repo-prod"
+
+
+def test_phase_boost_parser_defaults_start_date_to_today_iso():
+    args = phase_boost._parser().parse_args([])
+
+    assert args.start_date == phase_boost.date.today().isoformat()
