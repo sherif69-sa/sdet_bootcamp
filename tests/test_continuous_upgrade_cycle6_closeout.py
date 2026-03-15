@@ -31,7 +31,9 @@ def _seed_repo(root: Path) -> None:
     (root / "docs/integrations-continuous-upgrade-cycle6-closeout.md").write_text(
         d93._DAY96_DEFAULT_PAGE, encoding="utf-8"
     )
-    (root / "docs/impact-96-big-upgrade-report.md").write_text("# Day 96 report\n", encoding="utf-8")
+    (root / "docs/impact-96-big-upgrade-report.md").write_text(
+        "# Day 96 report\n", encoding="utf-8"
+    )
     (root / "scripts").mkdir(parents=True, exist_ok=True)
     (root / "scripts/check_day96_continuous_upgrade_cycle6_closeout_contract.py").write_text(
         "from __future__ import annotations\n"

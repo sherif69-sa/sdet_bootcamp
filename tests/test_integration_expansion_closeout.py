@@ -37,7 +37,9 @@ def _seed_repo(root: Path) -> None:
     (root / "docs/integrations-integration-expansion-closeout.md").write_text(
         d64._DAY64_DEFAULT_PAGE, encoding="utf-8"
     )
-    (root / "docs/impact-64-big-upgrade-report.md").write_text("# Day 64 report\n", encoding="utf-8")
+    (root / "docs/impact-64-big-upgrade-report.md").write_text(
+        "# Day 64 report\n", encoding="utf-8"
+    )
 
     summary = (
         root

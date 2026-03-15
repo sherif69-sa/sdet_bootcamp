@@ -31,7 +31,9 @@ def _seed_repo(root: Path) -> None:
     (root / "docs/integrations-continuous-upgrade-cycle8-closeout.md").write_text(
         d98._CYCLE8_DEFAULT_PAGE, encoding="utf-8"
     )
-    (root / "docs/continuous-upgrade-cycle8-big-upgrade-report.md").write_text("# Cycle 8 report\n", encoding="utf-8")
+    (root / "docs/continuous-upgrade-cycle8-big-upgrade-report.md").write_text(
+        "# Cycle 8 report\n", encoding="utf-8"
+    )
     (root / "scripts").mkdir(parents=True, exist_ok=True)
     (root / "scripts/check_continuous_upgrade_cycle8_closeout_contract.py").write_text(
         "from __future__ import annotations\n"
@@ -56,10 +58,7 @@ def _seed_repo(root: Path) -> None:
         ),
         encoding="utf-8",
     )
-    board = (
-        root
-        / "docs/artifacts/continuous-upgrade-cycle7-closeout-pack/cycle7-delivery-board.md"
-    )
+    board = root / "docs/artifacts/continuous-upgrade-cycle7-closeout-pack/cycle7-delivery-board.md"
     board.write_text(
         "\n".join(
             [

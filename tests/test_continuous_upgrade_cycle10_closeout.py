@@ -31,7 +31,9 @@ def _seed_repo(root: Path) -> None:
     (root / "docs/integrations-continuous-upgrade-cycle10-closeout.md").write_text(
         d100._CYCLE10_DEFAULT_PAGE, encoding="utf-8"
     )
-    (root / "docs/continuous-upgrade-cycle10-big-upgrade-report.md").write_text("# Cycle 10 report\n", encoding="utf-8")
+    (root / "docs/continuous-upgrade-cycle10-big-upgrade-report.md").write_text(
+        "# Cycle 10 report\n", encoding="utf-8"
+    )
     (root / "scripts").mkdir(parents=True, exist_ok=True)
     (root / "scripts/check_continuous_upgrade_cycle10_closeout_contract.py").write_text(
         "from __future__ import annotations\n"
@@ -56,10 +58,7 @@ def _seed_repo(root: Path) -> None:
         ),
         encoding="utf-8",
     )
-    board = (
-        root
-        / "docs/artifacts/continuous-upgrade-cycle9-closeout-pack/cycle9-delivery-board.md"
-    )
+    board = root / "docs/artifacts/continuous-upgrade-cycle9-closeout-pack/cycle9-delivery-board.md"
     board.write_text(
         "\n".join(
             [
@@ -129,7 +128,9 @@ def test_cycle10_emit_pack_and_execute(tmp_path: Path) -> None:
     ).exists()
     assert (tmp_path / "artifacts/cycle10-pack/cycle10-evidence-brief.md").exists()
     assert (tmp_path / "artifacts/cycle10-pack/cycle10-continuous-upgrade-plan.md").exists()
-    assert (tmp_path / "artifacts/cycle10-pack/cycle10-upgrade-template-upgrade-ledger.json").exists()
+    assert (
+        tmp_path / "artifacts/cycle10-pack/cycle10-upgrade-template-upgrade-ledger.json"
+    ).exists()
     assert (tmp_path / "artifacts/cycle10-pack/cycle10-storyline-outcomes-ledger.json").exists()
     assert (tmp_path / "artifacts/cycle10-pack/cycle10-upgrade-kpi-scorecard.json").exists()
     assert (tmp_path / "artifacts/cycle10-pack/cycle10-execution-log.md").exists()

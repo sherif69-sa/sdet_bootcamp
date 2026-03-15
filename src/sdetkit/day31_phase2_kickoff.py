@@ -129,8 +129,12 @@ def _backlog_stats(path: Path) -> tuple[int, bool, bool]:
     text = _read(path)
     lines = [line.strip().lower() for line in text.splitlines()]
     item_count = sum(1 for line in lines if line.startswith("- [ ]"))
-    has_day31 = any("impact 31" in line for line in lines)
-    has_day32 = any("impact 32" in line for line in lines)
+    has_day31 = any(
+        any(token in line for token in ("impact 31", "day 31", "name 31")) for line in lines
+    )
+    has_day32 = any(
+        any(token in line for token in ("impact 32", "day 32", "name 32")) for line in lines
+    )
     return item_count, has_day31, has_day32
 
 

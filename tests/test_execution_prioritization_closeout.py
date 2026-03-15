@@ -37,7 +37,9 @@ def _seed_repo(root: Path) -> None:
     (root / "docs/integrations-execution-prioritization-closeout.md").write_text(
         d50._DAY50_DEFAULT_PAGE, encoding="utf-8"
     )
-    (root / "docs/impact-50-big-upgrade-report.md").write_text("# Day 50 report\n", encoding="utf-8")
+    (root / "docs/impact-50-big-upgrade-report.md").write_text(
+        "# Day 50 report\n", encoding="utf-8"
+    )
 
     summary = (
         root

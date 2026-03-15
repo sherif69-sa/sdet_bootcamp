@@ -19,8 +19,8 @@
 - `[🛠 CLI commands](../cli.md)`
 - `[🩺 Doctor checks](../doctor.md)`
 - `[🤝 Contribute](../contributing.md)`
-- `[✅ Name 10 ultra report](../name-10-ultra-upgrade-report.md)`
-- `[🧭 Name 11 ultra report](../name-11-ultra-upgrade-report.md)`
+- `[✅ Name 10 ultra report](../day-10-ultra-upgrade-report.md)`
+- `[🧭 Name 11 ultra report](../day-11-ultra-upgrade-report.md)`
 
 ## Missing docs navigation content
 

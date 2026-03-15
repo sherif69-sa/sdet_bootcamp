@@ -248,7 +248,9 @@ def build_continuous_upgrade_cycle8_closeout_summary(root: Path) -> dict[str, An
         {
             "check_id": "top10_cycle8_align",
             "weight": 5,
-            "passed": (("Cycle 7" in top10_text or "Day 97" in top10_text) and "Cycle 8" in top10_text),
+            "passed": (
+                ("Cycle 7" in top10_text or "Day 97" in top10_text) and "Cycle 8" in top10_text
+            ),
             "evidence": "Cycle 7/Day 97 + Cycle 8 strategy chain",
         },
         {
@@ -366,7 +368,9 @@ def build_continuous_upgrade_cycle8_closeout_summary(root: Path) -> dict[str, An
         misses.append(
             "Cycle 8 predecessor delivery board integrity is incomplete (needs >=5 items and Cycle 7 anchors)."
         )
-        handoff_actions.append("Repair predecessor delivery board entries to include Cycle 7 anchors.")
+        handoff_actions.append(
+            "Repair predecessor delivery board entries to include Cycle 7 anchors."
+        )
 
     if not missing_plan_keys:
         wins.append("Cycle 8 continuous upgrade dataset is available for governance execution.")
@@ -466,9 +470,7 @@ def _emit_pack(root: Path, pack_dir: Path, payload: dict[str, Any]) -> None:
         target / "continuous-upgrade-cycle8-closeout-summary.json",
         json.dumps(payload, indent=2) + "\n",
     )
-    _write(
-        target / "continuous-upgrade-cycle8-closeout-summary.md", _render_text(payload) + "\n"
-    )
+    _write(target / "continuous-upgrade-cycle8-closeout-summary.md", _render_text(payload) + "\n")
     _write(target / "cycle8-evidence-brief.md", "# Cycle 8 continuous upgrade brief\n")
     _write(target / "cycle8-continuous-upgrade-plan.md", "# Cycle 8 continuous upgrade plan\n")
     _write(

@@ -5,7 +5,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 SCRIPT = Path("scripts/generate_world_class_kpi_snapshot.py")
 
 
@@ -99,8 +98,14 @@ def test_generator_applies_metrics_json_values_and_delta(tmp_path: Path) -> None
 
     assert proc.returncode == 0
     text = output_path.read_text(encoding="utf-8")
-    assert "| KPI ID | Lane | KPI | Target | Current value | Delta vs previous | Status | Evidence link |" in text
-    assert "| mainline_pass_rate | reliability | Mainline unit+integration pass rate | `>=99%` | 99.4% | +0.50% | on_track | ci://runs/mainline-pass-rate |" in text
+    assert (
+        "| KPI ID | Lane | KPI | Target | Current value | Delta vs previous | Status | Evidence link |"
+        in text
+    )
+    assert (
+        "| mainline_pass_rate | reliability | Mainline unit+integration pass rate | `>=99%` | 99.4% | +0.50% | on_track | ci://runs/mainline-pass-rate |"
+        in text
+    )
 
 
 def test_generator_uses_previous_metrics_file_for_delta(tmp_path: Path) -> None:
@@ -162,7 +167,10 @@ def test_generator_uses_previous_metrics_file_for_delta(tmp_path: Path) -> None:
 
     assert proc.returncode == 0
     text = output_path.read_text(encoding="utf-8")
-    assert "| pr_cycle_time | velocity | PR impact time | `<24h` | 21h | -2.00h | watch | scm://analytics/pr-impact-time |" in text
+    assert (
+        "| pr_cycle_time | velocity | PR impact time | `<24h` | 21h | -2.00h | watch | scm://analytics/pr-impact-time |"
+        in text
+    )
 
 
 def test_generator_rejects_invalid_snapshot_date(tmp_path: Path) -> None:
@@ -232,7 +240,10 @@ def test_generator_uses_na_delta_when_units_do_not_match(tmp_path: Path) -> None
 
     assert proc.returncode == 0
     text = output_path.read_text(encoding="utf-8")
-    assert "| pr_cycle_time | velocity | PR impact time | `<24h` | 21h | n/a | watch | scm://analytics/pr-impact-time |" in text
+    assert (
+        "| pr_cycle_time | velocity | PR impact time | `<24h` | 21h | n/a | watch | scm://analytics/pr-impact-time |"
+        in text
+    )
 
 
 def test_generator_strict_metrics_fails_when_kpis_missing(tmp_path: Path) -> None:
@@ -350,7 +361,12 @@ def test_generator_writes_machine_readable_summary_json(tmp_path: Path) -> None:
     assert payload["kpis"][1]["covered"] is False
     assert payload["kpis"][0]["target_eval"] == "meets_target"
     assert payload["kpis"][1]["target_eval"] == "unknown"
-    assert payload["target_eval_counts"] == {"meets_target": 1, "below_target": 0, "above_target": 0, "unknown": 1}
+    assert payload["target_eval_counts"] == {
+        "meets_target": 1,
+        "below_target": 0,
+        "above_target": 0,
+        "unknown": 1,
+    }
 
 
 def test_summary_target_eval_flags_below_and_above_target(tmp_path: Path) -> None:
@@ -371,8 +387,16 @@ def test_summary_target_eval_flags_below_and_above_target(tmp_path: Path) -> Non
     metrics_path.write_text(
         json.dumps(
             {
-                "pass_rate": {"current_value": "98.1%", "status": "watch", "evidence_link": "ci://x"},
-                "cycle_time": {"current_value": "30h", "status": "risk", "evidence_link": "scm://y"},
+                "pass_rate": {
+                    "current_value": "98.1%",
+                    "status": "watch",
+                    "evidence_link": "ci://x",
+                },
+                "cycle_time": {
+                    "current_value": "30h",
+                    "status": "risk",
+                    "evidence_link": "scm://y",
+                },
             }
         ),
         encoding="utf-8",
@@ -395,7 +419,12 @@ def test_summary_target_eval_flags_below_and_above_target(tmp_path: Path) -> Non
     payload = json.loads(summary_path.read_text(encoding="utf-8"))
     assert payload["kpis"][0]["target_eval"] == "below_target"
     assert payload["kpis"][1]["target_eval"] == "above_target"
-    assert payload["target_eval_counts"] == {"meets_target": 0, "below_target": 1, "above_target": 1, "unknown": 0}
+    assert payload["target_eval_counts"] == {
+        "meets_target": 0,
+        "below_target": 1,
+        "above_target": 1,
+        "unknown": 0,
+    }
     assert payload["breach_kpi_ids"] == ["pass_rate", "cycle_time"]
 
 
@@ -414,7 +443,9 @@ def test_fail_on_target_breach_returns_non_zero(tmp_path: Path) -> None:
     )
     metrics_path = tmp_path / "metrics.json"
     metrics_path.write_text(
-        json.dumps({"pass_rate": {"current_value": "95%", "status": "risk", "evidence_link": "ci://x"}}),
+        json.dumps(
+            {"pass_rate": {"current_value": "95%", "status": "risk", "evidence_link": "ci://x"}}
+        ),
         encoding="utf-8",
     )
     output_path = tmp_path / "snapshot.md"

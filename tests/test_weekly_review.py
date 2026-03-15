@@ -87,7 +87,9 @@ def test_week3_emit_pack_writes_closeout_artifacts(tmp_path: Path) -> None:
     (root / "docs" / "artifacts").mkdir(parents=True)
 
     for impact in range(15, 21):
-        (root / "docs" / f"impact-{impact}-ultra-upgrade-report.md").write_text("ok\n", encoding="utf-8")
+        (root / "docs" / f"impact-{impact}-ultra-upgrade-report.md").write_text(
+            "ok\n", encoding="utf-8"
+        )
     for artifact in (
         "day15-github-actions-quickstart-sample.md",
         "day16-gitlab-ci-quickstart-sample.md",

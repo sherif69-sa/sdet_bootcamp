@@ -37,7 +37,9 @@ def _seed_repo(root: Path) -> None:
     (root / "docs/integrations-phase1-wrap.md").write_text(
         d30._DAY30_DEFAULT_PAGE, encoding="utf-8"
     )
-    (root / "docs/impact-30-ultra-upgrade-report.md").write_text("# Day 30 report\n", encoding="utf-8")
+    (root / "docs/impact-30-ultra-upgrade-report.md").write_text(
+        "# Day 30 report\n", encoding="utf-8"
+    )
 
     for rel in [
         "docs/artifacts/day27-kpi-pack/day27-kpi-summary.json",

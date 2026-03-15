@@ -32,7 +32,9 @@ def _seed_repo(root: Path) -> None:
     (root / "docs/integrations-weekly-review-closeout.md").write_text(
         d49._DAY49_DEFAULT_PAGE, encoding="utf-8"
     )
-    (root / "docs/impact-49-big-upgrade-report.md").write_text("# Day 49 report\n", encoding="utf-8")
+    (root / "docs/impact-49-big-upgrade-report.md").write_text(
+        "# Day 49 report\n", encoding="utf-8"
+    )
 
     summary = (
         root / "docs/artifacts/day48-objection-closeout-pack/day48-objection-closeout-summary.json"

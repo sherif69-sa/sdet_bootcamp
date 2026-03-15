@@ -37,7 +37,9 @@ def _seed_repo(root: Path) -> None:
     (root / "docs/integrations-contributor-activation-closeout.md").write_text(
         d55._DAY55_DEFAULT_PAGE, encoding="utf-8"
     )
-    (root / "docs/impact-55-big-upgrade-report.md").write_text("# Day 55 report\n", encoding="utf-8")
+    (root / "docs/impact-55-big-upgrade-report.md").write_text(
+        "# Day 55 report\n", encoding="utf-8"
+    )
 
     summary = (
         root / "docs/artifacts/day53-docs-loop-closeout-pack/day53-docs-loop-closeout-summary.json"

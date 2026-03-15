@@ -31,7 +31,9 @@ def _seed_repo(root: Path) -> None:
     (root / "docs/integrations-continuous-upgrade-closeout.md").write_text(
         d91._DAY91_DEFAULT_PAGE, encoding="utf-8"
     )
-    (root / "docs/impact-91-big-upgrade-report.md").write_text("# Day 91 report\n", encoding="utf-8")
+    (root / "docs/impact-91-big-upgrade-report.md").write_text(
+        "# Day 91 report\n", encoding="utf-8"
+    )
     (root / "scripts").mkdir(parents=True, exist_ok=True)
     (root / "scripts/check_day91_continuous_upgrade_closeout_contract.py").write_text(
         "from __future__ import annotations\n"

@@ -1,15 +1,15 @@
 {
   "inputs": {
-    "name14": {
+    "day14": {
       "score": 100.0,
       "status": "pass"
     },
-    "name18": {
+    "day18": {
       "gate_status": "pass",
       "reliability_score": 95.09
     }
   },
-  "name": "name19-release-readiness-board",
+  "name": "day19-release-readiness-board",
   "recommendations": [
     "Release posture is strong; proceed with release candidate tagging and notes preparation."
   ],
