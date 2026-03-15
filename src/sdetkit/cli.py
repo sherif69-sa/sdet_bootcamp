@@ -9,6 +9,9 @@ from importlib import metadata
 from . import (
     apiget,
     community_activation,
+    continuous_upgrade_cycle8_closeout,
+    continuous_upgrade_cycle9_closeout,
+    continuous_upgrade_cycle10_closeout,
     contributor_funnel,
     day28_weekly_review,
     day29_phase1_hardening,
@@ -79,9 +82,6 @@ from . import (
     day95_continuous_upgrade_cycle5_closeout,
     day96_continuous_upgrade_cycle6_closeout,
     day97_continuous_upgrade_cycle7_closeout,
-    continuous_upgrade_cycle8_closeout,
-    continuous_upgrade_cycle9_closeout,
-    continuous_upgrade_cycle10_closeout,
     demo,
     docs_navigation,
     docs_qa,
@@ -658,21 +658,15 @@ Start here:
     )
     d97.set_defaults(cmd="continuous-upgrade-cycle7-closeout")
     d97.add_argument("args", nargs=argparse.REMAINDER)
-    d98 = sub.add_parser(
-        "continuous-upgrade-cycle8-closeout"
-    )
+    d98 = sub.add_parser("continuous-upgrade-cycle8-closeout")
     d98.set_defaults(cmd="continuous-upgrade-cycle8-closeout")
     d98.add_argument("args", nargs=argparse.REMAINDER)
 
-    d99 = sub.add_parser(
-        "continuous-upgrade-cycle9-closeout"
-    )
+    d99 = sub.add_parser("continuous-upgrade-cycle9-closeout")
     d99.set_defaults(cmd="continuous-upgrade-cycle9-closeout")
     d99.add_argument("args", nargs=argparse.REMAINDER)
 
-    d100 = sub.add_parser(
-        "continuous-upgrade-cycle10-closeout"
-    )
+    d100 = sub.add_parser("continuous-upgrade-cycle10-closeout")
     d100.set_defaults(cmd="continuous-upgrade-cycle10-closeout")
     d100.add_argument("args", nargs=argparse.REMAINDER)
 

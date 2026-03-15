@@ -214,7 +214,10 @@ def build_weekly_review(
     for impact in shipped_days:
         report_path = repo_root / impact.report_path
         artifact_path = repo_root / impact.artifact_path
-        report_exists = report_path.exists() or ("impact-" in impact.report_path and (repo_root / impact.report_path.replace("impact-", "day-")).exists())
+        report_exists = report_path.exists() or (
+            "impact-" in impact.report_path
+            and (repo_root / impact.report_path.replace("impact-", "day-")).exists()
+        )
         artifact_exists = artifact_path.exists()
         shipped.append(
             {

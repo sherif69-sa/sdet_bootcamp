@@ -37,7 +37,9 @@ def _seed_repo(root: Path) -> None:
     (root / "docs/integrations-integration-feedback-closeout.md").write_text(
         d82._DAY82_DEFAULT_PAGE, encoding="utf-8"
     )
-    (root / "docs/impact-82-big-upgrade-report.md").write_text("# Day 82 report\n", encoding="utf-8")
+    (root / "docs/impact-82-big-upgrade-report.md").write_text(
+        "# Day 82 report\n", encoding="utf-8"
+    )
 
     summary = (
         root

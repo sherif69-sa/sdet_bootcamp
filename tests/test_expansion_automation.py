@@ -37,7 +37,9 @@ def _seed_repo(root: Path) -> None:
     (root / "docs/integrations-expansion-automation.md").write_text(
         d41._DAY41_DEFAULT_PAGE, encoding="utf-8"
     )
-    (root / "docs/impact-41-big-upgrade-report.md").write_text("# Day 41 report\n", encoding="utf-8")
+    (root / "docs/impact-41-big-upgrade-report.md").write_text(
+        "# Day 41 report\n", encoding="utf-8"
+    )
 
     summary = root / "docs/artifacts/day40-scale-lane-pack/day40-scale-lane-summary.json"
     summary.parent.mkdir(parents=True, exist_ok=True)

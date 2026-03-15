@@ -37,7 +37,9 @@ def _seed_repo(root: Path) -> None:
     (root / "docs/integrations-release-cadence.md").write_text(
         d32._DAY32_DEFAULT_PAGE, encoding="utf-8"
     )
-    (root / "docs/impact-32-ultra-upgrade-report.md").write_text("# Day 32 report\n", encoding="utf-8")
+    (root / "docs/impact-32-ultra-upgrade-report.md").write_text(
+        "# Day 32 report\n", encoding="utf-8"
+    )
 
     summary = root / "docs/artifacts/day31-phase2-pack/day31-phase2-kickoff-summary.json"
     summary.parent.mkdir(parents=True, exist_ok=True)

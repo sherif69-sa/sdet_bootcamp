@@ -1,4 +1,4 @@
-# Name 19 release readiness board
+# Day 19 release readiness board
 
 - Release score: **96.56**
 - Strict gates green: **True**

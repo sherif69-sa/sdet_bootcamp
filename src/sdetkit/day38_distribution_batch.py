@@ -143,8 +143,12 @@ def _board_stats(path: Path) -> tuple[int, bool, bool]:
     text = _read(path)
     lines = [line.strip().lower() for line in text.splitlines()]
     item_count = sum(1 for line in lines if line.startswith("- [ ]"))
-    has_day37 = any("impact 37" in line for line in lines)
-    has_day38 = any("impact 38" in line for line in lines)
+    has_day37 = any(
+        any(token in line for token in ("impact 37", "day 37", "name 37")) for line in lines
+    )
+    has_day38 = any(
+        any(token in line for token in ("impact 38", "day 38", "name 38")) for line in lines
+    )
     return item_count, has_day37, has_day38
 
 

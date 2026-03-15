@@ -18,7 +18,6 @@ import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 
-
 REQ_NAME_RE = re.compile(r"^\s*([A-Za-z0-9_.-]+)")
 
 

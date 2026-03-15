@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 _REPORT_RE = re.compile(r"^impact-(\d+)-.*-report\.md$")
-_PLAN_RE = re.compile(r"^impact(\d+)-.*\.json$")
+_PLAN_RE = re.compile(r"^(?:impact|day)(\d+)(?:-.*)?\.json$")
 
 
 def _repo_root(start: Path | None = None) -> Path:
@@ -48,14 +48,16 @@ def build_manifest(repo_root: Path | None = None) -> dict[str, Any]:
             impact = int(m.group(1))
             e = items.setdefault(impact, {"impact": impact})
             if "report_path" in e:
-                raise ValueError(f"duplicate report for impact {impact}: {e['report_path']} and {p}")
+                raise ValueError(
+                    f"duplicate report for impact {impact}: {e['report_path']} and {p}"
+                )
             rel = p.relative_to(root).as_posix()
             report_title = _first_heading(p.read_text(encoding="utf-8")) or p.name
             e["report_path"] = rel
             e["report_title"] = report_title
 
     if plans_dir.exists():
-        for p in sorted(plans_dir.glob("impact*.json")):
+        for p in sorted(plans_dir.glob("*.json")):
             m = _PLAN_RE.match(p.name)
             if not m:
                 continue

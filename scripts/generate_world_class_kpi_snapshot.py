@@ -139,7 +139,9 @@ def _load_metrics(
             previous_value = previous[kpi_id].get("current_value", "")
         merged[kpi_id] = {
             "current_value": payload["current_value"],
-            "delta": _format_delta(payload["current_value"], previous_value) if previous_value else "TODO",
+            "delta": _format_delta(payload["current_value"], previous_value)
+            if previous_value
+            else "TODO",
             "status": payload["status"],
             "evidence_link": payload["evidence_link"],
         }
@@ -154,14 +156,19 @@ def _missing_kpi_ids(baseline: dict[str, Any], metrics: dict[str, dict[str, str]
     return [kpi_id for kpi_id in _baseline_kpi_ids(baseline) if kpi_id not in metrics]
 
 
-def _validate_metrics_completeness(baseline: dict[str, Any], metrics: dict[str, dict[str, str]]) -> None:
+def _validate_metrics_completeness(
+    baseline: dict[str, Any], metrics: dict[str, dict[str, str]]
+) -> None:
     missing = _missing_kpi_ids(baseline, metrics)
     if missing:
         raise SystemExit(f"strict metrics check failed: missing KPI values for {missing}")
 
 
 def _build_summary_payload(
-    baseline: dict[str, Any], snapshot_date: str, metrics: dict[str, dict[str, str]], output_path: Path
+    baseline: dict[str, Any],
+    snapshot_date: str,
+    metrics: dict[str, dict[str, str]],
+    output_path: Path,
 ) -> dict[str, Any]:
     baseline_ids = _baseline_kpi_ids(baseline)
     missing = _missing_kpi_ids(baseline, metrics)
@@ -202,14 +209,13 @@ def _build_summary_payload(
     }
 
 
-
-
 def _breach_kpi_ids(summary: dict[str, Any]) -> list[str]:
     ids: list[str] = []
     for item in summary.get("kpis", []):
         if item.get("covered") and item.get("target_eval") in {"below_target", "above_target"}:
             ids.append(str(item.get("id", "unknown")))
     return ids
+
 
 def _render_snapshot(
     baseline: dict[str, Any], snapshot_date: str, metrics: dict[str, dict[str, str]]
@@ -226,11 +232,15 @@ def _render_snapshot(
     lines.append(f"- Baseline version: `{baseline.get('version', 'unknown')}`")
     lines.append(f"- Snapshot window: `{baseline.get('snapshot_window', 'unknown')}`")
     lines.append(f"- Review cadence: `{baseline.get('review_cadence', 'unknown')}`")
-    lines.append(f"- KPI coverage: `{len(metrics)}/{len(baseline.get('kpis', []))}` with provided metric values")
+    lines.append(
+        f"- KPI coverage: `{len(metrics)}/{len(baseline.get('kpis', []))}` with provided metric values"
+    )
     lines.append("")
     lines.append("## KPI scorecard")
     lines.append("")
-    lines.append("| KPI ID | Lane | KPI | Target | Current value | Delta vs previous | Status | Evidence link |")
+    lines.append(
+        "| KPI ID | Lane | KPI | Target | Current value | Delta vs previous | Status | Evidence link |"
+    )
     lines.append("| --- | --- | --- | --- | --- | --- | --- | --- |")
     for kpi in baseline.get("kpis", []):
         kpi_id = str(kpi.get("id", "unknown"))
@@ -276,7 +286,9 @@ def _render_snapshot(
     lines.append("- Trend deltas are auto-calculated from `--previous-metrics-json` when provided.")
     lines.append("- Inline `previous_value` in `--metrics-json` is also supported as a fallback.")
     lines.append("- Use `--strict-metrics` to fail generation when any baseline KPI is missing.")
-    lines.append("- Use `--summary-json` to emit a machine-readable snapshot rollup with target evaluation and breach IDs.")
+    lines.append(
+        "- Use `--summary-json` to emit a machine-readable snapshot rollup with target evaluation and breach IDs."
+    )
     lines.append("- TODO: Attach raw export links for CI/SCM/security data.")
     lines.append("")
     return "\n".join(lines)
@@ -343,7 +355,9 @@ def main() -> int:
     if ns.strict_metrics:
         _validate_metrics_completeness(baseline, metrics)
 
-    output_path = Path(ns.output or f"docs/artifacts/world-class-kpi-dashboard-weekly-{snapshot_date}.md")
+    output_path = Path(
+        ns.output or f"docs/artifacts/world-class-kpi-dashboard-weekly-{snapshot_date}.md"
+    )
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(_render_snapshot(baseline, snapshot_date, metrics), encoding="utf-8")
 

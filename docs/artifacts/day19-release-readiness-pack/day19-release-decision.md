@@ -1,4 +1,4 @@
-# Name 19 release decision
+# Day 19 release decision
 
 - Gate status: **pass**
 - Release score: **96.56**
