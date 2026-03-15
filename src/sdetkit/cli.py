@@ -85,6 +85,7 @@ from . import (
     demo,
     docs_navigation,
     docs_qa,
+    doctor,
     enterprise_use_case,
     evidence,
     external_contribution_push,
