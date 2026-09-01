@@ -176,7 +176,7 @@ jobs:
         with:
           name: release-distributions
           path: release-candidate
-      - uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373  # v4.1.1
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8  # v4.2.2
         with:
           subject-path: release-candidate/dist/*
   publish-pypi:
@@ -238,7 +238,7 @@ jobs:
           name: release-distributions
           path: release-candidate
       - name: Create GitHub Release after PyPI verification
-        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228  # v3.0.2
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64  # v3.0.3
         with:
           tag_name: ${{ needs.build.outputs.tag }}
           name: ${{ needs.build.outputs.tag }}
